@@ -666,7 +666,11 @@ body.dark-mode .advanced-description {
         padding: 20px;
     }
     
+    /* Advanced: on mobile, disable sticky + use compact 2x2 radar grid */
     .advanced-floating-wrapper {
+        position: static;
+        top: auto;
+        z-index: auto;
         gap: 16px;
     }
     
@@ -687,7 +691,11 @@ body.dark-mode .advanced-description {
     }
     
     .advanced-radar-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .advanced-radar-card canvas {
+        min-height: 140px;
     }
     
     .web-tuners-grid-4x1 {
