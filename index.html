@@ -6,9 +6,9 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>AI Tuner v3.0 - Customize AI Response Style</title>
-    <link rel="stylesheet" href="style.css?v=3.0.2">
-    <link rel="stylesheet" href="style-v3.0.css?v=3.0.2">
+    <title>AI Tuner v4.0 - Customize AI Response Style</title>
+    <link rel="stylesheet" href="style.css?v=4.0.0">
+    <link rel="stylesheet" href="style-v3.0.css?v=4.0.0">
     <style>
         /* Force dark mode colors - loaded last to override everything */
         body.dark-mode .radar-container-box,
@@ -56,20 +56,44 @@
                     </button>
                 </div>
             </div>
-            <h1>AI Tuner v3.0</h1>
-            <p class="subtitle" id="mode-subtitle">Customize AI behavior with precision controls</p>
-            <div class="mode-toggle-container" style="margin-top: 20px;">
-                <div class="mode-toggle-boxes">
-                    <button id="mode-beginner" class="mode-box" data-mode="beginner">
-                        <span>Beginner</span>
-                    </button>
-                    <button id="mode-advanced" class="mode-box" data-mode="advanced">
-                        <span>Advanced</span>
-                    </button>
+            <h1>AI Tuner v4.0</h1>
+            <p class="subtitle">Customize AI behavior with precision controls</p>
+            
+            <!-- Quick Start Guide -->
+            <div class="quick-start-guide" id="quick-start-guide">
+                <div class="quick-start-step">
+                    <div class="quick-start-icon">
+                        <i data-lucide="sparkles"></i>
+                    </div>
+                    <div class="quick-start-content">
+                        <h3>1. Choose</h3>
+                        <p>Select your AI model</p>
+                    </div>
                 </div>
-            </div>
-            <div class="mode-description">
-                <strong>Beginner:</strong> 12 essential levers | <strong>Advanced:</strong> All 26 tuning levers
+                <div class="quick-start-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+                <div class="quick-start-step">
+                    <div class="quick-start-icon">
+                        <i data-lucide="sliders-horizontal"></i>
+                    </div>
+                    <div class="quick-start-content">
+                        <h3>2. Tune</h3>
+                        <p>Adjust sliders to customize</p>
+                    </div>
+                </div>
+                <div class="quick-start-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+                <div class="quick-start-step">
+                    <div class="quick-start-icon">
+                        <i data-lucide="clipboard-copy"></i>
+                    </div>
+                    <div class="quick-start-content">
+                        <h3>3. Copy</h3>
+                        <p>Copy the generated prompt</p>
+                    </div>
+                </div>
             </div>
             
             <!-- Expandable Info Section -->
@@ -81,103 +105,115 @@
                 <div id="app-info-content" class="app-info-content">
                     <div class="app-info-inner">
                         <h3>About AI Tuner</h3>
-                        <p><strong>AI Tuner</strong> lets you customize how AI assistants respond to you. Instead of accepting default behavior, you can fine-tune personality, tone, and communication style.</p>
+                        <p>AI Tuner removes the mystery from every chatbot.</p>
+                        <p>No more guessing why an AI answers the way it does. No more fighting hidden defaults.</p>
+                        <p>With one click you see exactly how the AI is wired — and with one drag you change it.</p>
                         
                         <h4>How It Works</h4>
                         <ol class="app-info-steps">
-                            <li><strong>Choose Your AI Model</strong> - Select from 7 leading platforms (Grok, Gemini, Claude, ChatGPT, Perplexity, Mistral, Llama). Each has its own default personality.</li>
-                            <li><strong>Apply Hidden Mode</strong> - Override the default with specialized personas like Therapist, Truth-Seeker, or Coder modes.</li>
-                            <li><strong>Fine-Tune Settings</strong> - Adjust 12-26 sliders to control specific behaviors like empathy, conciseness, creativity, and more.</li>
+                            <li><strong>Pick any AI</strong><br>Grok • ChatGPT • Claude • Gemini • Perplexity • Mistral • Llama</li>
+                            <li><strong>See inside its mind</strong><br>A live radar web instantly shows the AI's current personality — empathy, bluntness, creativity, speed, truth-focus… everything.</li>
+                            <li><strong>Tune it your way</strong>
+                                <ul class="app-info-substeps">
+                                    <li><strong>New users:</strong> Tap a picture (Therapist, Coder, Researcher, Friend, Scam Hunter…) and the AI changes instantly.</li>
+                                    <li><strong>Power users:</strong> Drag any of the 26 axes on the radar web for total control.</li>
+                                    <li><strong>Everyone:</strong> Watch the radar spin and the prompt update in real time.</li>
+                                </ul>
+                            </li>
                         </ol>
                         
                         <h4>Key Features</h4>
                         <ul class="app-info-features">
-                            <li><strong>Universal Tuning:</strong> Works with any AI model through prompt engineering</li>
-                            <li><strong>26 Precise Levers:</strong> Control everything from hedging intensity to answer completeness</li>
-                            <li><strong>Live Preview:</strong> See your settings visualized in a radar chart and generated prompt</li>
-                            <li><strong>Save Presets:</strong> Create and reuse your favorite configurations</li>
-                            <li><strong>Beginner/Advanced Modes:</strong> Start simple with 12 essential levers or unlock all 26 for complete control</li>
+                            <li><strong>Takes the black box out of AI</strong> — every behavior is visible and movable</li>
+                            <li><strong>Works on every major model</strong> (no API keys needed)</li>
+                            <li><strong>26 precision levers + one-tap personas</strong></li>
+                            <li><strong>Beginner mode (8 big picture axes) → Advanced mode (full 26-axis web)</strong></li>
+                            <li><strong>Save and share your presets</strong></li>
+                            <li><strong>Copy-paste prompt or use the upcoming AI Tuner Portal</strong> (one window, every AI)</li>
                         </ul>
                         
-                        <p><em>Copy the generated prompt and paste it into your AI chat to apply your custom tuning.</em></p>
+                        <p>Whether you're four years old or fifty years in tech,</p>
+                        <p><strong>AI Tuner makes every chatbot feel like it was built just for you.</strong></p>
+                        
+                        <p><em><strong>Try it now – no signup, no mystery.</strong></em></p>
                     </div>
                 </div>
             </div>
-            
-            <!-- Saved Presets Section -->
-            <div class="saved-presets-header" style="margin-top: 30px;">
-                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Saved Presets</h3>
-                <div id="saved-presets-container" class="preset-buttons-header">
-                    <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
-                </div>
-            </div>
-        </header>
+    </header>
 
-        <!-- Personality & Approach Selector - Above Live Preview -->
-        <div class="personality-selector-section" style="margin: 30px 0; padding: 20px; border: 2px solid #000; border-radius: 4px; background: #fff;">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                <h2 style="margin: 0; font-size: 1.3rem; font-weight: 500;">Personality & Approach</h2>
-                <span class="info-btn-step" data-step="personality" style="cursor: pointer; width: 20px; height: 20px; border-radius: 50%; border: 1px solid #000; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; background: #000; color: #fff;">ℹ</span>
-            </div>
-            <label for="personality-select" style="display: block; margin-bottom: 8px; font-weight: 500; color: #666;">Intellectual Style</label>
-            <select id="personality-select" class="personality-select">
-                <option value="neutral">Neutral - Objective, balanced</option>
-                <option value="socratic">Socratic - Question-driven, probing</option>
-                <option value="curious">Curious - Inquisitive, exploratory</option>
-                <option value="analytical">Analytical - Methodical, systematic</option>
-                <option value="sarcastic">Sarcastic - Sharp, ironic</option>
-                <option value="witty">Witty - Clever, humorous</option>
-                <option value="charming">Charming - Engaging, charismatic</option>
-                <option value="sympathetic">Sympathetic - Understanding, supportive</option>
-                <option value="empathetic">Empathetic - Emotionally attuned</option>
-                <option value="directive">Directive - Authoritative, commanding</option>
-                <option value="collaborative">Collaborative - Cooperative, inclusive</option>
-                <option value="provocative">Provocative - Challenging, thought-provoking</option>
-            </select>
-        </div>
+    <!-- Mode Tabs -->
+    <div class="mode-tabs-wrapper" role="tablist" aria-label="Tuning mode">
+        <button class="mode-tab active" data-tab="simple" id="tab-simple" type="button" role="tab" aria-selected="true" aria-controls="tab-content-simple" tabindex="0">
+            <span class="tab-icon" aria-hidden="true"><i data-lucide="sparkles"></i></span>
+            <span class="tab-label">Simple</span>
+            <span class="tab-description">12 essential levers</span>
+        </button>
+        <button class="mode-tab" data-tab="advanced" id="tab-advanced" type="button" role="tab" aria-selected="false" aria-controls="tab-content-advanced" tabindex="-1">
+            <span class="tab-icon" aria-hidden="true"><i data-lucide="settings"></i></span>
+            <span class="tab-label">Advanced</span>
+            <span class="tab-description">8 levers</span>
+        </button>
+    </div>
 
-        <main class="main-layout">
-            <!-- Preview Section (Left Side) -->
-            <div class="preview-section-container">
-                <div class="preview-section">
+    <main>
+        <div class="tab-content active" data-tab-content="simple" id="tab-content-simple" aria-hidden="false">
+            <!-- Simple Container (Top) -->
+            <div class="simple-container" id="simple-container">
+                <!-- Floating Preview Section (side-by-side) -->
+                <div class="floating-preview-wrapper" id="floating-preview-wrapper">
                     <!-- Radar Container Box -->
-                    <div class="radar-container-box">
+                    <div class="radar-container-box floating-radar">
                         <h3>Live Preview</h3>
                         <div class="radar-wrapper">
                             <canvas id="radarCanvas"></canvas>
                         </div>
                     </div>
                     
-                    <!-- Prompt Container Box -->
-                    <div class="prompt-container-box">
-                        <h3>Generated Prompt</h3>
-                        
-                        <!-- Saved Presets Section - Mobile only (hidden on desktop) -->
-                        <div class="saved-presets-header saved-presets-mobile" style="display: none; margin-bottom: 20px;">
-                            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Saved Presets</h3>
-                            <div id="saved-presets-container-mobile" class="preset-buttons-header">
-                                <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
+                    <!-- Prompt Slot (Simple) -->
+                    <div class="prompt-slot" id="simple-prompt-slot">
+                        <div class="prompt-container-box floating-prompt" id="prompt-panel">
+                            <h3>Generated Prompt</h3>
+                            <div class="prompt-preview-wrapper">
+                                <div class="prompt-preview" id="prompt-preview">
+                                    <p class="placeholder-text">← Start by selecting a model (Step 1)</p>
+                                </div>
+                                <div class="actions">
+                                    <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
+                                    <button id="save-preset" class="btn btn-secondary">Save Preset</button>
+                                    <button id="download-json" class="btn btn-secondary">Download Config</button>
+                                    <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
+                                    <button id="upload-config" class="btn btn-secondary">Upload Config</button>
+                                </div>
                             </div>
+                            <input type="file" id="file-input" accept=".json" style="display: none;">
                         </div>
-                        
-                        <div class="prompt-preview" id="prompt-preview">
-                            <p class="placeholder-text">← Start by selecting a model (Step 1)</p>
-                        </div>
-                        <div class="actions">
-                            <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
-                            <button id="save-preset" class="btn btn-secondary">Save Preset</button>
-                            <button id="download-json" class="btn btn-secondary">Download Config</button>
-                            <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
-                            <button id="upload-config" class="btn btn-secondary">Upload Config</button>
-                        </div>
-                        <input type="file" id="file-input" accept=".json" style="display: none;">
                     </div>
                 </div>
-            </div>
 
-            <!-- Three-Step Workflow (Right Side) -->
-            <div class="workflow-container">
-                <!-- Step 1: Choose Model (Trunk) -->
+                <!-- Personality & Approach Selector (moved here) -->
+                <div class="personality-selector-section" style="margin: 30px 0; padding: 20px; border: 2px solid #000; border-radius: 4px; background: #fff;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <h2 style="margin: 0; font-size: 1.3rem; font-weight: 500;">Personality & Approach</h2>
+                        <span class="info-btn-step" data-step="personality" style="cursor: pointer; width: 20px; height: 20px; border-radius: 50%; border: 1px solid #000; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; background: #000; color: #fff;">ℹ</span>
+                    </div>
+                    <label for="personality-select" style="display: block; margin-bottom: 8px; font-weight: 500; color: #666;">Intellectual Style</label>
+                    <select id="personality-select" class="personality-select">
+                        <option value="neutral">Neutral - Objective, balanced</option>
+                        <option value="socratic">Socratic - Question-driven, probing</option>
+                        <option value="curious">Curious - Inquisitive, exploratory</option>
+                        <option value="analytical">Analytical - Methodical, systematic</option>
+                        <option value="sarcastic">Sarcastic - Sharp, ironic</option>
+                        <option value="witty">Witty - Clever, humorous</option>
+                        <option value="charming">Charming - Engaging, charismatic</option>
+                        <option value="sympathetic">Sympathetic - Understanding, supportive</option>
+                        <option value="empathetic">Empathetic - Emotionally attuned</option>
+                        <option value="directive">Directive - Authoritative, commanding</option>
+                        <option value="collaborative">Collaborative - Cooperative, inclusive</option>
+                        <option value="provocative">Provocative - Challenging, thought-provoking</option>
+                    </select>
+                </div>
+
+                <!-- Step 1: Choose Model -->
                 <div class="workflow-step step-1">
                     <div class="step-header">
                         <div class="step-number">1</div>
@@ -190,11 +226,11 @@
                         </div>
                     </div>
                     <div class="model-grid" id="model-selector">
-                        <!-- Models will be populated by JavaScript -->
+                        <!-- Models will be populated by JavaScript with embedded radar previews -->
                     </div>
                 </div>
 
-                <!-- Step 2: Apply Hidden Mode (Branch 1) -->
+                <!-- Step 2: Apply Hidden Mode -->
                 <div class="workflow-step step-2">
                     <div class="step-header">
                         <div class="step-number">2</div>
@@ -211,21 +247,140 @@
                     </div>
                 </div>
 
-                <!-- Step 3: Fine-Tune (Branch 2) -->
+                <!-- Step 3: 8-Axis Fine Tuner (Simple Mode Only) -->
                 <div class="workflow-step step-3">
                     <div class="step-header">
                         <div class="step-number">3</div>
                         <div class="step-title">
                             <h2>Fine-Tune Your Settings <span class="info-btn-step" data-step="3">ℹ</span></h2>
-                            <p class="step-description">Adjust sliders to customize the AI's behavior precisely.</p>
+                            <p class="step-description">Adjust these 8 key levers to customize the AI's behavior.</p>
                         </div>
                     </div>
-                    <div class="controls-section" id="controls-section">
-                        <!-- Levers will be populated by JavaScript organized by 12 categories -->
+                    <div class="eight-axis-tuner" id="eight-axis-tuner">
+                        <!-- 8 sliders will be populated by JavaScript -->
                     </div>
                 </div>
             </div>
-        </main>
+
+            <!-- Saved Presets (Simple Tab) -->
+            <div class="saved-presets-separator">
+                <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 15px;">Saved Presets</h3>
+                <div id="saved-presets-container" class="preset-buttons-header">
+                    <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" data-tab-content="advanced" id="tab-content-advanced" aria-hidden="true">
+            <!-- Advanced Container -->
+            <div class="advanced-container" id="advanced-container">
+                <div class="advanced-header">
+                    <h2>Advanced Tuning</h2>
+                    <p class="advanced-description">Full control with 4 Web Tuners and 32 tuning lever controls</p>
+                </div>
+
+                <!-- Advanced Floating Preview (prompt + 4 radars side-by-side, sticky above sliders) -->
+                <div class="advanced-floating-wrapper" id="advanced-floating-wrapper">
+                    <!-- Prompt slot (above radars) -->
+                    <div class="prompt-slot" id="advanced-prompt-slot"></div>
+                    
+                    <!-- 4 Radars side-by-side -->
+                    <div class="advanced-radar-grid">
+                        <div class="advanced-radar-card">
+                            <div class="advanced-radar-header">
+                                <h4>Persona Spine <span class="web-tuner-info-btn" data-tuner="persona-spine" title="Learn more about Persona Spine">ℹ</span></h4>
+                                <button class="advanced-radar-reset" onclick="window.aiTuner.resetWebTuner('persona-spine')" title="Reset to default">
+                                    <i data-lucide="rotate-ccw"></i>
+                                    <span>Reset</span>
+                                </button>
+                            </div>
+                            <canvas id="web-tuner-persona-spine"></canvas>
+                        </div>
+                        <div class="advanced-radar-card">
+                            <div class="advanced-radar-header">
+                                <h4>Engagement Surface <span class="web-tuner-info-btn" data-tuner="engagement" title="Learn more about Engagement Surface">ℹ</span></h4>
+                                <button class="advanced-radar-reset" onclick="window.aiTuner.resetWebTuner('engagement')" title="Reset to default">
+                                    <i data-lucide="rotate-ccw"></i>
+                                    <span>Reset</span>
+                                </button>
+                            </div>
+                            <canvas id="web-tuner-engagement"></canvas>
+                        </div>
+                        <div class="advanced-radar-card">
+                            <div class="advanced-radar-header">
+                                <h4>Truth Discipline <span class="web-tuner-info-btn" data-tuner="truth" title="Learn more about Truth Discipline">ℹ</span></h4>
+                                <button class="advanced-radar-reset" onclick="window.aiTuner.resetWebTuner('truth')" title="Reset to default">
+                                    <i data-lucide="rotate-ccw"></i>
+                                    <span>Reset</span>
+                                </button>
+                            </div>
+                            <canvas id="web-tuner-truth"></canvas>
+                        </div>
+                        <div class="advanced-radar-card">
+                            <div class="advanced-radar-header">
+                                <h4>Delivery System <span class="web-tuner-info-btn" data-tuner="delivery" title="Learn more about Delivery System">ℹ</span></h4>
+                                <button class="advanced-radar-reset" onclick="window.aiTuner.resetWebTuner('delivery')" title="Reset to default">
+                                    <i data-lucide="rotate-ccw"></i>
+                                    <span>Reset</span>
+                                </button>
+                            </div>
+                            <canvas id="web-tuner-delivery"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sticky Web Tuners Wrapper -->
+                <div class="web-tuners-sticky-wrapper">
+                    <div class="web-tuners-grid-4x1">
+                        <!-- Persona Spine Tuner -->
+                        <div class="web-tuner-panel" id="web-tuner-panel-persona-spine">
+                            <h4>Persona Spine <span class="web-tuner-info-btn" data-tuner="persona-spine" title="Learn more about Persona Spine">ℹ</span></h4>
+                            <div class="web-tuner-sliders" id="web-tuner-sliders-persona-spine">
+                                <!-- Sliders grouped here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Engagement Surface Tuner -->
+                        <div class="web-tuner-panel" id="web-tuner-panel-engagement">
+                            <h4>Engagement Surface <span class="web-tuner-info-btn" data-tuner="engagement" title="Learn more about Engagement Surface">ℹ</span></h4>
+                            <div class="web-tuner-sliders" id="web-tuner-sliders-engagement">
+                                <!-- Sliders grouped here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Truth Discipline Tuner -->
+                        <div class="web-tuner-panel" id="web-tuner-panel-truth">
+                            <h4>Truth Discipline <span class="web-tuner-info-btn" data-tuner="truth" title="Learn more about Truth Discipline">ℹ</span></h4>
+                            <div class="web-tuner-sliders" id="web-tuner-sliders-truth">
+                                <!-- Sliders grouped here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Delivery System Tuner -->
+                        <div class="web-tuner-panel" id="web-tuner-panel-delivery">
+                            <h4>Delivery System <span class="web-tuner-info-btn" data-tuner="delivery" title="Learn more about Delivery System">ℹ</span></h4>
+                            <div class="web-tuner-sliders" id="web-tuner-sliders-delivery">
+                                <!-- Sliders grouped here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- All Other Levers (not in the 8 core or 4 web tuners) -->
+                <div class="advanced-other-levers" id="advanced-other-levers">
+                    <!-- Remaining levers will be populated here -->
+                </div>
+
+                <!-- Saved Presets (Advanced Tab) -->
+                <div class="saved-presets-separator">
+                    <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 15px;">Saved Presets</h3>
+                    <div id="saved-presets-container-advanced" class="preset-buttons-header">
+                        <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
     </div>
 
     <!-- Info Popup Overlay -->
@@ -248,7 +403,6 @@
     <script>
         // Fallback if CDN fails (common on mobile)
         function loadChartJSFallback() {
-            console.warn('Chart.js CDN failed, trying alternative CDN...');
             const script = document.createElement('script');
             script.src = 'https://unpkg.com/chart.js@latest/dist/chart.umd.js';
             script.onerror = function() {
@@ -258,24 +412,92 @@
                 errorDiv.innerHTML = '⚠️ Chart.js failed to load. The radar chart may not work, but the rest of the app should function. <button onclick="location.reload()" style="margin-left: 10px; padding: 5px 10px; background: #fff; color: #000; border: none; cursor: pointer;">Reload</button>';
                 document.body.appendChild(errorDiv);
             };
-            script.onload = function() {
-                console.log('Chart.js loaded from fallback CDN');
-            };
             document.head.appendChild(script);
         }
     </script>
-    <script src="js/data/v3.0-models.js?v=3.0.2"></script>
-    <script src="js/data/v3.0-levers.js?v=3.0.2"></script>
-    <script src="js/data/v3.0-personas.js?v=3.0.2"></script>
-    <script src="radar.js?v=3.0.2"></script>
-    <script src="js/core/v3.0-engine.js?v=3.0.2"></script>
+    <script src="js/data/v3.0-models.js?v=4.0.0"></script>
+    <script src="js/data/v3.0-levers.js?v=4.0.0"></script>
+    <script src="js/data/v3.0-personas.js?v=4.0.0"></script>
+    <script src="js/data/v4.0-personas.js?v=4.0.0"></script>
+    <script src="radar.js?v=4.0.0"></script>
+    <script src="js/core/v3.0-engine.js?v=4.0.0"></script>
+    <script>
+        (function() {
+            function setupTabs() {
+                const tabs = Array.from(document.querySelectorAll('.mode-tab'));
+                const tabContents = Array.from(document.querySelectorAll('.tab-content'));
+                const promptPanel = document.getElementById('prompt-panel');
+                const promptSlots = {
+                    simple: document.getElementById('simple-prompt-slot'),
+                    advanced: document.getElementById('advanced-prompt-slot')
+                };
+
+                if (!tabs.length || !tabContents.length) {
+                    return;
+                }
+
+                function movePromptTo(tabKey) {
+                    if (!promptPanel) return;
+                    const slot = promptSlots[tabKey];
+                    if (slot && slot !== promptPanel.parentElement) {
+                        slot.appendChild(promptPanel);
+                    }
+                }
+
+                function setActiveTab(tabKey) {
+                    const target = tabKey === 'advanced' ? 'advanced' : 'simple';
+                    tabs.forEach((tab) => {
+                        const isActive = tab.dataset.tab === target;
+                        tab.classList.toggle('active', isActive);
+                        tab.setAttribute('aria-selected', String(isActive));
+                        tab.setAttribute('tabindex', isActive ? '0' : '-1');
+                    });
+
+                    tabContents.forEach((content) => {
+                        const isActive = content.dataset.tabContent === target;
+                        content.classList.toggle('active', isActive);
+                        content.setAttribute('aria-hidden', String(!isActive));
+                    });
+
+                    movePromptTo(target);
+                    localStorage.setItem('aiTunerActiveTab', target);
+
+                    // Initialize Lucide icons after tab switch
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+
+                    // Allow layout to settle, then trigger resize for charts
+                    setTimeout(() => {
+                        window.dispatchEvent(new Event('resize'));
+                    }, 150);
+                }
+
+                tabs.forEach((tab) => {
+                    tab.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        const targetTab = tab.dataset.tab;
+                        setActiveTab(targetTab);
+                    });
+                });
+
+                const savedTab = localStorage.getItem('aiTunerActiveTab') || 'simple';
+                setActiveTab(savedTab);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setupTabs);
+            } else {
+                setupTabs();
+            }
+        })();
+    </script>
     <script>
         // Force cache refresh on mobile if needed
         (function() {
-            const version = '3.0.2';
+            const version = '4.0.0';
             const storedVersion = localStorage.getItem('aituner-version');
             if (storedVersion !== version) {
-                console.log('🔄 Version changed, clearing cache...');
                 localStorage.setItem('aituner-version', version);
                 // Force reload if version changed
                 if (storedVersion && storedVersion !== version) {
@@ -311,23 +533,14 @@
             }
         });
         
-        // Check if scripts loaded (for debugging)
+        // Initialize on page load
         window.addEventListener('load', function() {
-            console.log('✅ Page fully loaded');
-            console.log('Chart.js available:', typeof Chart !== 'undefined');
-            console.log('AITunerV6 available:', typeof window.AITunerV6 !== 'undefined');
-            console.log('LEVERS_V6 available:', typeof window.LEVERS_V6 !== 'undefined');
-            console.log('MODELS_V6 available:', typeof window.MODELS_V6 !== 'undefined');
-            console.log('PERSONAS_V6 available:', typeof window.PERSONAS_V6 !== 'undefined');
-            
             // Mobile-specific: Check if we're on mobile
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
-            if (isMobile) {
-                console.log('📱 Mobile device detected');
-            }
         });
         
-        // Initialize v3.0 app
+        // Initialize v4.0 app
+
         // Load dark mode preference BEFORE DOMContentLoaded to prevent flash
         (function() {
             const savedDarkMode = localStorage.getItem('aiTunerDarkMode') === 'true';
@@ -345,17 +558,10 @@
         function initializeApp() {
             // Prevent multiple initializations
             if (isInitializing || isInitialized) {
-                console.log('App already initializing or initialized, skipping...');
                 return;
             }
             
             isInitializing = true;
-            console.log('Initializing app...');
-            console.log('Chart.js available:', typeof Chart !== 'undefined');
-            console.log('AITunerV6 available:', typeof window.AITunerV6 !== 'undefined');
-            console.log('LEVERS_V6 available:', typeof window.LEVERS_V6 !== 'undefined');
-            console.log('MODELS_V6 available:', typeof window.MODELS_V6 !== 'undefined');
-            console.log('PERSONAS_V6 available:', typeof window.PERSONAS_V6 !== 'undefined');
             
             // Check critical dependencies
             if (typeof window.AITunerV6 === 'undefined') {
@@ -376,7 +582,6 @@
             
             try {
                 window.aiTuner = new window.AITunerV6();
-                console.log('✅ AI Tuner initialized successfully');
                 isInitialized = true;
                 
                 // Hide loader if still visible

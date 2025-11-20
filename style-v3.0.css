@@ -14,16 +14,704 @@
     flex: 1;
 }
 
-/* Main Layout - Side by Side */
-/* Preview (radar) on left, Workflow on right */
-/* FORCE GRID LAYOUT - VERSION 3.0.2 */
-.main-layout {
-    display: grid !important;
-    grid-template-columns: 500px 1fr !important;
-    gap: 40px !important;
-    align-items: start !important;
+/* Main Layout - Stacked Containers */
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Mode Tabs */
+.mode-tabs-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin: 30px 0 10px;
+    border-bottom: 2px solid #000;
+}
+
+.mode-tab {
+    background: #fff;
+    border: 2px solid #000;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #000;
+    transition: all 0.25s ease;
+    min-width: 200px;
+}
+
+.mode-tab + .mode-tab {
+    margin-left: 10px;
+}
+
+.mode-tab:focus-visible {
+    outline: 3px solid #000;
+    outline-offset: 2px;
+}
+
+.mode-tab .tab-icon {
+    font-size: 1.5rem;
+}
+
+.mode-tab .tab-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.mode-tab .tab-description {
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.mode-tab.active {
+    background: #000;
+    color: #fff;
+    transform: translateY(2px);
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.mode-tab.active .tab-description {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+body.dark-mode .mode-tabs-wrapper {
+    border-bottom-color: #fff;
+}
+
+body.dark-mode .mode-tab {
+    background: #111;
+    border-color: #fff;
+    color: #fff;
+}
+
+body.dark-mode .mode-tab .tab-description {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+body.dark-mode .mode-tab.active {
+    background: #fff;
+    color: #000;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+
+.tab-content.active {
+    display: flex;
+    animation: fadeIn 0.35s ease;
+}
+
+.prompt-slot {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.prompt-slot .prompt-container-box {
+    height: 100%;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Simple Container (Top) */
+.simple-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 30px;
+    border: 3px solid #000;
+    border-radius: 8px;
+    background: #fff;
+    position: relative;
+    overflow: visible;
+}
+
+/* Floating Preview Wrapper (side-by-side, shrinks on scroll) */
+.floating-preview-wrapper {
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: stretch; /* Make both boxes same height */
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    margin-bottom: 20px;
+    transform-origin: top center;
+}
+
+.floating-preview-wrapper.scrolled {
+    opacity: 0.95;
+}
+
+.floating-radar,
+.floating-prompt {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%; /* Fill parent height */
+    display: flex;
+    flex-direction: column;
+}
+
+.floating-radar .radar-container-box,
+.floating-prompt .prompt-container-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.floating-radar .radar-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-prompt .prompt-preview {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Advanced Floating Wrapper (similar to simple floating-preview-wrapper) */
+.advanced-floating-wrapper {
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+    transform-origin: top center;
+}
+
+.advanced-floating-wrapper.scrolled {
+    opacity: 0.95;
+}
+
+/* Prompt slot in advanced - compact height, doesn't block radars */
+.advanced-floating-wrapper .prompt-slot {
+    width: 100%;
+    height: auto !important;
+    max-height: 120px !important;
+    flex-shrink: 0;
+    overflow: hidden;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.advanced-floating-wrapper .prompt-slot .prompt-container-box {
     width: 100% !important;
-    max-width: 100% !important;
+    height: auto !important;
+    max-height: 120px !important;
+    min-height: 120px !important;
+    padding: 6px 12px 8px 12px !important;
+    margin: 0 !important;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.advanced-floating-wrapper .prompt-container-box {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 120px !important;
+    min-height: 120px !important;
+    padding: 6px 12px 8px 12px !important;
+    margin: 0 !important;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.advanced-floating-wrapper .prompt-container-box h3 {
+    margin: 0 0 4px 0 !important;
+    font-size: 0.85rem !important;
+    line-height: 1.2 !important;
+    display: block !important;
+}
+
+.advanced-floating-wrapper .prompt-preview-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    height: auto !important;
+    min-height: 90px !important;
+    align-items: flex-start;
+}
+
+.advanced-floating-wrapper .prompt-preview {
+    max-height: 90px !important;
+    min-height: 90px !important;
+    padding: 6px 8px !important;
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.advanced-floating-wrapper .actions {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    padding-left: 8px !important;
+    border-left: 1px solid #e0e0e0 !important;
+    border-top: none !important;
+    margin: 0 !important;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.advanced-floating-wrapper .actions .btn {
+    padding: 8px 12px !important;
+    font-size: 0.8rem !important;
+    line-height: 1.3 !important;
+    white-space: nowrap;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Radars should sit right below prompt with no blocking */
+.advanced-radar-grid {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* 4 Radars grid - side by side */
+.advanced-radar-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+    width: 100%;
+}
+
+.advanced-radar-card {
+    border: 2px solid #000;
+    border-radius: 8px;
+    padding: 6px 8px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.advanced-radar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.advanced-radar-header h4 {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: left;
+    color: #000;
+    padding: 2px 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.advanced-radar-reset {
+    background: transparent;
+    border: 1px solid #000;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #000;
+    white-space: nowrap;
+}
+
+.advanced-radar-reset:hover {
+    background: #f0f0f0;
+    border-color: #333;
+}
+
+.advanced-radar-reset i {
+    width: 14px;
+    height: 14px;
+    color: #000;
+    flex-shrink: 0;
+}
+
+.advanced-radar-reset span {
+    font-size: 0.75rem;
+    line-height: 1;
+}
+
+body.dark-mode .advanced-radar-reset {
+    border-color: #fff;
+    color: #fff;
+}
+
+body.dark-mode .advanced-radar-reset:hover {
+    background: #333;
+    border-color: #fff;
+}
+
+body.dark-mode .advanced-radar-reset i {
+    color: #fff;
+}
+
+body.dark-mode .advanced-radar-reset span {
+    color: #fff;
+}
+
+.advanced-radar-card canvas {
+    width: 100% !important;
+    max-width: 100%;
+    height: auto !important;
+    aspect-ratio: 1;
+    min-height: 180px;
+    margin: 0;
+}
+
+body.dark-mode .advanced-floating-wrapper {
+    background: transparent;
+}
+
+body.dark-mode .advanced-floating-wrapper .prompt-container-box {
+    background: #101010;
+    border-color: #fff;
+}
+
+body.dark-mode .advanced-floating-wrapper .prompt-preview {
+    border-color: #333;
+}
+
+body.dark-mode .advanced-floating-wrapper .actions {
+    border-left-color: #333;
+}
+
+body.dark-mode .advanced-radar-card {
+    background: #1a1a1a;
+    border-color: #fff;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .advanced-radar-card h4 {
+    color: #fff;
+}
+
+/* Advanced Container (Bottom) */
+.advanced-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 30px;
+    border: 3px solid #000;
+    border-radius: 8px;
+    background: #fff;
+    min-height: 100vh;
+}
+
+.advanced-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.advanced-header h2 {
+    margin: 0 0 10px 0;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.advanced-description {
+    margin: 0;
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Sticky Web Tuners Wrapper */
+.web-tuners-sticky-wrapper {
+    position: relative;
+    z-index: 10;
+    background: #fff;
+    padding: 20px;
+    border: 2px solid #000;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+/* 4x1 Web Tuners Grid */
+.web-tuners-grid-4x1 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    align-items: stretch; /* Make all boxes same height */
+    width: 100%; /* OPTION 1: Ensure full width */
+    min-width: 0; /* OPTION 1: Allow grid to shrink if needed */
+}
+
+.web-tuner-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background: #f9f9f9;
+    position: relative;
+    height: 100%; /* Fill grid cell height */
+    min-height: 420px;
+    min-width: 0; /* OPTION 1: Allow flex items to shrink below content size */
+    width: 100%; /* OPTION 1: Fill grid cell */
+    box-sizing: border-box;
+}
+
+.web-tuner-panel h4 {
+    margin: 0 0 15px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+body.dark-mode .web-tuner-panel {
+    background: #111;
+    border-color: #fff;
+}
+
+body.dark-mode .web-tuner-panel h4 {
+    color: #f5f5f5;
+}
+
+.web-tuner-sliders {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* 8-Axis Fine Tuner */
+.eight-axis-tuner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+
+/* Saved Presets Separator */
+.saved-presets-separator {
+    padding: 30px;
+    border: 3px solid #000;
+    border-radius: 8px;
+    background: #f8f9fa;
+    text-align: center;
+}
+
+.saved-presets-separator h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.preset-buttons-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+
+/* Advanced Other Levers */
+.advanced-other-levers {
+    margin-top: 30px;
+}
+
+/* Dark Mode for New Containers */
+body.dark-mode .simple-container,
+body.dark-mode .advanced-container {
+    background: #1a1a1a;
+    border-color: #fff;
+}
+
+body.dark-mode .saved-presets-separator {
+    background: #2a2a2a;
+    border-color: #fff;
+}
+
+body.dark-mode .saved-presets-separator h3 {
+    color: #fff;
+}
+
+body.dark-mode .floating-preview-wrapper,
+body.dark-mode .advanced-floating-wrapper {
+    background: transparent;
+}
+
+body.dark-mode .web-tuners-sticky-wrapper {
+    background: #1a1a1a;
+    border-color: #fff;
+}
+
+body.dark-mode .web-tuner-panel {
+    background: #2a2a2a;
+    border-color: #666;
+}
+
+body.dark-mode .eight-axis-tuner {
+    background: #2a2a2a;
+    border-color: #fff;
+}
+
+body.dark-mode .advanced-header h2 {
+    color: #fff;
+}
+
+body.dark-mode .advanced-description {
+    color: #ccc;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .floating-preview-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .advanced-radar-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .web-tuners-grid-4x1 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Ensure web tuner panels don't get too narrow */
+    .web-tuner-panel {
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .mode-tabs-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+        border-bottom: none;
+        gap: 10px;
+    }
+    
+    .mode-tab {
+        width: 100%;
+        min-width: 0;
+        border-radius: 8px;
+    }
+    
+    .mode-tab + .mode-tab {
+        margin-left: 0;
+    }
+    
+    .simple-container,
+    .advanced-container {
+        padding: 20px;
+    }
+    
+    .advanced-floating-wrapper {
+        gap: 16px;
+    }
+    
+    .prompt-preview-wrapper {
+        flex-direction: column;
+    }
+    
+    .prompt-preview {
+        margin-bottom: 15px;
+    }
+    
+    .actions {
+        border-left: none;
+        border-top: 1px solid #e0e0e0;
+        padding-left: 0;
+        padding-top: 15px;
+        width: 100%;
+    }
+    
+    .advanced-radar-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .web-tuners-grid-4x1 {
+        grid-template-columns: 1fr;
+    }
+    
+    .web-tuner-panel canvas {
+        max-width: 150px;
+        height: 150px !important;
+    }
+    
+    .eight-axis-tuner {
+        grid-template-columns: 1fr;
+    }
+    
+    .mode-toggle-separator .mode-toggle-boxes {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .mode-toggle-separator .mode-box {
+        width: 100%;
+        max-width: 300px;
+    }
 }
 
 /* Explicitly assign grid areas - preview on left, workflow on right */
@@ -138,6 +826,67 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.step-title h2 > span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Inline mode toggle for Step 3 */
+.mode-toggle-container-inline {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.mode-toggle-container-inline .mode-toggle-boxes {
+    display: flex;
+    gap: 10px;
+}
+
+.mode-toggle-container-inline .mode-box {
+    width: 120px;
+    height: 36px;
+    padding: 0;
+    border: 2px solid #000;
+    background: #fff;
+    color: #000;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mode-toggle-container-inline .mode-box:hover {
+    background: #f5f5f5;
+}
+
+.mode-toggle-container-inline .mode-box.active {
+    background: #000;
+    color: #fff;
+}
+
+body.dark-mode .mode-toggle-container-inline .mode-box {
+    background: #1a1a1a;
+    border-color: #fff;
+    color: #fff;
+}
+
+body.dark-mode .mode-toggle-container-inline .mode-box:hover {
+    background: #2a2a2a;
+}
+
+body.dark-mode .mode-toggle-container-inline .mode-box.active {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
 }
 
 /* Reset Tuner Button */
@@ -193,6 +942,44 @@
 .info-btn-step:hover {
     background: #333;
     transform: scale(1.1);
+}
+
+/* Info buttons for web tuners */
+.web-tuner-info-btn {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid #000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #000;
+    color: #fff;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin-left: 4px;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.web-tuner-info-btn:hover {
+    background: #333;
+    transform: scale(1.1);
+}
+
+body.dark-mode .web-tuner-info-btn {
+    border-color: #fff;
+    background: #fff;
+    color: #000;
+}
+
+body.dark-mode .web-tuner-info-btn:hover {
+    background: #ccc;
+    border-color: #fff;
 }
 
 /* Visual Flow Indicators */
@@ -277,17 +1064,25 @@
    ============================================ */
 .model-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
 }
 
 .model-card {
+    display: flex;
+    flex-direction: column;
     padding: 15px;
     border: 2px solid #000;
     background: #fff;
     cursor: pointer;
     transition: all 0.2s;
     text-align: center;
+    position: relative;
+    min-height: 280px;
+}
+
+.model-card-header {
+    margin-bottom: 15px;
 }
 
 .model-card:hover {
@@ -297,25 +1092,41 @@
 }
 
 .model-card.selected {
-    background: #000;
-    color: #fff;
-    border-color: #000;
+    border-color: #4CAF50;
+    border-width: 3px;
+    background: #f0fff0;
 }
 
 .model-card .model-name {
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     margin-bottom: 5px;
+    color: #000;
 }
 
 .model-card .model-desc {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: #666;
     line-height: 1.3;
 }
 
 .model-card.selected .model-desc {
-    color: #ccc;
+    color: #555;
+}
+
+.model-radar-preview {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    flex: 1;
+}
+
+.model-radar-preview canvas {
+    width: 100% !important;
+    max-width: 180px;
+    height: 180px !important;
 }
 
 /* ============================================
@@ -362,6 +1173,35 @@
 
 .persona-card.selected .persona-desc {
     color: #ccc;
+}
+
+/* Persona Badges (v4.0) */
+.persona-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: #666;
+    color: #fff;
+    margin-left: 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
+.persona-badge.universal {
+    background: #4caf50;
+    color: #fff;
+}
+
+body.dark-mode .persona-badge {
+    background: #888;
+    color: #fff;
+}
+
+body.dark-mode .persona-badge.universal {
+    background: #4caf50;
+    color: #fff;
 }
 
 /* ============================================
@@ -419,6 +1259,7 @@
     background: #e0e0e0;
     outline: none;
     -webkit-appearance: none;
+    appearance: none;
 }
 
 .lever-slider::-webkit-slider-thumb {
@@ -712,6 +1553,7 @@ body.advanced-mode .mode-box[data-mode="beginner"]:hover {
 .app-info-inner {
     padding: 25px;
     border-top: 1px solid #e0e0e0;
+    text-align: left; /* Override inherited center alignment from header */
 }
 
 .app-info-inner h3 {
@@ -741,6 +1583,7 @@ body.advanced-mode .mode-box[data-mode="beginner"]:hover {
     list-style: none;
 }
 
+
 .app-info-inner li {
     margin: 12px 0;
     line-height: 1.6;
@@ -751,15 +1594,88 @@ body.advanced-mode .mode-box[data-mode="beginner"]:hover {
 /* Numbered steps with black circles */
 .app-info-steps {
     counter-reset: step-counter;
+    max-width: 700px;
+    margin: 0 auto; /* Center the block */
+    text-align: left; /* Left-align content within the centered block */
 }
 
-.app-info-steps li {
+/* Only direct children get numbered - nested lists won't */
+.app-info-steps > li {
     position: relative;
-    padding-left: 50px;
+    padding-left: 45px;
     counter-increment: step-counter;
+    margin-bottom: 15px;
+    display: block;
+    margin-left: 0;
+}
+
+.app-info-steps > li > strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.app-info-steps > li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background: #000;
+    color: #fff;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 15px;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+    top: 0;
+}
+
+/* Ensure no extra padding on the list itself */
+.app-info-steps {
+    padding-left: 0;
+    margin-left: 0;
+}
+
+/* Prevent nested list items from getting numbered bubbles */
+.app-info-steps .app-info-substeps li::before {
+    content: "•" !important;
+    background: transparent !important;
+    color: #000 !important;
+    width: auto !important;
+    height: auto !important;
+    border-radius: 0 !important;
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.app-info-substeps {
+    margin-top: 10px;
+    margin-left: 0;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: none;
+}
+
+.app-info-substeps li {
+    position: relative;
+    padding-left: 25px;
+    margin: 8px 0;
+    display: block;
+}
+
+.app-info-substeps li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #000;
+    font-weight: 700;
+    font-size: 1.2rem;
+    top: 0;
+    line-height: 1.6;
 }
 
 .app-info-steps li::before {
@@ -881,7 +1797,18 @@ body.advanced-mode .mode-box[data-mode="beginner"]:hover {
     color: #000;
 }
 
-.prompt-preview {
+/* Simple Tab: Prompt preview and actions - vertical stack */
+/* Advanced Tab has its own separate styles below */
+.floating-preview-wrapper .prompt-preview-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.floating-preview-wrapper .prompt-preview {
     overflow-y: auto;
     min-height: 100px;
     max-height: 200px;
@@ -894,20 +1821,21 @@ body.advanced-mode .mode-box[data-mode="beginner"]:hover {
     line-height: 1.6;
     white-space: pre-wrap;
     word-wrap: break-word;
-    margin-bottom: 15px;
-    flex-shrink: 1;
+    flex: 1;
+    min-width: 0;
 }
 
-.actions {
+.floating-preview-wrapper .actions {
     display: flex;
     flex-direction: column;
     gap: 8px;
     padding-top: 15px;
     border-top: 1px solid #e0e0e0;
+    border-left: none;
     flex-shrink: 0;
 }
 
-.actions .btn {
+.floating-preview-wrapper .actions .btn {
     width: 100%;
     padding: 10px;
     font-size: 0.9rem;
@@ -962,8 +1890,299 @@ body.dark-mode .reset-tuner-btn:active {
     background: #555;
 }
 
+/* Dark mode for model cards with radars */
+body.dark-mode .model-card {
+    background: #1a1a1a;
+    border-color: #fff;
+}
+
+body.dark-mode .model-card:hover {
+    background: #2a2a2a;
+}
+
+body.dark-mode .model-card.selected {
+    border-color: #4CAF50;
+    background: #1a2a1a;
+}
+
+body.dark-mode .model-card .model-name {
+    color: #fff;
+}
+
+body.dark-mode .model-card .model-desc {
+    color: #ccc;
+}
+
+body.dark-mode .model-card.selected .model-desc {
+    color: #aaa;
+}
+
+/* ============================================
+   WEB TUNERS (Step 3 - Advanced Mode)
+   ============================================ */
+.web-tuners-container {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 2px solid #000;
+    background: #fff;
+    border-radius: 4px;
+}
+
+.web-tuners-title {
+    margin: 0 0 20px 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #000;
+    text-align: center;
+}
+
+.web-tuners-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    align-items: stretch; /* Make all boxes same height */
+}
+
+.web-tuner-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background: #f9f9f9;
+    height: 100%; /* Fill grid cell height */
+}
+
+.web-tuner-item h4 {
+    margin: 0 0 15px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+}
+
+.web-tuner-item canvas {
+    width: 100%;
+    max-width: 250px;
+    height: 250px;
+}
+
+body.dark-mode .web-tuners-container {
+    background: #1a1a1a;
+    border-color: #fff;
+}
+
+body.dark-mode .web-tuners-title {
+    color: #fff;
+}
+
+body.dark-mode .web-tuner-item {
+    background: #2a2a2a;
+    border-color: #666;
+}
+
+body.dark-mode .web-tuner-item h4 {
+    color: #fff;
+}
+
+@media (max-width: 1200px) {
+    .web-tuners-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .web-tuner-item canvas {
+        max-width: 300px;
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .web-tuners-container {
+        padding: 15px;
+    }
+    
+    .web-tuners-title {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+    
+    .web-tuners-grid {
+        gap: 15px;
+    }
+    
+    .web-tuner-item {
+        padding: 12px;
+    }
+    
+    .web-tuner-item h4 {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+    
+    .web-tuner-item canvas {
+        max-width: 200px;
+        height: 200px;
+    }
+}
+
 body.dark-mode .step-description {
     color: #aaa !important;
+}
+
+/* ============================================
+   QUICK START GUIDE
+   ============================================ */
+.quick-start-guide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 25px;
+    margin: 20px auto 30px auto;
+    max-width: 850px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 3px solid #000;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+
+.quick-start-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    text-align: center;
+}
+
+.quick-start-icon {
+    width: 96px !important;
+    height: 96px !important;
+    min-width: 96px !important;
+    min-height: 96px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+.quick-start-icon i,
+.quick-start-icon svg,
+.quick-start-icon i svg {
+    width: 96px !important;
+    height: 96px !important;
+    min-width: 96px !important;
+    min-height: 96px !important;
+    max-width: 96px !important;
+    max-height: 96px !important;
+    stroke-width: 1.5 !important;
+    stroke: currentColor !important;
+    display: block !important;
+}
+
+.quick-start-icon {
+    color: #000;
+}
+
+.quick-start-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.quick-start-content p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.quick-start-arrow {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    flex-shrink: 0;
+}
+
+.quick-start-arrow i {
+    width: 32px;
+    height: 32px;
+    stroke-width: 2.5;
+    color: #000;
+}
+
+
+/* Dark mode for quick start guide */
+body.dark-mode .quick-start-guide {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border-color: #fff;
+}
+
+body.dark-mode .quick-start-content h3 {
+    color: #fff;
+}
+
+body.dark-mode .quick-start-content p {
+    color: #ccc;
+}
+
+body.dark-mode .quick-start-icon {
+    color: #fff;
+}
+
+body.dark-mode .quick-start-arrow i {
+    color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .quick-start-guide {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+        margin: 20px auto;
+    }
+    
+    .quick-start-arrow {
+        transform: rotate(90deg);
+        margin: 5px 0;
+    }
+    
+    .quick-start-icon {
+        width: 80px !important;
+        height: 80px !important;
+        min-width: 80px !important;
+        min-height: 80px !important;
+    }
+    
+    .quick-start-icon i,
+    .quick-start-icon svg {
+        width: 80px !important;
+        height: 80px !important;
+        min-width: 80px !important;
+        min-height: 80px !important;
+    }
+    
+    .quick-start-arrow {
+        transform: rotate(90deg);
+    }
+    
+    .quick-start-content h3 {
+        font-size: 1.1rem;
+    }
+    
+    .quick-start-content p {
+        font-size: 0.85rem;
+    }
 }
 
 body.dark-mode .step-header {
@@ -1164,7 +2383,6 @@ body.dark-mode .persona-card:hover {
     background: #2a2a2a;
 }
 
-body.dark-mode .model-card.selected,
 body.dark-mode .persona-card.selected {
     background: #fff;
     color: #000;
@@ -1314,6 +2532,15 @@ body.dark-mode .app-info-steps li::before {
 /* Dark mode for bullet points */
 body.dark-mode .app-info-features li::before {
     color: #fff;
+}
+
+/* Dark mode for substeps */
+body.dark-mode .app-info-substeps li::before {
+    color: #fff !important;
+}
+
+body.dark-mode .app-info-substeps li {
+    padding-left: 20px;
 }
 
 body.dark-mode .mode-description {
@@ -1695,7 +2922,7 @@ body.dark-mode .mode-description {
     
     .prompt-container-box {
         padding: 15px;
-        max-height: none !important;
+        max-height: 220px !important;
     }
     
     .prompt-container-box h3 {
@@ -1703,16 +2930,25 @@ body.dark-mode .mode-description {
         margin-bottom: 12px;
     }
     
-    .prompt-preview {
-        max-height: 300px;
-        font-size: 0.8rem;
-        padding: 12px;
+    .prompt-preview-wrapper {
+        flex-direction: column;
     }
     
-    /* Action buttons - full width, touch-friendly */
+    .prompt-preview {
+        max-height: 150px;
+        font-size: 0.8rem;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    
+    /* Action buttons - row layout on mobile too */
     .actions {
-        gap: 10px;
+        gap: 8px;
+        padding-left: 0;
         padding-top: 12px;
+        border-left: none;
+        border-top: 1px solid #e0e0e0;
+        width: 100%;
     }
     
     .actions .btn {
@@ -1752,9 +2988,8 @@ body.dark-mode .mode-description {
     }
     
     /* Numbered steps - adjust padding */
-    .app-info-steps li {
-        padding-left: 45px;
-        gap: 12px;
+    .app-info-steps > li {
+        padding-left: 35px;
     }
     
     .app-info-steps li::before {
@@ -1837,17 +3072,36 @@ body.dark-mode .mode-description {
         height: 300px !important;
     }
     
-    .prompt-preview {
-        max-height: 250px;
-        font-size: 0.75rem;
-        padding: 10px;
+    .prompt-preview-wrapper {
+        flex-direction: column;
     }
     
-    /* Buttons - still touch-friendly */
+    .prompt-preview {
+        max-height: 150px;
+        font-size: 0.8rem;
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+    
+    .prompt-container-box {
+        max-height: 220px !important;
+    }
+    
+    /* Buttons - row layout, still touch-friendly */
+    .actions {
+        padding-left: 0;
+        padding-top: 12px;
+        border-left: none;
+        border-top: 1px solid #e0e0e0;
+        width: 100%;
+    }
+    
     .actions .btn {
         min-height: 44px;
         font-size: 0.95rem;
         padding: 12px 14px;
+        flex: 1 1 auto;
+        min-width: 0;
     }
     
     /* App info - compact */

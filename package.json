@@ -1,6 +1,6 @@
 {
   "name": "ai-tuner",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "AI Tuner - Free web tool to visually tune AI behavior. Elite = Web + Cursor sidebar + Auto-Apply",
   "scripts": {
     "test": "echo 'Web app tests not yet implemented'",

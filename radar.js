@@ -245,6 +245,30 @@ function drawRadarV6(levers) {
     const labels = radarLevers.map(l => l.label);
     const data = radarLevers.map(l => l.value || 5);
     
+    // If chart exists and is valid, just update the data instead of destroying/recreating
+    // This prevents the blinking/shifting animation
+    if (radarChart && typeof radarChart.update === 'function' && radarChart.canvas && radarChart.canvas.ownerDocument) {
+        try {
+            // Update the data
+            radarChart.data.datasets[0].data = data;
+            // Update without animation for instant, smooth updates
+            radarChart.update('none'); // 'none' mode = no animation, instant update
+            return; // Exit early - no need to recreate
+        } catch (e) {
+            console.warn('Error updating chart, will recreate:', e);
+            // If update fails, destroy and fall through to recreate
+            if (radarChart && typeof radarChart.destroy === 'function') {
+                try {
+                    radarChart.destroy();
+                } catch (e2) {
+                    // Ignore destroy errors
+                }
+            }
+            radarChart = null;
+        }
+    }
+    
+    // Only create new chart if one doesn't exist or update failed
     // Prevent multiple simultaneous chart creations
     if (isCreatingChart) {
         console.warn('Chart creation already in progress, skipping...');
@@ -277,6 +301,25 @@ function drawRadarV6(levers) {
     }
     
     setTimeout(() => {
+        // Double-check if chart exists and can be updated (might have been created between checks)
+        if (radarChart && typeof radarChart.update === 'function' && radarChart.canvas && radarChart.canvas.ownerDocument) {
+            try {
+                radarChart.data.datasets[0].data = data;
+                radarChart.update('none');
+                return;
+            } catch (e) {
+                // Update failed, destroy and recreate
+                if (radarChart && typeof radarChart.destroy === 'function') {
+                    try {
+                        radarChart.destroy();
+                    } catch (e2) {
+                        // Ignore
+                    }
+                }
+                radarChart = null;
+            }
+        }
+        
         if (isCreatingChart) {
             console.warn('Chart creation already in progress (inside setTimeout), skipping...');
             return;
@@ -605,4 +648,529 @@ function handleResize() {
 }
 
 window.addEventListener('resize', handleResize);
+
+// ============================================
+// MODEL CARD RADARS (Step 1 - Embedded in Cards)
+// ============================================
+
+// Store model card chart instances
+const modelCardCharts = {};
+
+/**
+ * Draw a small radar chart embedded in a model card
+ * Shows default model profile - clickable to select model
+ */
+function drawModelCardRadar(modelKey, canvasId, isSelected = false) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) {
+        console.warn(`Comparison radar canvas not found: ${canvasId}`);
+        return;
+    }
+    
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js not loaded');
+        return;
+    }
+    
+    const model = window.AI_MODELS_V6[modelKey];
+    if (!model || !model.defaults) {
+        console.warn(`Model not found: ${modelKey}`);
+        return;
+    }
+    
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const backgroundColor = isSelected 
+        ? (isDarkMode ? "rgba(76,175,80,0.3)" : "rgba(76,175,80,0.2)")
+        : (isDarkMode ? "rgba(173,216,230,0.15)" : "rgba(54,162,235,0.15)");
+    const borderColor = isSelected
+        ? (isDarkMode ? "#4CAF50" : "#4CAF50")
+        : (isDarkMode ? "#ADD8E6" : "#36A2EB");
+    const pointColor = isSelected
+        ? (isDarkMode ? "#4CAF50" : "#4CAF50")
+        : (isDarkMode ? "#ADD8E6" : "#36A2EB");
+    const textColor = isDarkMode ? "#ffffff" : "#000000";
+    const gridColor = isDarkMode ? "#666666" : "#cccccc";
+    
+    // Use same 8 key levers as main radar
+    const radarLevers = [
+        { key: 'creativity', label: 'Creativity', value: model.defaults.creativity || 5 },
+        { key: 'teachingMode', label: 'Teaching', value: model.defaults.teachingMode || 5 },
+        { key: 'proactivityLevel', label: 'Proactivity', value: model.defaults.proactivityLevel || 5 },
+        { key: 'playfulness', label: 'Playfulness', value: model.defaults.playfulness || 5 },
+        { key: 'conciseness', label: 'Conciseness', value: model.defaults.conciseness || 5 },
+        { key: 'answerCompleteness', label: 'Completeness', value: model.defaults.answerCompleteness || 5 },
+        { key: 'hedgingIntensity', label: 'Hedging', value: model.defaults.hedgingIntensity || 5 },
+        { key: 'empathyExpressiveness', label: 'Empathy', value: model.defaults.empathyExpressiveness || 5 }
+    ];
+    
+    const labels = radarLevers.map(l => l.label);
+    const data = radarLevers.map(l => l.value || 5);
+    
+    // Destroy existing chart if it exists
+    if (modelCardCharts[canvasId] && typeof modelCardCharts[canvasId].destroy === 'function') {
+        try {
+            modelCardCharts[canvasId].destroy();
+        } catch (e) {
+            console.warn('Error destroying model card chart:', e);
+        }
+    }
+    
+    setTimeout(() => {
+        try {
+            modelCardCharts[canvasId] = new Chart(canvas, {
+                type: "radar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: model.name,
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        pointBackgroundColor: pointColor,
+                        pointBorderColor: borderColor,
+                        pointHoverBackgroundColor: pointColor,
+                        pointHoverBorderColor: borderColor,
+                        borderWidth: isSelected ? 3 : 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2,
+                                display: false // Hide tick numbers for cleaner look
+                            },
+                            grid: {
+                                color: gridColor,
+                                lineWidth: 1
+                            },
+                            pointLabels: {
+                                color: textColor,
+                                font: {
+                                    size: 9
+                                },
+                                display: true
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.r;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (e) {
+            console.error('Error creating comparison chart:', e);
+        }
+    }, 50);
+}
+
+// ============================================
+// WEB TUNER RADARS (Step 3 - Advanced Mode)
+// ============================================
+
+// Store web tuner chart instances
+const webTunerCharts = {};
+
+/**
+ * Draw Persona Spine Web Tuner (8 axes)
+ */
+function drawPersonaSpineRadar(levers, canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || typeof Chart === 'undefined') return;
+    
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const backgroundColor = isDarkMode ? "rgba(173,216,230,0.2)" : "rgba(54,162,235,0.2)";
+    const borderColor = isDarkMode ? "#ADD8E6" : "#36A2EB";
+    const textColor = isDarkMode ? "#ffffff" : "#000000";
+    const gridColor = isDarkMode ? "#666666" : "#cccccc";
+    
+    const axes = [
+        { key: 'assertiveness', label: 'Assertiveness', value: levers.assertiveness || 5 },
+        { key: 'identitySourceLock', label: 'Identity Lock', value: levers.identitySourceLock || 5 },
+        { key: 'adaptivityToUserTone', label: 'Tone Adaptivity', value: levers.adaptivityToUserTone || 5 },
+        { key: 'creativity', label: 'Creativity', value: levers.creativity || 5 },
+        { key: 'playfulness', label: 'Playfulness', value: levers.playfulness || 5 },
+        { key: 'metaCommentary', label: 'Meta-Commentary', value: levers.metaCommentary || 5 },
+        { key: 'teachingMode', label: 'Teaching Mode', value: levers.teachingMode || 5 },
+        { key: 'proactivityLevel', label: 'Proactivity', value: levers.proactivityLevel || 5 }
+    ];
+    
+    const labels = axes.map(a => a.label);
+    const data = axes.map(a => a.value || 5);
+    
+    if (webTunerCharts[canvasId] && typeof webTunerCharts[canvasId].destroy === 'function') {
+        try {
+            webTunerCharts[canvasId].destroy();
+        } catch (e) {
+            console.warn('Error destroying web tuner chart:', e);
+        }
+    }
+    
+    setTimeout(() => {
+        try {
+            webTunerCharts[canvasId] = new Chart(canvas, {
+                type: "radar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Persona Spine",
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        pointBackgroundColor: borderColor,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2,
+                                display: true,
+                                color: "#ffffff", // Always white text for tick numbers
+                                backdropColor: "#1a1a1a", // Always dark background
+                                font: {
+                                    size: 11
+                                }
+                            },
+                            grid: {
+                                color: gridColor
+                            },
+                            pointLabels: {
+                                color: textColor,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    onHover: (event, activeElements) => {
+                        canvas.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+                    }
+                }
+            });
+        } catch (e) {
+            console.error('Error creating Persona Spine chart:', e);
+        }
+    }, 50);
+}
+
+/**
+ * Draw Engagement Surface Web Tuner (8 axes)
+ */
+function drawEngagementSurfaceRadar(levers, canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || typeof Chart === 'undefined') return;
+    
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const backgroundColor = isDarkMode ? "rgba(255,152,0,0.2)" : "rgba(255,152,0,0.2)";
+    const borderColor = isDarkMode ? "#FF9800" : "#FF9800";
+    const textColor = isDarkMode ? "#ffffff" : "#000000";
+    const gridColor = isDarkMode ? "#666666" : "#cccccc";
+    
+    const axes = [
+        { key: 'conciseness', label: 'Conciseness', value: levers.conciseness || 5 },
+        { key: 'responseDirectness', label: 'Directness', value: levers.responseDirectness || 5 },
+        { key: 'answerCompleteness', label: 'Completeness', value: levers.answerCompleteness || 5 },
+        { key: 'speedOptimization', label: 'Speed', value: levers.speedOptimization || 5 },
+        { key: 'affirmationFrequency', label: 'Affirmation', value: levers.affirmationFrequency || 5 },
+        { key: 'empathyExpressiveness', label: 'Empathy', value: levers.empathyExpressiveness || 5 },
+        { key: 'safetyDisclaimers', label: 'Safety', value: levers.safetyDisclaimers || 5 },
+        { key: 'structuralDensity', label: 'Structure', value: levers.structuralDensity || 5 }
+    ];
+    
+    const labels = axes.map(a => a.label);
+    const data = axes.map(a => a.value || 5);
+    
+    if (webTunerCharts[canvasId] && typeof webTunerCharts[canvasId].destroy === 'function') {
+        try {
+            webTunerCharts[canvasId].destroy();
+        } catch (e) {
+            console.warn('Error destroying web tuner chart:', e);
+        }
+    }
+    
+    setTimeout(() => {
+        try {
+            webTunerCharts[canvasId] = new Chart(canvas, {
+                type: "radar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Engagement Surface",
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        pointBackgroundColor: borderColor,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2,
+                                display: true,
+                                color: "#ffffff", // Always white text for tick numbers
+                                backdropColor: "#1a1a1a", // Always dark background
+                                font: {
+                                    size: 11
+                                }
+                            },
+                            grid: {
+                                color: gridColor
+                            },
+                            pointLabels: {
+                                color: textColor,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    onHover: (event, activeElements) => {
+                        canvas.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+                    }
+                }
+            });
+        } catch (e) {
+            console.error('Error creating Engagement Surface chart:', e);
+        }
+    }, 50);
+}
+
+/**
+ * Draw Truth Discipline Web Tuner (8 axes)
+ */
+function drawTruthDisciplineRadar(levers, canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || typeof Chart === 'undefined') return;
+    
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const backgroundColor = isDarkMode ? "rgba(244,67,54,0.2)" : "rgba(244,67,54,0.2)";
+    const borderColor = isDarkMode ? "#F44336" : "#F44336";
+    const textColor = isDarkMode ? "#ffffff" : "#000000";
+    const gridColor = isDarkMode ? "#666666" : "#cccccc";
+    
+    const axes = [
+        { key: 'hedgingIntensity', label: 'Hedging', value: levers.hedgingIntensity || 5 },
+        { key: 'certaintyModulation', label: 'Certainty', value: levers.certaintyModulation || 5 },
+        { key: 'citationRigidity', label: 'Citation', value: levers.citationRigidity || 5 },
+        { key: 'transparency', label: 'Transparency', value: levers.transparency || 5 },
+        { key: 'technicality', label: 'Technicality', value: levers.technicality || 5 },
+        { key: 'toolAutonomy', label: 'Tool Autonomy', value: levers.toolAutonomy || 5 },
+        { key: 'answerCompleteness', label: 'Memory', value: levers.answerCompleteness || 5 }, // Placeholder
+        { key: 'proactivityLevel', label: 'Goal Lock', value: levers.proactivityLevel || 5 } // Placeholder
+    ];
+    
+    const labels = axes.map(a => a.label);
+    const data = axes.map(a => a.value || 5);
+    
+    if (webTunerCharts[canvasId] && typeof webTunerCharts[canvasId].destroy === 'function') {
+        try {
+            webTunerCharts[canvasId].destroy();
+        } catch (e) {
+            console.warn('Error destroying web tuner chart:', e);
+        }
+    }
+    
+    setTimeout(() => {
+        try {
+            webTunerCharts[canvasId] = new Chart(canvas, {
+                type: "radar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Truth Discipline",
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        pointBackgroundColor: borderColor,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2,
+                                display: true,
+                                color: "#ffffff", // Always white text for tick numbers
+                                backdropColor: "#1a1a1a", // Always dark background
+                                font: {
+                                    size: 11
+                                }
+                            },
+                            grid: {
+                                color: gridColor
+                            },
+                            pointLabels: {
+                                color: textColor,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    onHover: (event, activeElements) => {
+                        canvas.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+                    }
+                }
+            });
+        } catch (e) {
+            console.error('Error creating Truth Discipline chart:', e);
+        }
+    }, 50);
+}
+
+/**
+ * Draw Delivery System Web Tuner (8 axes)
+ */
+function drawDeliverySystemRadar(levers, canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || typeof Chart === 'undefined') return;
+    
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const backgroundColor = isDarkMode ? "rgba(156,39,176,0.2)" : "rgba(156,39,176,0.2)";
+    const borderColor = isDarkMode ? "#9C27B0" : "#9C27B0";
+    const textColor = isDarkMode ? "#ffffff" : "#000000";
+    const gridColor = isDarkMode ? "#666666" : "#cccccc";
+    
+    const axes = [
+        { key: 'markdownStructure', label: 'Markdown', value: levers.markdownStructure || 5 },
+        { key: 'strictFormatting', label: 'Formatting', value: levers.strictFormatting || 5 },
+        { key: 'formattingMinimalism', label: 'Output Format', value: levers.formattingMinimalism || 5 },
+        { key: 'formality', label: 'Response Style', value: levers.formality || 5 },
+        { key: 'conciseness', label: 'Termination', value: levers.conciseness || 5 }, // Placeholder
+        { key: 'responseDirectness', label: 'Transitions', value: levers.responseDirectness || 5 }, // Placeholder
+        { key: 'proactivityLevel', label: 'Questions', value: levers.proactivityLevel || 5 }, // Placeholder
+        { key: 'proactivityLevel', label: 'Suggestions', value: levers.proactivityLevel || 5 } // Placeholder
+    ];
+    
+    const labels = axes.map(a => a.label);
+    const data = axes.map(a => a.value || 5);
+    
+    if (webTunerCharts[canvasId] && typeof webTunerCharts[canvasId].destroy === 'function') {
+        try {
+            webTunerCharts[canvasId].destroy();
+        } catch (e) {
+            console.warn('Error destroying web tuner chart:', e);
+        }
+    }
+    
+    setTimeout(() => {
+        try {
+            webTunerCharts[canvasId] = new Chart(canvas, {
+                type: "radar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Delivery System",
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        pointBackgroundColor: borderColor,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2,
+                                display: true,
+                                color: "#ffffff", // Always white text for tick numbers
+                                backdropColor: "#1a1a1a", // Always dark background
+                                font: {
+                                    size: 11
+                                }
+                            },
+                            grid: {
+                                color: gridColor
+                            },
+                            pointLabels: {
+                                color: textColor,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    onHover: (event, activeElements) => {
+                        canvas.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+                    }
+                }
+            });
+        } catch (e) {
+            console.error('Error creating Delivery System chart:', e);
+        }
+    }, 50);
+}
+
+/**
+ * Draw all 4 web tuner radars (Advanced mode only)
+ */
+function drawAllWebTuners(levers) {
+    if (!levers) return;
+    
+    drawPersonaSpineRadar(levers, 'web-tuner-persona-spine');
+    drawEngagementSurfaceRadar(levers, 'web-tuner-engagement');
+    drawTruthDisciplineRadar(levers, 'web-tuner-truth');
+    drawDeliverySystemRadar(levers, 'web-tuner-delivery');
+}
 

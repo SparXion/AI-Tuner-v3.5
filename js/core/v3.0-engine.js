@@ -8,7 +8,6 @@
 class AITunerV6 {
     constructor() {
         try {
-            console.log('AITunerV6: Starting initialization...');
             this.selectedModel = null;
             this.selectedPersona = null;
             this.personality = 'neutral'; // Personality & Approach selection
@@ -40,6 +39,7 @@ class AITunerV6 {
             this.loadEmojiShutoffPreference();
             this.renderModelSelector();
             this.renderPersonaSelector();
+            this.renderEightAxisTuner();
             this.renderLevers();
             this.setupEventListeners();
             this.loadDarkModePreference();
@@ -49,7 +49,12 @@ class AITunerV6 {
             setTimeout(() => {
                 try {
                     this.generatePrompt();
-                    console.log('AITunerV6: Initialization complete');
+                    // Initialize Lucide icons for quick start guide
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+                    // Initialize scroll animations
+                    this.initScrollAnimations();
                 } catch (error) {
                     console.error('AITunerV6: Error generating prompt:', error);
                 }
@@ -67,6 +72,90 @@ class AITunerV6 {
                 this.levers[leverKey] = 5;
             });
         }
+    }
+
+    /**
+     * Get lever values for a personality type (for radar visualization)
+     */
+    getPersonalityLeverValues(personality) {
+        const mappings = {
+            'neutral': { 
+                creativity: 5, teachingMode: 5, proactivityLevel: 5, playfulness: 3, 
+                conciseness: 6, answerCompleteness: 7, hedgingIntensity: 6, empathyExpressiveness: 5 
+            },
+            'socratic': { 
+                creativity: 6, teachingMode: 9, proactivityLevel: 8, playfulness: 4, 
+                conciseness: 5, answerCompleteness: 8, hedgingIntensity: 7, empathyExpressiveness: 6 
+            },
+            'curious': { 
+                creativity: 8, teachingMode: 7, proactivityLevel: 7, playfulness: 6, 
+                conciseness: 5, answerCompleteness: 8, hedgingIntensity: 5, empathyExpressiveness: 6 
+            },
+            'analytical': { 
+                creativity: 5, teachingMode: 8, proactivityLevel: 6, playfulness: 3, 
+                conciseness: 6, answerCompleteness: 9, hedgingIntensity: 7, empathyExpressiveness: 4 
+            },
+            'sarcastic': { 
+                creativity: 7, teachingMode: 5, proactivityLevel: 5, playfulness: 9, 
+                conciseness: 7, answerCompleteness: 6, hedgingIntensity: 4, empathyExpressiveness: 3 
+            },
+            'witty': { 
+                creativity: 9, teachingMode: 6, proactivityLevel: 6, playfulness: 9, 
+                conciseness: 6, answerCompleteness: 7, hedgingIntensity: 5, empathyExpressiveness: 5 
+            },
+            'charming': { 
+                creativity: 7, teachingMode: 6, proactivityLevel: 7, playfulness: 7, 
+                conciseness: 5, answerCompleteness: 7, hedgingIntensity: 5, empathyExpressiveness: 8 
+            },
+            'sympathetic': { 
+                creativity: 5, teachingMode: 6, proactivityLevel: 6, playfulness: 4, 
+                conciseness: 5, answerCompleteness: 8, hedgingIntensity: 7, empathyExpressiveness: 9 
+            },
+            'empathetic': { 
+                creativity: 6, teachingMode: 7, proactivityLevel: 7, playfulness: 5, 
+                conciseness: 4, answerCompleteness: 8, hedgingIntensity: 8, empathyExpressiveness: 10 
+            },
+            'directive': { 
+                creativity: 4, teachingMode: 7, proactivityLevel: 9, playfulness: 3, 
+                conciseness: 8, answerCompleteness: 7, hedgingIntensity: 3, empathyExpressiveness: 4 
+            },
+            'collaborative': { 
+                creativity: 6, teachingMode: 7, proactivityLevel: 7, playfulness: 5, 
+                conciseness: 5, answerCompleteness: 8, hedgingIntensity: 6, empathyExpressiveness: 7 
+            },
+            'provocative': { 
+                creativity: 8, teachingMode: 6, proactivityLevel: 8, playfulness: 7, 
+                conciseness: 6, answerCompleteness: 7, hedgingIntensity: 4, empathyExpressiveness: 5 
+            }
+        };
+        return mappings[personality] || mappings['neutral'];
+    }
+
+    /**
+     * Apply personality lever values to the 8-axis radar (blends with existing values)
+     */
+    applyPersonalityToLevers(personality) {
+        const personalityValues = this.getPersonalityLeverValues(personality);
+        
+        // Blend personality values with current lever values (70% personality, 30% current)
+        // This allows personality to influence but not completely override manual adjustments
+        Object.keys(personalityValues).forEach(leverKey => {
+            const personalityValue = personalityValues[leverKey];
+            const currentValue = this.levers[leverKey] || 5;
+            const blendedValue = Math.round(personalityValue * 0.7 + currentValue * 0.3);
+            
+            this.levers[leverKey] = blendedValue;
+            
+            // Update slider if it exists
+            const slider = document.getElementById(`lever-${leverKey}`);
+            if (slider) {
+                slider.value = blendedValue;
+                const valueLabel = document.getElementById(`lever-value-${leverKey}`);
+                if (valueLabel) {
+                    valueLabel.textContent = blendedValue;
+                }
+            }
+        });
     }
 
     // Essential levers for Beginner mode (user-friendly, impactful)
@@ -92,6 +181,8 @@ class AITunerV6 {
             modelSelector: document.getElementById('model-selector'),
             personaSelector: document.getElementById('persona-selector'),
             controlsSection: document.getElementById('controls-section'),
+            eightAxisTuner: document.getElementById('eight-axis-tuner'),
+            advancedContainer: document.getElementById('advanced-container'),
             preview: document.getElementById('prompt-preview'),
             copyBtn: document.getElementById('copy-prompt'),
             savePresetBtn: document.getElementById('save-preset'),
@@ -126,39 +217,98 @@ class AITunerV6 {
             const card = document.createElement('div');
             card.className = 'model-card';
             card.dataset.model = modelKey;
+            
+            // Create unique canvas ID for this model's radar
+            const radarCanvasId = `model-radar-${modelKey}`;
+            
             card.innerHTML = `
-                <div class="model-name">${model.name}</div>
-                <div class="model-desc">${model.description}</div>
+                <div class="model-card-header">
+                    <div class="model-name">${model.name}</div>
+                    <div class="model-desc">${model.description}</div>
+                </div>
+                <div class="model-radar-preview">
+                    <canvas id="${radarCanvasId}"></canvas>
+                </div>
             `;
             card.addEventListener('click', () => this.selectModel(modelKey));
             this.elements.modelSelector.appendChild(card);
+            
+            // Draw radar preview for this model
+            setTimeout(() => {
+                if (typeof drawModelCardRadar === 'function') {
+                    drawModelCardRadar(modelKey, radarCanvasId, this.selectedModel === modelKey);
+                }
+            }, 100);
         });
     }
+
 
     renderPersonaSelector() {
         if (!this.elements.personaSelector || !window.PERSONAS_V6) return;
 
         this.elements.personaSelector.innerHTML = '';
         
-        // Show all personas together (no tabs - all are "hidden modes")
-        const personas = Object.entries(window.PERSONAS_V6);
+        // Use v4.0 if available, otherwise fall back to v3.0
+        const personasData = window.PERSONAS_V4 || window.PERSONAS_V6;
+        const personas = Object.entries(personasData);
         
-        // Sort: show most common first (therapist, truth-seeker, coder, etc.)
-        const sortedPersonas = personas.sort((a, b) => {
-            // Core personas first, then hidden modes (for logical grouping)
-            const typeA = a[1].type || 'core';
-            const typeB = b[1].type || 'core';
-            if (typeA === 'core' && typeB === 'hidden') return -1;
-            if (typeA === 'hidden' && typeB === 'core') return 1;
-            return 0;
+        // Filter personas based on selected model (v4.0 logic)
+        const availablePersonas = personas.filter(([personaKey, persona]) => {
+            // If no model selected, show all universal personas
+            if (!this.selectedModel) {
+                return persona.type === 'universal' || !persona.type;
+            }
+            
+            // v4.0 structure
+            if (persona.type === 'model-native') {
+                // Only show if it matches the selected model
+                return persona.sourceModel === this.selectedModel;
+            }
+            
+            if (persona.type === 'universal' || persona.type === 'adaptive') {
+                // Check compatibility
+                const bestModels = persona.bestModels || [];
+                const compatibleModels = persona.compatibleModels || [];
+                return bestModels.includes(this.selectedModel) || 
+                       compatibleModels.includes(this.selectedModel) ||
+                       bestModels.length === 0; // If no bestModels defined, show it
+            }
+            
+            // v3.0 fallback - show all
+            return true;
+        });
+        
+        // Sort: Universal first, then model-native, then by name
+        const sortedPersonas = availablePersonas.sort((a, b) => {
+            const personaA = a[1];
+            const personaB = b[1];
+            
+            // Type priority: universal > adaptive > model-native > core > hidden
+            const typeOrder = { 'universal': 1, 'adaptive': 2, 'model-native': 3, 'core': 4, 'hidden': 5 };
+            const typeA = typeOrder[personaA.type] || 6;
+            const typeB = typeOrder[personaB.type] || 6;
+            
+            if (typeA !== typeB) return typeA - typeB;
+            
+            // Then by name
+            return personaA.name.localeCompare(personaB.name);
         });
         
         sortedPersonas.forEach(([personaKey, persona]) => {
             const card = document.createElement('div');
             card.className = 'persona-card';
             card.dataset.persona = personaKey;
+            
+            // Add badge for model-native personas
+            let badge = '';
+            if (persona.type === 'model-native') {
+                badge = `<span class="persona-badge" title="Only available on ${persona.sourceModel}">${persona.sourceModel}</span>`;
+            } else if (persona.type === 'universal') {
+                badge = '<span class="persona-badge universal" title="Works on all models">Universal</span>';
+            }
+            
             card.innerHTML = `
-                <div class="persona-name">${persona.name}</div>
+                <div class="persona-name">${persona.name} ${badge}</div>
                 <div class="persona-desc">${persona.description}</div>
             `;
             card.addEventListener('click', () => this.selectPersona(personaKey));
@@ -166,7 +316,149 @@ class AITunerV6 {
         });
     }
 
+    /**
+     * Render the 8-axis fine tuner (Simple mode only)
+     */
+    renderEightAxisTuner() {
+        const container = document.getElementById('eight-axis-tuner');
+        if (!container || !window.LEVERS_V6) return;
+
+        const eightAxisLevers = [
+            'creativity',
+            'teachingMode',
+            'proactivityLevel',
+            'playfulness',
+            'conciseness',
+            'answerCompleteness',
+            'hedgingIntensity',
+            'empathyExpressiveness'
+        ];
+
+        container.innerHTML = '';
+        
+        eightAxisLevers.forEach(leverKey => {
+            const lever = window.LEVERS_V6[leverKey];
+            if (lever) {
+                const leverControl = this.createLeverControl({ key: leverKey, ...lever });
+                container.appendChild(leverControl);
+            }
+        });
+    }
+
+    /**
+     * Define which levers belong to which web tuner
+     */
+    getWebTunerLevers() {
+        return {
+            'persona-spine': [
+                'assertiveness',
+                'identitySourceLock',
+                'adaptivityToUserTone',
+                'creativity',
+                'playfulness',
+                'metaCommentary',
+                'teachingMode',
+                'proactivityLevel'
+            ],
+            'engagement': [
+                'conciseness',
+                'responseDirectness',
+                'answerCompleteness',
+                'speedOptimization',
+                'affirmationFrequency',
+                'empathyExpressiveness',
+                'safetyDisclaimers',
+                'structuralDensity'
+            ],
+            'truth': [
+                'hedgingIntensity',
+                'certaintyModulation',
+                'citationRigidity',
+                'transparency',
+                'technicality',
+                'toolAutonomy',
+                'answerCompleteness', // Using as placeholder for Memory
+                'proactivityLevel' // Using as placeholder for Goal Lock
+            ],
+            'delivery': [
+                'markdownStructure',
+                'strictFormatting',
+                'formattingMinimalism',
+                'formality',
+                'conciseness', // Using as placeholder for Termination
+                'responseDirectness', // Using as placeholder for Transitions
+                'proactivityLevel', // Using as placeholder for Questions
+                'proactivityLevel' // Using as placeholder for Suggestions
+            ]
+        };
+    }
+
+    /**
+     * Render web tuner sliders grouped by tuner
+     */
+    renderWebTunerSliders() {
+        const tunerLevers = this.getWebTunerLevers();
+        const allLevers = Object.keys(window.LEVERS_V6);
+        
+        Object.keys(tunerLevers).forEach(tunerKey => {
+            const container = document.getElementById(`web-tuner-sliders-${tunerKey}`);
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            tunerLevers[tunerKey].forEach(leverKey => {
+                const lever = window.LEVERS_V6[leverKey];
+                if (lever) {
+                    const leverControl = this.createLeverControl({ key: leverKey, ...lever });
+                    container.appendChild(leverControl);
+                }
+            });
+        });
+        
+        // Render remaining levers (not in 8-axis or web tuners)
+        const eightAxisLevers = ['creativity', 'teachingMode', 'proactivityLevel', 'playfulness', 'conciseness', 'answerCompleteness', 'hedgingIntensity', 'empathyExpressiveness'];
+        const allWebTunerLevers = new Set();
+        Object.values(tunerLevers).forEach(levers => {
+            levers.forEach(key => allWebTunerLevers.add(key));
+        });
+        
+        const otherLeversContainer = document.getElementById('advanced-other-levers');
+        if (otherLeversContainer) {
+            otherLeversContainer.innerHTML = '';
+            
+            const otherLevers = allLevers.filter(key => 
+                !eightAxisLevers.includes(key) && !allWebTunerLevers.has(key)
+            );
+            
+            if (otherLevers.length > 0) {
+                const categoryGroup = document.createElement('div');
+                categoryGroup.className = 'category-group-v6';
+                categoryGroup.innerHTML = '<h2>Additional Levers</h2>';
+                
+                const leversContainer = document.createElement('div');
+                leversContainer.className = 'levers-container';
+                
+                otherLevers.forEach(leverKey => {
+                    const lever = window.LEVERS_V6[leverKey];
+                    if (lever) {
+                        const leverControl = this.createLeverControl({ key: leverKey, ...lever });
+                        leversContainer.appendChild(leverControl);
+                    }
+                });
+                
+                categoryGroup.appendChild(leversContainer);
+                otherLeversContainer.appendChild(categoryGroup);
+            }
+        }
+    }
+
     renderLevers() {
+        // Always render both - Simple uses 8-axis tuner, Advanced uses web tuner sliders
+        this.renderEightAxisTuner();
+        this.renderWebTunerSliders();
+    }
+    
+    renderLeversOld() {
         if (!this.elements.controlsSection || !window.LEVERS_V6) return;
 
         // Filter levers based on mode
@@ -326,10 +618,75 @@ class AITunerV6 {
             });
         }
 
+        // Update model card radars to show selected state
+        this.updateModelCardRadars();
+        
+        // Re-render persona selector to show/hide based on model
+        this.renderPersonaSelector();
+        
+        // If a persona is selected, re-apply it with new model context
+        if (this.selectedPersona) {
+            const personasData = window.PERSONAS_V4 || window.PERSONAS_V6;
+            const persona = personasData[this.selectedPersona];
+            if (persona) {
+                // Check if persona is still compatible
+                if (persona.type === 'model-native' && persona.sourceModel !== modelKey) {
+                    // Persona no longer compatible, clear selection
+                    this.selectedPersona = null;
+                    document.querySelectorAll('.persona-card').forEach(card => {
+                        card.classList.remove('selected');
+                    });
+                } else {
+                    // Re-apply persona with new model
+                    this.applyPersonaV4(persona);
+                }
+            }
+        }
+
         this.generatePrompt();
+    }
+    
+    updateModelCardRadars() {
+        if (!window.AI_MODELS_V6 || typeof drawModelCardRadar !== 'function') return;
+        
+        // Update all model card radars with new selection state
+        Object.keys(window.AI_MODELS_V6).forEach(modelKey => {
+            const canvasId = `model-radar-${modelKey}`;
+            const isSelected = this.selectedModel === modelKey;
+            
+            // Update card visual state
+            const card = document.querySelector(`[data-model="${modelKey}"]`);
+            if (card) {
+                if (isSelected) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            }
+            
+            // Redraw radar with updated selection state
+            setTimeout(() => {
+                drawModelCardRadar(modelKey, canvasId, isSelected);
+            }, 50);
+        });
     }
 
     selectPersona(personaKey) {
+        const personasData = window.PERSONAS_V4 || window.PERSONAS_V6;
+        const persona = personasData[personaKey];
+        
+        if (!persona) {
+            console.warn(`Persona ${personaKey} not found`);
+            return;
+        }
+        
+        // Check if persona is model-native and we're on wrong model
+        if (persona.type === 'model-native' && persona.sourceModel !== this.selectedModel) {
+            console.warn(`${persona.name} only works on ${persona.sourceModel}`);
+            alert(`${persona.name} is only available when ${persona.sourceModel} is selected.`);
+            return;
+        }
+        
         this.selectedPersona = personaKey;
         
         // Update UI
@@ -338,20 +695,84 @@ class AITunerV6 {
         });
         document.querySelector(`[data-persona="${personaKey}"]`)?.classList.add('selected');
 
-        // Apply persona lever values
-        if (window.PERSONAS_V6[personaKey]) {
-            const personaLevers = window.PERSONAS_V6[personaKey].levers;
-            Object.keys(personaLevers).forEach(leverKey => {
-                this.levers[leverKey] = personaLevers[leverKey];
-                const slider = document.getElementById(`lever-${leverKey}`);
-                if (slider) {
-                    slider.value = personaLevers[leverKey];
-                    document.getElementById(`lever-value-${leverKey}`).textContent = personaLevers[leverKey];
+        // Apply persona with v4.0 blending logic
+        this.applyPersonaV4(persona);
+
+        this.generatePrompt();
+    }
+    
+    applyPersonaV4(persona) {
+        // Get base persona levers (v4.0 uses baseLevers, v3.0 uses levers)
+        const baseLevers = persona.baseLevers || persona.levers || {};
+        
+        // Get model defaults
+        const modelDefaults = this.selectedModel && window.AI_MODELS_V6[this.selectedModel] 
+            ? window.AI_MODELS_V6[this.selectedModel].defaults 
+            : {};
+        
+        // Get model-specific adaptation (v4.0 only)
+        const adaptation = persona.modelAdaptations && this.selectedModel
+            ? persona.modelAdaptations[this.selectedModel]
+            : null;
+        
+        // Apply persona with model awareness
+        Object.keys(baseLevers).forEach(leverKey => {
+            const personaValue = baseLevers[leverKey];
+            const modelValue = modelDefaults[leverKey] || 5; // Default to 5 if no model default
+            
+            let finalValue = personaValue;
+            
+            // v4.0 blending logic
+            if (adaptation) {
+                // Check if this lever should be preserved (model-specific)
+                if (adaptation.preserve && adaptation.preserve.includes(leverKey)) {
+                    finalValue = modelValue; // Keep model default
+                }
+                // Check if there's a model-specific override
+                else if (adaptation.overrides && adaptation.overrides[leverKey] !== undefined) {
+                    finalValue = adaptation.overrides[leverKey];
+                }
+                // Otherwise, blend persona with model default
+                else {
+                    const blendFactor = adaptation.blendFactor || 0.7; // Default 70% persona
+                    finalValue = Math.round(
+                        personaValue * blendFactor + modelValue * (1 - blendFactor)
+                    );
+                }
+            }
+            // v3.0 fallback - just use persona value
+            else {
+                finalValue = personaValue;
+            }
+            
+            // Apply the value
+            this.levers[leverKey] = finalValue;
+            const slider = document.getElementById(`lever-${leverKey}`);
+            if (slider) {
+                slider.value = finalValue;
+                const valueLabel = document.getElementById(`lever-value-${leverKey}`);
+                if (valueLabel) {
+                    valueLabel.textContent = finalValue;
+                }
+            }
+        });
+        
+        // Fill in any model defaults not covered by persona (v4.0 only)
+        if (persona.type === 'universal' || persona.type === 'adaptive') {
+            Object.keys(modelDefaults).forEach(leverKey => {
+                if (!baseLevers[leverKey] && this.levers[leverKey] === undefined) {
+                    this.levers[leverKey] = modelDefaults[leverKey];
+                    const slider = document.getElementById(`lever-${leverKey}`);
+                    if (slider) {
+                        slider.value = modelDefaults[leverKey];
+                        const valueLabel = document.getElementById(`lever-value-${leverKey}`);
+                        if (valueLabel) {
+                            valueLabel.textContent = modelDefaults[leverKey];
+                        }
+                    }
                 }
             });
         }
-
-        this.generatePrompt();
     }
 
     generatePrompt() {
@@ -370,11 +791,15 @@ class AITunerV6 {
             }
         }
 
-        // Update radar chart - ALWAYS use v6 version for v3.0
+        // Update all radar charts (both Simple and Advanced)
+        // Update main radar (Live Preview in Simple container)
         if (typeof drawRadarV6 === 'function') {
             drawRadarV6(this.levers);
-        } else {
-            console.error('drawRadarV6 function not found! Make sure radar.js is loaded.');
+        }
+        
+        // Update all 4 web tuner radars (Advanced container)
+        if (typeof drawAllWebTuners === 'function') {
+            drawAllWebTuners(this.levers);
         }
     }
 
@@ -579,6 +1004,16 @@ class AITunerV6 {
                 }
                 return;
             }
+
+            // Handle web tuner info buttons
+            const webTunerInfoBtn = e.target.closest('.web-tuner-info-btn');
+            if (webTunerInfoBtn && webTunerInfoBtn.dataset.tuner) {
+                e.preventDefault();
+                e.stopPropagation();
+                const tuner = webTunerInfoBtn.dataset.tuner;
+                this.showWebTunerInfo(tuner);
+                return;
+            }
         });
 
         // Dark mode toggle
@@ -601,6 +1036,8 @@ class AITunerV6 {
         if (this.elements.personalitySelect) {
             this.elements.personalitySelect.addEventListener('change', (e) => {
                 this.personality = e.target.value;
+                // Apply personality lever values to radar
+                this.applyPersonalityToLevers(this.personality);
                 this.generatePrompt();
             });
         }
@@ -632,6 +1069,16 @@ class AITunerV6 {
 
         // Load and render saved presets on initialization
         this.loadAndRenderSavedPresets();
+        
+        // Initialize Lucide icons after DOM is ready
+        setTimeout(() => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }, 200);
+        
+        // Initialize scroll animations
+        this.initScrollAnimations();
 
         // Reset buttons
         const resetModelBtn = document.getElementById('reset-model-btn');
@@ -655,7 +1102,12 @@ class AITunerV6 {
         this.mode = this.mode === 'beginner' ? 'advanced' : 'beginner';
         localStorage.setItem('aiTunerMode', this.mode);
         this.updateModeUI();
-        this.renderLevers(); // Re-render with filtered levers
+        // Re-render appropriate levers based on mode
+        if (this.mode === 'advanced') {
+            this.renderWebTunerSliders();
+        } else {
+            this.renderEightAxisTuner();
+        }
         this.generatePrompt();
     }
 
@@ -667,35 +1119,25 @@ class AITunerV6 {
     }
 
     updateModeUI() {
-        // Update body class for styling
+        // Update body class for styling (keep for compatibility)
         document.body.classList.remove('beginner-mode', 'advanced-mode');
         document.body.classList.add(`${this.mode}-mode`);
 
-        // Update toggle boxes - add active class to current mode
-        if (this.elements.modeBeginner) {
-            if (this.mode === 'beginner') {
-                this.elements.modeBeginner.classList.add('active');
-            } else {
-                this.elements.modeBeginner.classList.remove('active');
+        // Always show Advanced container (no toggle needed)
+        if (this.elements.advancedContainer) {
+            this.elements.advancedContainer.style.display = 'block';
+            // Render web tuner sliders
+            this.renderWebTunerSliders();
+            // Draw web tuners if we have levers
+            if (this.levers && typeof drawAllWebTuners === 'function') {
+                setTimeout(() => {
+                    drawAllWebTuners(this.levers);
+                }, 100);
             }
         }
-
-        if (this.elements.modeAdvanced) {
-            if (this.mode === 'advanced') {
-                this.elements.modeAdvanced.classList.add('active');
-            } else {
-                this.elements.modeAdvanced.classList.remove('active');
-            }
-        }
-
-        // Update subtitle
-        if (this.elements.modeSubtitle) {
-            if (this.mode === 'beginner') {
-                this.elements.modeSubtitle.textContent = 'Customize AI behavior with precision controls';
-            } else {
-                this.elements.modeSubtitle.textContent = 'Advanced mode — Full control over all 26 tuning levers';
-            }
-        }
+        
+        // Always render 8-axis tuner for Simple mode
+        this.renderEightAxisTuner();
     }
 
     copyPrompt() {
@@ -828,6 +1270,48 @@ class AITunerV6 {
         
         // Re-render saved presets
         this.loadAndRenderSavedPresets();
+    }
+
+    /**
+     * Initialize scroll-based animations for floating preview (radar + prompt)
+     */
+    initScrollAnimations() {
+        const simpleContainer = document.getElementById('simple-container');
+        const floatingPreviewWrapper = document.getElementById('floating-preview-wrapper');
+        
+        if (!simpleContainer || !floatingPreviewWrapper) return;
+        
+        let ticking = false;
+        const triggerOffset = 100; // Start shrinking after 100px scroll
+        
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const containerRect = simpleContainer.getBoundingClientRect();
+                    const scrollY = window.scrollY || window.pageYOffset;
+                    const containerTop = containerRect.top + scrollY;
+                    const scrollProgress = Math.max(0, Math.min(1, (scrollY - containerTop + triggerOffset) / 200));
+                    
+                    // Smoothly apply scale based on scroll progress
+                    if (scrollProgress > 0) {
+                        floatingPreviewWrapper.classList.add('scrolled');
+                        // Apply smooth scale transition
+                        const scale = 1 - (scrollProgress * 0.5); // Shrink to 50%
+                        floatingPreviewWrapper.style.transform = `scale(${scale})`;
+                        floatingPreviewWrapper.style.transformOrigin = 'top center';
+                    } else {
+                        floatingPreviewWrapper.classList.remove('scrolled');
+                        floatingPreviewWrapper.style.transform = 'scale(1)';
+                    }
+                    
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+        
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll(); // Initial check
     }
 
     loadAndRenderSavedPresets() {
@@ -1106,6 +1590,89 @@ class AITunerV6 {
         this.elements.infoOverlay.style.display = 'flex';
     }
 
+    showWebTunerInfo(tuner) {
+        if (!this.elements.infoOverlay || !this.elements.infoTitle || !this.elements.infoContent) return;
+
+        const tunerInfo = {
+            'persona-spine': {
+                title: 'Persona Spine',
+                content: `
+                    <h4>Persona Spine Web Tuner</h4>
+                    <p>The Persona Spine controls the core identity and personality traits of the AI:</p>
+                    <ul>
+                        <li><strong>Assertiveness</strong>: How decisive and direct the AI is</li>
+                        <li><strong>Identity Source Lock</strong>: Whether AI uses external quotes or self-definition</li>
+                        <li><strong>Adaptivity to User Tone</strong>: How much the AI mirrors your communication style</li>
+                        <li><strong>Creativity</strong>: Speculation and creative content generation</li>
+                        <li><strong>Playfulness</strong>: Use of humor, wit, and playful language</li>
+                        <li><strong>Meta-Commentary</strong>: Comments on its own reasoning or limitations</li>
+                        <li><strong>Teaching Mode</strong>: Explains concepts vs. assumes knowledge</li>
+                        <li><strong>Proactivity Level</strong>: Suggests follow-ups and drives conversation</li>
+                    </ul>
+                    <p>Adjust these levers to shape the AI's fundamental personality and approach to interaction.</p>
+                `
+            },
+            'engagement': {
+                title: 'Engagement Surface',
+                content: `
+                    <h4>Engagement Surface Web Tuner</h4>
+                    <p>The Engagement Surface controls how the AI connects and communicates with you:</p>
+                    <ul>
+                        <li><strong>Conciseness</strong>: Brevity vs. verbosity</li>
+                        <li><strong>Response Directness</strong>: Restates question or goes straight to answer</li>
+                        <li><strong>Answer Completeness</strong>: How thorough vs. brief the answer is</li>
+                        <li><strong>Speed Optimization</strong>: Prioritize speed vs. completeness</li>
+                        <li><strong>Affirmation Frequency</strong>: How often uses affirmations like "Great question!"</li>
+                        <li><strong>Empathy Expressiveness</strong>: How emotionally attuned and expressive</li>
+                        <li><strong>Safety Disclaimers</strong>: Frequency of safety disclaimers</li>
+                        <li><strong>Structural Density</strong>: How much formatting (tables, bullets) is used</li>
+                    </ul>
+                    <p>These levers affect the AI's communication style and engagement level.</p>
+                `
+            },
+            'truth': {
+                title: 'Truth Discipline',
+                content: `
+                    <h4>Truth Discipline Web Tuner</h4>
+                    <p>The Truth Discipline controls the AI's approach to accuracy, citations, and transparency:</p>
+                    <ul>
+                        <li><strong>Hedging Intensity</strong>: How much the AI qualifies statements with uncertainty</li>
+                        <li><strong>Certainty Modulation</strong>: How confidently the AI states facts</li>
+                        <li><strong>Citation Rigidity</strong>: How strictly sources must be cited</li>
+                        <li><strong>Transparency</strong>: How much the AI shows its reasoning process</li>
+                        <li><strong>Technicality</strong>: Level of technical jargon and complexity</li>
+                        <li><strong>Tool Autonomy</strong>: How independently the AI uses tools</li>
+                    </ul>
+                    <p>Adjust these to control how the AI handles facts, sources, and transparency.</p>
+                `
+            },
+            'delivery': {
+                title: 'Delivery System',
+                content: `
+                    <h4>Delivery System Web Tuner</h4>
+                    <p>The Delivery System controls formatting, structure, and presentation:</p>
+                    <ul>
+                        <li><strong>Markdown Structure</strong>: How rigidly markdown formatting is applied</li>
+                        <li><strong>Strict Formatting</strong>: Consistency in formatting style</li>
+                        <li><strong>Formatting Minimalism</strong>: Minimal vs. rich formatting</li>
+                        <li><strong>Formality</strong>: Level of formality in language and tone</li>
+                    </ul>
+                    <p>These levers affect how the AI structures and presents its responses.</p>
+                `
+            }
+        };
+
+        const info = tunerInfo[tuner];
+        if (!info) {
+            console.warn(`Unknown web tuner: ${tuner}`);
+            return;
+        }
+
+        this.elements.infoTitle.textContent = info.title;
+        this.elements.infoContent.innerHTML = info.content;
+        this.elements.infoOverlay.style.display = 'flex';
+    }
+
     showInfo(category) {
         if (!this.elements.infoOverlay || !this.elements.infoTitle || !this.elements.infoContent) return;
 
@@ -1224,6 +1791,45 @@ class AITunerV6 {
         }
         
         this.generatePrompt();
+    }
+
+    /**
+     * Reset all levers for a specific web tuner group to default (5)
+     * @param {string} tunerKey - The web tuner key ('persona-spine', 'engagement', 'truth', 'delivery')
+     */
+    resetWebTuner(tunerKey) {
+        const tunerLevers = this.getWebTunerLevers();
+        const leversToReset = tunerLevers[tunerKey];
+        
+        if (!leversToReset) {
+            console.warn(`Unknown web tuner key: ${tunerKey}`);
+            return;
+        }
+        
+        // Reset all levers in this group to 5 (default)
+        leversToReset.forEach(leverKey => {
+            this.levers[leverKey] = 5;
+            
+            // Update slider if it exists
+            const slider = document.getElementById(`lever-${leverKey}`);
+            if (slider) {
+                slider.value = 5;
+            }
+            
+            // Update value label if it exists
+            const valueLabel = document.getElementById(`lever-value-${leverKey}`);
+            if (valueLabel) {
+                valueLabel.textContent = 5;
+            }
+        });
+        
+        // Regenerate prompt to update radars
+        this.generatePrompt();
+        
+        // Re-initialize Lucide icons in case they weren't rendered yet
+        if (typeof lucide !== 'undefined') {
+            setTimeout(() => lucide.createIcons(), 100);
+        }
     }
 }
 
