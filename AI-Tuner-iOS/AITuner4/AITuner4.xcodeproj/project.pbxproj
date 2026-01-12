@@ -1,0 +1,472 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 63;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00064311EA59B8FCF3D1D745 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C4CA8FB5F8D9A6A3E04367 /* ContentView.swift */; };
+		04262D9654DD907C54327513 /* RadarPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1C0D2EC1C3C2CD81D5B88B /* RadarPopupView.swift */; };
+		07129483BB2A8EC20223D0BE /* PersonaGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F5DD399253A7B2A28B84BF /* PersonaGridView.swift */; };
+		1D63C9A5B1659A901050AD65 /* AITunerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA648565F46AE32E9BC71E9 /* AITunerEngine.swift */; };
+		293A2C7825E0E8C93D4B8AEF /* WhatIsAITunerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164CA666AF88777858935E8 /* WhatIsAITunerView.swift */; };
+		3EBA6C9F67A5C0C724E83595 /* Lever.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C630871B6F03F5AA9D2F1EE /* Lever.swift */; };
+		3EF9FCE922570D6CA4B3D0A8 /* Preset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC44539EA747826BF0247DE /* Preset.swift */; };
+		4008C15314FD966369D6A983 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 9733C181AD9A430D7045CE04 /* FirebaseAnalytics */; };
+		49A509CA47B0CD8B17DD684C /* AITuner4App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3293C9B0CAC58ED782BB29D6 /* AITuner4App.swift */; };
+		4BD244EBD31FAFFDFC816BAE /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9D5FAF7AACB63D207F52E5 /* AnalyticsManager.swift */; };
+		5B1D0C3CC5668ADE2E80F160 /* RadarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65720A99F045DA0F7EA7626A /* RadarChartView.swift */; };
+		5DEC929DEA7D68CE0A183B58 /* TutorialCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731FFD85CF76D6B7C7305CBB /* TutorialCoordinator.swift */; };
+		650DDD411EA58C1B04011893 /* TutorialGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DCEB6F4ABF4D1A6676488D0 /* TutorialGuideView.swift */; };
+		6EDF3139CB2E4D55067C509A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D740093AB8FDBCA94D8A7A18 /* Assets.xcassets */; };
+		77F7BB8E528D51CCAC7FCFCB /* PersonalitySelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07D4B3A493DF19C4BB5C33 /* PersonalitySelectorView.swift */; };
+		8817DE539F5B4F0803CCE8CC /* WelcomePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737A4EA7D360CD5220B3E32C /* WelcomePopupView.swift */; };
+		8D5BFCEB9B8E3BD9F4CBBCA4 /* Persona.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56CEFF0F8F31E2BCED1132E /* Persona.swift */; };
+		8E03DE140D2C379AD089B5D5 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A81FC2A8E6F69896BEF062 /* ErrorHandler.swift */; };
+		9362E86C91F447EBB8CF293E /* FloatingRadarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4859D10DB161CC5B459DBF7E /* FloatingRadarButton.swift */; };
+		A562364DBFAC2825C0AC357C /* InteractiveTutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623070D49D3DF872CB5FF857 /* InteractiveTutorialView.swift */; };
+		AC346D6701AF1F674EC58C52 /* AIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE8F82F9C969EC9E3453C5 /* AIModel.swift */; };
+		C7531C35602ECCFCC69EDD2C /* WebTunerSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B0EF83B773313F369431D2 /* WebTunerSectionView.swift */; };
+		E0C1E3422F158D48005C7115 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E0C1E3412F158D48005C7115 /* GoogleService-Info.plist */; };
+		F5722BE804F738D6B66F9442 /* LeverControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1453D84E9C4FEED779B404AC /* LeverControlsView.swift */; };
+		FDFCA71498F0F5AA42500ABB /* ModelGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B02D3B123B428EDF52363BC /* ModelGridView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		082A3803B937205D8C6CF3D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		1164CA666AF88777858935E8 /* WhatIsAITunerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatIsAITunerView.swift; sourceTree = "<group>"; };
+		1453D84E9C4FEED779B404AC /* LeverControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeverControlsView.swift; sourceTree = "<group>"; };
+		1B02D3B123B428EDF52363BC /* ModelGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelGridView.swift; sourceTree = "<group>"; };
+		1CC44539EA747826BF0247DE /* Preset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preset.swift; sourceTree = "<group>"; };
+		1DA648565F46AE32E9BC71E9 /* AITunerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITunerEngine.swift; sourceTree = "<group>"; };
+		29B0EF83B773313F369431D2 /* WebTunerSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebTunerSectionView.swift; sourceTree = "<group>"; };
+		3293C9B0CAC58ED782BB29D6 /* AITuner4App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITuner4App.swift; sourceTree = "<group>"; };
+		4859D10DB161CC5B459DBF7E /* FloatingRadarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingRadarButton.swift; sourceTree = "<group>"; };
+		623070D49D3DF872CB5FF857 /* InteractiveTutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveTutorialView.swift; sourceTree = "<group>"; };
+		65720A99F045DA0F7EA7626A /* RadarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarChartView.swift; sourceTree = "<group>"; };
+		66F5DD399253A7B2A28B84BF /* PersonaGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonaGridView.swift; sourceTree = "<group>"; };
+		6DCEB6F4ABF4D1A6676488D0 /* TutorialGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialGuideView.swift; sourceTree = "<group>"; };
+		731FFD85CF76D6B7C7305CBB /* TutorialCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialCoordinator.swift; sourceTree = "<group>"; };
+		737A4EA7D360CD5220B3E32C /* WelcomePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomePopupView.swift; sourceTree = "<group>"; };
+		8A1C0D2EC1C3C2CD81D5B88B /* RadarPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarPopupView.swift; sourceTree = "<group>"; };
+		9C630871B6F03F5AA9D2F1EE /* Lever.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lever.swift; sourceTree = "<group>"; };
+		A3A81FC2A8E6F69896BEF062 /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
+		AE07D4B3A493DF19C4BB5C33 /* PersonalitySelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalitySelectorView.swift; sourceTree = "<group>"; };
+		AE9D5FAF7AACB63D207F52E5 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
+		B6C4CA8FB5F8D9A6A3E04367 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BE7A5F90E9500E2EC78BA4F3 /* AITuner4.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AITuner4.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C56CEFF0F8F31E2BCED1132E /* Persona.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persona.swift; sourceTree = "<group>"; };
+		D740093AB8FDBCA94D8A7A18 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E0C1E3412F158D48005C7115 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		EFEE8F82F9C969EC9E3453C5 /* AIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModel.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2E70D1AF7F7B8B0618FDA3DB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4008C15314FD966369D6A983 /* FirebaseAnalytics in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2CD7FA9E64158A6B53EA791A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				EFEE8F82F9C969EC9E3453C5 /* AIModel.swift */,
+				9C630871B6F03F5AA9D2F1EE /* Lever.swift */,
+				C56CEFF0F8F31E2BCED1132E /* Persona.swift */,
+				1CC44539EA747826BF0247DE /* Preset.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		482B56646B8EF37C2FDAFA9C = {
+			isa = PBXGroup;
+			children = (
+				8683345DC3958FB800BBA704 /* AITuner4 */,
+				9051E7AFCFF28499110D0154 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		685E145DD698E83171C6A8FB /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				AE9D5FAF7AACB63D207F52E5 /* AnalyticsManager.swift */,
+				A3A81FC2A8E6F69896BEF062 /* ErrorHandler.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		8683345DC3958FB800BBA704 /* AITuner4 */ = {
+			isa = PBXGroup;
+			children = (
+				3293C9B0CAC58ED782BB29D6 /* AITuner4App.swift */,
+				C8AD8A376C5C77C969D7DDBD /* Engine */,
+				2CD7FA9E64158A6B53EA791A /* Models */,
+				EFD9DB5D7E850C11A3E69DC3 /* Resources */,
+				685E145DD698E83171C6A8FB /* Utilities */,
+				F5175B653F4447A95BDA15C9 /* Views */,
+			);
+			path = AITuner4;
+			sourceTree = "<group>";
+		};
+		9051E7AFCFF28499110D0154 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BE7A5F90E9500E2EC78BA4F3 /* AITuner4.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C8AD8A376C5C77C969D7DDBD /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				1DA648565F46AE32E9BC71E9 /* AITunerEngine.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		EFD9DB5D7E850C11A3E69DC3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E0C1E3412F158D48005C7115 /* GoogleService-Info.plist */,
+				D740093AB8FDBCA94D8A7A18 /* Assets.xcassets */,
+				082A3803B937205D8C6CF3D9 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		F5175B653F4447A95BDA15C9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B6C4CA8FB5F8D9A6A3E04367 /* ContentView.swift */,
+				4859D10DB161CC5B459DBF7E /* FloatingRadarButton.swift */,
+				623070D49D3DF872CB5FF857 /* InteractiveTutorialView.swift */,
+				1453D84E9C4FEED779B404AC /* LeverControlsView.swift */,
+				1B02D3B123B428EDF52363BC /* ModelGridView.swift */,
+				66F5DD399253A7B2A28B84BF /* PersonaGridView.swift */,
+				AE07D4B3A493DF19C4BB5C33 /* PersonalitySelectorView.swift */,
+				65720A99F045DA0F7EA7626A /* RadarChartView.swift */,
+				8A1C0D2EC1C3C2CD81D5B88B /* RadarPopupView.swift */,
+				731FFD85CF76D6B7C7305CBB /* TutorialCoordinator.swift */,
+				6DCEB6F4ABF4D1A6676488D0 /* TutorialGuideView.swift */,
+				29B0EF83B773313F369431D2 /* WebTunerSectionView.swift */,
+				737A4EA7D360CD5220B3E32C /* WelcomePopupView.swift */,
+				1164CA666AF88777858935E8 /* WhatIsAITunerView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2205008712D071144C691FD3 /* AITuner4 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50B354A986D962332B721CD5 /* Build configuration list for PBXNativeTarget "AITuner4" */;
+			buildPhases = (
+				A24EBBC4220CA4DB9820E1CD /* Sources */,
+				F1803BF58CE96F6B5C1042E9 /* Resources */,
+				2E70D1AF7F7B8B0618FDA3DB /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AITuner4;
+			packageProductDependencies = (
+				9733C181AD9A430D7045CE04 /* FirebaseAnalytics */,
+			);
+			productName = AITuner4;
+			productReference = BE7A5F90E9500E2EC78BA4F3 /* AITuner4.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		89603F52170B54729668C3C0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1400;
+			};
+			buildConfigurationList = DCC8C7C2E42CA6E1910DF724 /* Build configuration list for PBXProject "AITuner4" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 482B56646B8EF37C2FDAFA9C;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D2172E56D9286CCE0FEDB95C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2205008712D071144C691FD3 /* AITuner4 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F1803BF58CE96F6B5C1042E9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6EDF3139CB2E4D55067C509A /* Assets.xcassets in Resources */,
+				E0C1E3422F158D48005C7115 /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A24EBBC4220CA4DB9820E1CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AC346D6701AF1F674EC58C52 /* AIModel.swift in Sources */,
+				49A509CA47B0CD8B17DD684C /* AITuner4App.swift in Sources */,
+				1D63C9A5B1659A901050AD65 /* AITunerEngine.swift in Sources */,
+				4BD244EBD31FAFFDFC816BAE /* AnalyticsManager.swift in Sources */,
+				00064311EA59B8FCF3D1D745 /* ContentView.swift in Sources */,
+				8E03DE140D2C379AD089B5D5 /* ErrorHandler.swift in Sources */,
+				9362E86C91F447EBB8CF293E /* FloatingRadarButton.swift in Sources */,
+				A562364DBFAC2825C0AC357C /* InteractiveTutorialView.swift in Sources */,
+				3EBA6C9F67A5C0C724E83595 /* Lever.swift in Sources */,
+				F5722BE804F738D6B66F9442 /* LeverControlsView.swift in Sources */,
+				FDFCA71498F0F5AA42500ABB /* ModelGridView.swift in Sources */,
+				8D5BFCEB9B8E3BD9F4CBBCA4 /* Persona.swift in Sources */,
+				07129483BB2A8EC20223D0BE /* PersonaGridView.swift in Sources */,
+				77F7BB8E528D51CCAC7FCFCB /* PersonalitySelectorView.swift in Sources */,
+				3EF9FCE922570D6CA4B3D0A8 /* Preset.swift in Sources */,
+				5B1D0C3CC5668ADE2E80F160 /* RadarChartView.swift in Sources */,
+				04262D9654DD907C54327513 /* RadarPopupView.swift in Sources */,
+				5DEC929DEA7D68CE0A183B58 /* TutorialCoordinator.swift in Sources */,
+				650DDD411EA58C1B04011893 /* TutorialGuideView.swift in Sources */,
+				C7531C35602ECCFCC69EDD2C /* WebTunerSectionView.swift in Sources */,
+				8817DE539F5B4F0803CCE8CC /* WelcomePopupView.swift in Sources */,
+				293A2C7825E0E8C93D4B8AEF /* WhatIsAITunerView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0C64CDB443559AF11D0A87EB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		113D154ACAE10B2A8450F4E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = AITuner4/Resources/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.aituner.AITuner4;
+				PRODUCT_NAME = AITuner4;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.7;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		6309F2A280A8EB0141F24634 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D31C84C2602A66D950CC9E20 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = AITuner4/Resources/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.aituner.AITuner4;
+				PRODUCT_NAME = AITuner4;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.7;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		50B354A986D962332B721CD5 /* Build configuration list for PBXNativeTarget "AITuner4" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D31C84C2602A66D950CC9E20 /* Debug */,
+				113D154ACAE10B2A8450F4E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DCC8C7C2E42CA6E1910DF724 /* Build configuration list for PBXProject "AITuner4" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6309F2A280A8EB0141F24634 /* Debug */,
+				0C64CDB443559AF11D0A87EB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D2172E56D9286CCE0FEDB95C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9733C181AD9A430D7045CE04 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D2172E56D9286CCE0FEDB95C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 89603F52170B54729668C3C0 /* Project object */;
+}

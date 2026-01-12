@@ -83,3 +83,28 @@ _quarantine/
 # Private, untracked content
 _private/
 PERSONA-REPORT-v6.0.md
+
+# Xcode
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+!*.xcworkspace/xcshareddata/
+*.xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+
+# XcodeGen
+*.xcodeproj/xcuserdata/
