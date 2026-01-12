@@ -644,6 +644,11 @@ class AITunerV6 {
         }
 
         this.generatePrompt();
+        
+        // Track model selection
+        if (window.aiTunerAnalytics) {
+            window.aiTunerAnalytics.trackModelSelected(modelKey);
+        }
     }
     
     updateModelCardRadars() {
@@ -1039,6 +1044,11 @@ class AITunerV6 {
                 // Apply personality lever values to radar
                 this.applyPersonalityToLevers(this.personality);
                 this.generatePrompt();
+                
+                // Track personality change
+                if (window.aiTunerAnalytics) {
+                    window.aiTunerAnalytics.trackPersonalityChanged(this.personality);
+                }
             });
         }
 
@@ -1109,6 +1119,11 @@ class AITunerV6 {
             this.renderEightAxisTuner();
         }
         this.generatePrompt();
+        
+        // Track mode/tab switch
+        if (window.aiTunerAnalytics) {
+            window.aiTunerAnalytics.trackTabSwitch(this.mode);
+        }
     }
 
     loadModePreference() {
@@ -1150,6 +1165,11 @@ class AITunerV6 {
                     this.elements.copyBtn.textContent = originalText;
                 }, 2000);
             }
+            
+            // Track copy action
+            if (window.aiTunerAnalytics) {
+                window.aiTunerAnalytics.trackCopyPrompt();
+            }
         });
     }
 
@@ -1160,9 +1180,14 @@ class AITunerV6 {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `ai-tuner-v3-config-${Date.now()}.json`;
+        a.download = `ai-tuner-v3-config.json`;
         a.click();
         URL.revokeObjectURL(url);
+        
+        // Track download
+        if (window.aiTunerAnalytics) {
+            window.aiTunerAnalytics.trackDownload('json');
+        }
     }
 
     downloadMarkdown() {
@@ -1171,9 +1196,14 @@ class AITunerV6 {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `ai-tuner-v3-prompt-${Date.now()}.md`;
+        a.download = `ai-tuner-v3-prompt.md`;
         a.click();
         URL.revokeObjectURL(url);
+        
+        // Track download
+        if (window.aiTunerAnalytics) {
+            window.aiTunerAnalytics.trackDownload('markdown');
+        }
     }
 
     uploadConfig(event) {
@@ -1185,6 +1215,11 @@ class AITunerV6 {
             try {
                 const config = JSON.parse(e.target.result);
                 this.loadConfig(config);
+                
+                // Track upload
+                if (window.aiTunerAnalytics) {
+                    window.aiTunerAnalytics.trackUpload();
+                }
             } catch (error) {
                 alert('Error loading config: ' + error.message);
             }
@@ -1250,8 +1285,7 @@ class AITunerV6 {
         // Save new preset
         presets[presetKey] = {
             name: finalName,
-            settings: settings,
-            createdAt: new Date().toISOString()
+            settings: settings
         };
         
         // Save to localStorage
@@ -1270,6 +1304,11 @@ class AITunerV6 {
         
         // Re-render saved presets
         this.loadAndRenderSavedPresets();
+        
+        // Track preset save
+        if (window.aiTunerAnalytics) {
+            window.aiTunerAnalytics.trackPresetUsed(finalName);
+        }
     }
 
     /**
@@ -1409,6 +1448,11 @@ class AITunerV6 {
                     }
                 });
                 this.generatePrompt();
+                
+                // Track preset load
+                if (window.aiTunerAnalytics) {
+                    window.aiTunerAnalytics.trackPresetUsed(preset.name || presetKey);
+                }
             }
         } catch (e) {
             console.error('Error loading preset:', e);
