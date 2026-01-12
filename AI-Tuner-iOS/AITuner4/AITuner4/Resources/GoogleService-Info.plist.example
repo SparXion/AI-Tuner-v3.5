@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyDDcucHMdhUJUlFRmsMtCEGsWS53anJl1I</string>
+	<string>YOUR_API_KEY_HERE</string>
 	<key>GCM_SENDER_ID</key>
-	<string>885637993898</string>
+	<string>YOUR_SENDER_ID_HERE</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.aituner.AITuner4</string>
 	<key>PROJECT_ID</key>
-	<string>ai-tuner-c3266</string>
+	<string>YOUR_PROJECT_ID_HERE</string>
 	<key>STORAGE_BUCKET</key>
-	<string>ai-tuner-c3266.firebasestorage.app</string>
+	<string>YOUR_STORAGE_BUCKET_HERE</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:885637993898:ios:dbe9e3bd636e0d615747d3</string>
+	<string>YOUR_GOOGLE_APP_ID_HERE</string>
 </dict>
 </plist>
