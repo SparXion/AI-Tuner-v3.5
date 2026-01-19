@@ -66,8 +66,8 @@
                         <i data-lucide="sparkles"></i>
                     </div>
                     <div class="quick-start-content">
-                        <h3>1. Choose</h3>
-                        <p>Select your AI model</p>
+                        <h3>Select</h3>
+                        <p>Choose model</p>
                     </div>
                 </div>
                 <div class="quick-start-arrow">
@@ -78,8 +78,8 @@
                         <i data-lucide="sliders-horizontal"></i>
                     </div>
                     <div class="quick-start-content">
-                        <h3>2. Tune</h3>
-                        <p>Adjust sliders to customize</p>
+                        <h3>Tune</h3>
+                        <p>Adjust sliders</p>
                     </div>
                 </div>
                 <div class="quick-start-arrow">
@@ -90,8 +90,8 @@
                         <i data-lucide="clipboard-copy"></i>
                     </div>
                     <div class="quick-start-content">
-                        <h3>3. Copy</h3>
-                        <p>Copy the generated prompt</p>
+                        <h3>Copy</h3>
+                        <p>Copy prompt</p>
                     </div>
                 </div>
             </div>
@@ -175,7 +175,7 @@
                             <h3>Generated Prompt</h3>
                             <div class="prompt-preview-wrapper">
                                 <div class="prompt-preview" id="prompt-preview">
-                                    <p class="placeholder-text">← Start by selecting a model (Step 1)</p>
+                                    <p class="placeholder-text">Select a model in Step 1 to generate your prompt</p>
                                 </div>
                                 <div class="actions">
                                     <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
@@ -190,14 +190,31 @@
                     </div>
                 </div>
 
-                <!-- Personality & Approach Selector (moved here) -->
-                <div class="personality-selector-section" style="margin: 30px 0; padding: 20px; border: 2px solid #000; border-radius: 4px; background: #fff;">
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                        <h2 style="margin: 0; font-size: 1.3rem; font-weight: 500;">Personality & Approach</h2>
+                <!-- Step 1: Starting Model -->
+                <div class="workflow-step step-1">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-title">
+                            <h2>
+                                <span>Starting Model <span class="info-btn-step" data-step="1">ℹ</span></span>
+                                <button id="reset-model-btn" class="reset-tuner-btn" title="Reset Model Selection">Reset</button>
+                            </h2>
+                            <p class="step-description">Select a model to see where it starts. Each model is different.</p>
+                        </div>
+                    </div>
+                    <div class="model-grid" id="model-selector">
+                        <!-- Models will be populated by JavaScript with embedded radar previews -->
+                    </div>
+                </div>
+
+                <!-- Personality & Approach Selector (positioned between Step 1 and Step 2, matching iOS layout) -->
+                <div class="personality-selector-section" style="margin: 30px 0; padding: 20px; background: #f5f5f5; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <h2 style="margin: 0; font-size: 1.1rem; font-weight: 600;">Personality & Approach</h2>
                         <span class="info-btn-step" data-step="personality" style="cursor: pointer; width: 20px; height: 20px; border-radius: 50%; border: 1px solid #000; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; background: #000; color: #fff;">ℹ</span>
                     </div>
-                    <label for="personality-select" style="display: block; margin-bottom: 8px; font-weight: 500; color: #666;">Intellectual Style</label>
-                    <select id="personality-select" class="personality-select">
+                    <label for="personality-select" style="display: block; margin-bottom: 8px; font-weight: 500; color: #666; font-size: 0.9rem;">Intellectual Style</label>
+                    <select id="personality-select" class="personality-select" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; background: #fff; font-size: 0.95rem;">
                         <option value="neutral">Neutral - Objective, balanced</option>
                         <option value="socratic">Socratic - Question-driven, probing</option>
                         <option value="curious">Curious - Inquisitive, exploratory</option>
@@ -213,30 +230,56 @@
                     </select>
                 </div>
 
-                <!-- Step 1: Choose Model -->
-                <div class="workflow-step step-1">
-                    <div class="step-header">
-                        <div class="step-number">1</div>
-                        <div class="step-title">
-                            <h2>
-                                <span>Choose Your AI Model <span class="info-btn-step" data-step="1">ℹ</span></span>
-                                <button id="reset-model-btn" class="reset-tuner-btn" title="Reset Model Selection">Reset</button>
-                            </h2>
-                            <p class="step-description">Select the AI platform you want to tune. This sets the foundation with the model's default persona.</p>
-                        </div>
-                    </div>
-                    <div class="model-grid" id="model-selector">
-                        <!-- Models will be populated by JavaScript with embedded radar previews -->
-                    </div>
-                </div>
-
-                <!-- Step 2: Apply Hidden Mode -->
+                <!-- Step 2: Fine-Tune Your Settings -->
                 <div class="workflow-step step-2">
                     <div class="step-header">
                         <div class="step-number">2</div>
                         <div class="step-title">
+                            <h2>Fine-Tune Your Settings <span class="info-btn-step" data-step="2">ℹ</span></h2>
+                            <p class="step-description">Adjust these 8 key levers to customize the AI's behavior.</p>
+                        </div>
+                    </div>
+                    <div class="eight-axis-tuner" id="eight-axis-tuner">
+                        <!-- 8 sliders will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Step 3: Copy Your Prompt -->
+                <div class="workflow-step step-3">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div class="step-title">
+                            <h2>Copy Your Prompt <span class="info-btn-step" data-step="3">ℹ</span></h2>
+                            <p class="step-description">Copy the generated prompt to use with your AI model.</p>
+                        </div>
+                    </div>
+                    <div class="prompt-step-container" style="margin-top: 20px;">
+                        <div class="prompt-container-box" style="border: 2px solid #000; border-radius: 4px; background: #fff;">
+                            <h3>Generated Prompt</h3>
+                            <div class="prompt-preview-wrapper">
+                                <div class="prompt-preview" id="prompt-preview-step3" style="min-height: 200px; max-height: 400px; overflow-y: auto;">
+                                    <p class="placeholder-text">Select a model in Step 1 to generate your prompt</p>
+                                </div>
+                                <div class="actions">
+                                    <button id="copy-prompt-step3" class="btn btn-primary">Copy Prompt</button>
+                                    <button id="save-preset-step3" class="btn btn-secondary">Save Preset</button>
+                                    <button id="download-json-step3" class="btn btn-secondary">Download Config</button>
+                                    <button id="download-markdown-step3" class="btn btn-secondary">Download Doc</button>
+                                    <button id="upload-config-step3" class="btn btn-secondary">Upload Config</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Apply a Persona (Optional) -->
+                <div class="workflow-step step-4">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <div class="step-title">
                             <h2>
-                                <span>Apply Hidden Mode <span class="info-btn-step" data-step="2">ℹ</span></span>
+                                <span>Apply a Persona <span class="info-btn-step" data-step="4">ℹ</span></span>
+                                <span style="font-size: 0.9rem; font-weight: normal; color: #666;">(Optional)</span>
                                 <button id="reset-persona-btn" class="reset-tuner-btn" title="Reset Persona Selection">Reset</button>
                             </h2>
                             <p class="step-description">Apply a specialized persona from the secret menu. These override the default model persona.</p>
@@ -244,20 +287,6 @@
                     </div>
                     <div class="persona-grid" id="persona-selector">
                         <!-- Personas will be populated by JavaScript -->
-                    </div>
-                </div>
-
-                <!-- Step 3: 8-Axis Fine Tuner (Simple Mode Only) -->
-                <div class="workflow-step step-3">
-                    <div class="step-header">
-                        <div class="step-number">3</div>
-                        <div class="step-title">
-                            <h2>Fine-Tune Your Settings <span class="info-btn-step" data-step="3">ℹ</span></h2>
-                            <p class="step-description">Adjust these 8 key levers to customize the AI's behavior.</p>
-                        </div>
-                    </div>
-                    <div class="eight-axis-tuner" id="eight-axis-tuner">
-                        <!-- 8 sliders will be populated by JavaScript -->
                     </div>
                 </div>
             </div>
@@ -421,10 +450,13 @@
     <script src="js/data/v4.0-personas.js?v=4.0.0"></script>
     <script src="radar.js?v=4.0.0"></script>
     <!-- Analytics -->
+    <!-- Plausible Analytics - PAUSED (uncomment when ready to use) -->
+    <!--
     <script defer data-domain="aituner.app" src="https://plausible.io/js/script.js"></script>
     <script>
         window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) };
     </script>
+    -->
     <script src="analytics.js?v=4.0.0"></script>
     <script src="js/core/v3.0-engine.js?v=4.0.0"></script>
     <script>

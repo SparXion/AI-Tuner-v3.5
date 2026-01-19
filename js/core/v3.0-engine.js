@@ -782,6 +782,8 @@ class AITunerV6 {
 
     generatePrompt() {
         const prompt = this.buildPrompt();
+        
+        // Update floating preview (if exists)
         if (this.elements.preview) {
             // Remove placeholder if it exists
             const placeholder = this.elements.preview.querySelector('.placeholder-text');
@@ -792,7 +794,22 @@ class AITunerV6 {
             if (prompt && prompt.trim()) {
                 this.elements.preview.textContent = prompt;
             } else {
-                this.elements.preview.innerHTML = '<p class="placeholder-text">← Start by selecting a model (Step 1)</p>';
+                this.elements.preview.innerHTML = '<p class="placeholder-text">Select a model in Step 1 to generate your prompt</p>';
+            }
+        }
+        
+        // Update Step 3 prompt preview (if exists)
+        const step3Preview = document.getElementById('prompt-preview-step3');
+        if (step3Preview) {
+            const placeholder = step3Preview.querySelector('.placeholder-text');
+            if (placeholder) {
+                placeholder.remove();
+            }
+            
+            if (prompt && prompt.trim()) {
+                step3Preview.textContent = prompt;
+            } else {
+                step3Preview.innerHTML = '<p class="placeholder-text">Select a model in Step 1 to generate your prompt</p>';
             }
         }
 
@@ -971,6 +988,32 @@ class AITunerV6 {
 
         if (this.elements.fileInput) {
             this.elements.fileInput.addEventListener('change', (e) => this.uploadConfig(e));
+        }
+
+        // Step 3 buttons (Copy Your Prompt step)
+        const copyBtnStep3 = document.getElementById('copy-prompt-step3');
+        if (copyBtnStep3) {
+            copyBtnStep3.addEventListener('click', () => this.copyPrompt());
+        }
+
+        const savePresetBtnStep3 = document.getElementById('save-preset-step3');
+        if (savePresetBtnStep3) {
+            savePresetBtnStep3.addEventListener('click', () => this.savePreset());
+        }
+
+        const downloadJsonBtnStep3 = document.getElementById('download-json-step3');
+        if (downloadJsonBtnStep3) {
+            downloadJsonBtnStep3.addEventListener('click', () => this.downloadJSON());
+        }
+
+        const downloadMarkdownBtnStep3 = document.getElementById('download-markdown-step3');
+        if (downloadMarkdownBtnStep3) {
+            downloadMarkdownBtnStep3.addEventListener('click', () => this.downloadMarkdown());
+        }
+
+        const uploadBtnStep3 = document.getElementById('upload-config-step3');
+        if (uploadBtnStep3) {
+            uploadBtnStep3.addEventListener('click', () => this.elements.fileInput?.click());
         }
 
         // Info overlay
