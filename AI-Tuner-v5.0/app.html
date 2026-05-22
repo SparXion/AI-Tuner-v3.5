@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tuner v5.0</title>
+    <link rel="stylesheet" href="css/visual-language.css">
+</head>
+<body class="aituner-dark">
+    <div id="session-restore-banner" class="session-restore-banner" style="display: none;" role="region" aria-label="Session restore">
+        <p id="session-restore-msg"></p>
+        <button type="button" class="session-continue" id="session-continue-btn">Continue</button>
+        <button type="button" class="session-fresh" id="session-fresh-btn">Start fresh</button>
+    </div>
+    
+    <button type="button" class="tier-badge" id="tier-badge" aria-haspopup="dialog" aria-label="My profile">My Profile</button>
+    
+    <!-- Home View -->
+    <div id="home-view" class="view-container">
+        <div class="container">
+            <div class="hero">
+                <h1>AI Tuner v5.0</h1>
+                <p>Understand, build, and decode AI behavior</p>
+            </div>
+            
+            <div class="home-model-entry">
+                <h2>I already use…</h2>
+                <div class="home-model-chips" id="home-model-chips" aria-label="Open model room"></div>
+            </div>
+            
+            <div class="entry-points" id="entry-points">
+                <div class="entry-card" data-entry="guided">
+                    <h2>New to this? Start here.</h2>
+                    <p>Still figuring out what AI can do for you — this is the place to start.</p>
+                </div>
+                
+                <div class="entry-card" data-entry="discovery">
+                    <h2>I want to explore the models</h2>
+                    <p>Compare AI voices side-by-side</p>
+                </div>
+                
+                <div class="entry-card" data-entry="decoder">
+                    <h2>I found a prompt I want to understand</h2>
+                    <p>Paste any prompt, see what levers it's pulling</p>
+                </div>
+                
+                <div class="entry-card" data-entry="full">
+                    <h2>I know what I'm doing</h2>
+                    <p>Skip to full controls — all 16 levers</p>
+                </div>
+
+                <div class="entry-card entry-card-setup" id="entry-card-project-setup" data-entry="project-setup">
+                    <h2>Set up a project</h2>
+                    <p>Configure your full working environment — knowledge, behavior, and memory — before you start.</p>
+                    <div id="home-setup-picker" class="home-setup-picker" aria-hidden="true">
+                        <p class="home-setup-picker-label">Pick a model first — Setup is tailored to each platform.</p>
+                        <p id="home-setup-preferred-note" class="home-setup-preferred-note" hidden></p>
+                        <div class="home-model-chips" id="home-setup-model-chips" aria-label="Choose model for project setup"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Onboarding View -->
+    <div id="onboarding-view" class="view-container" style="display: none;">
+        <div id="onboarding-container"></div>
+    </div>
+    
+    <!-- Discovery View -->
+    <div id="discovery-view" class="view-container" style="display: none;">
+        <div class="container">
+            <button type="button" class="view-back-btn" onclick="router.showHome()">← Back to Home</button>
+            <p class="narrative-label">Show me how they're different</p>
+            <h1>Compare models side by side</h1>
+            <p class="decoder-view-sub">Pick based on what you see — same question, different voices.</p>
+            <div id="discovery-ui-root"></div>
+        </div>
+    </div>
+    
+    <!-- Decoder View -->
+    <div id="decoder-view" class="view-container" style="display: none;">
+        <div class="container">
+            <button type="button" class="view-back-btn" onclick="router.showHome()">← Back to Home</button>
+            <header class="decoder-view-header">
+                <p class="narrative-label">Decode a prompt</p>
+                <h1>Found a prompt somewhere?<br>Let's see what it's doing.</h1>
+                <p class="decoder-view-sub">Paste any system prompt — from Reddit, Instagram, anywhere. We'll show you which levers it's pulling and why it works.</p>
+            </header>
+            <div id="decoder-ui-root"></div>
+        </div>
+    </div>
+    
+    <!-- Model room (Stop 5) -->
+    <div id="model-room-view" class="view-container model-room-view" style="display: none;" aria-label="Model room"></div>
+    
+    <!-- Load data files -->
+    <script src="src/data/v5-levers.js"></script>
+    <script src="src/data/v5-models.js"></script>
+    <script src="src/data/v5-personas.js"></script>
+    <script src="src/data/v5-model-rooms.js"></script>
+    
+    <!-- Load core engine -->
+    <script src="src/core/prompt-synthesis-v9.js"></script>
+    <script src="src/core/prompt-preview-ui.js"></script>
+    <script src="src/core/v5-engine.js"></script>
+    <script src="src/core/radar.js"></script>
+    <script src="src/core/slider-controls.js"></script>
+    <script src="src/core/prompt-display.js"></script>
+    <script src="src/core/persona-selector.js"></script>
+    
+    <script src="src/decoder/lever-mapper.js"></script>
+    <script src="src/decoder/prompt-decoder.js"></script>
+    <script src="src/decoder/decoder-ui.js"></script>
+    <script src="src/discovery/discovery-ui.js"></script>
+    <script src="src/profile/user-profile.js"></script>
+    <script src="src/profile/session-restore.js"></script>
+    <script src="src/profile/profile-panel.js"></script>
+    
+    <!-- Load onboarding -->
+    <script src="src/onboarding/onboarding-state.js"></script>
+    <script src="src/onboarding/model-samples.js"></script>
+    <script src="src/onboarding/onboarding-ui.js"></script>
+    <script src="src/ui/save-config-dialog.js"></script>
+    <script src="src/setup/knowledge-template.js"></script>
+    <script src="src/setup/instructions-formatter.js"></script>
+    <script src="src/setup/memory-guide.js"></script>
+    <script src="src/rooms/setup-ui.js"></script>
+    <script src="src/rooms/room-ui.js"></script>
+    
+    <!-- Initialize app -->
+    <script>
+        (function syncAitunerTheme() {
+            function applyTheme() {
+                var stored = '';
+                try { stored = localStorage.getItem('aituner-theme'); } catch (e) {}
+                document.body.classList.remove('aituner-dark', 'aituner-light');
+                if (stored === 'light') {
+                    document.body.classList.add('aituner-light');
+                } else {
+                    document.body.classList.add('aituner-dark');
+                }
+            }
+            applyTheme();
+        })();
+
+        window.addEventListener('storage', function (e) {
+            if (e.key === 'aituner_user' && e.newValue === null) {
+                window.location.reload();
+            }
+        });
+
+        /**
+         * AITuner v5.0 - Router (inlined to reduce script tags)
+         */
+        class Router {
+            constructor() {
+                this.currentView = 'home';
+                this.views = {};
+            }
+            registerView(name, containerId, showFn) {
+                this.views[name] = {
+                    containerId,
+                    showFn,
+                    container: document.getElementById(containerId)
+                };
+            }
+            navigateTo(viewName) {
+                Object.values(this.views).forEach((view) => {
+                    if (view.container) {
+                        view.container.style.display = 'none';
+                    }
+                });
+                const targetView = this.views[viewName];
+                if (targetView) {
+                    if (targetView.container) {
+                        targetView.container.style.display = 'block';
+                    }
+                    if (targetView.showFn) {
+                        targetView.showFn();
+                    }
+                    this.currentView = viewName;
+                }
+            }
+            showHome() {
+                this.navigateTo('home');
+            }
+        }
+
+        // Initialize engine
+        const engine = new AITunerV5();
+        const onboardingState = new OnboardingState(engine);
+        const userProfile = new UserProfile(engine);
+        const sessionRestore = new SessionRestore(engine);
+        const profilePanel = new ProfilePanel(engine, onboardingState, userProfile, {
+            onOpenSavedConfig: function (configId) {
+                if (typeof window.openModelRoom === 'function') {
+                    window.openModelRoom({ configId: configId, initialTab: 'tune' });
+                }
+            },
+            onNavigateToDiscovery: function () {
+                if (window.router) {
+                    window.router.navigateTo('discovery');
+                }
+            }
+        });
+        window.modelRoomUI = new ModelRoomUI(engine, userProfile);
+        
+        if (typeof initModelRoomRegistry === 'function') {
+            initModelRoomRegistry().catch(function () {});
+        }
+        
+        const _engineCopyPrompt = engine.copyPrompt.bind(engine);
+        engine.copyPrompt = function () {
+            userProfile.recordPromptBuilt();
+            return _engineCopyPrompt();
+        };
+        
+        // Initialize router
+        const router = new Router();
+        window.router = router; // Make globally accessible
+        
+        const _routerNavigate = router.navigateTo.bind(router);
+
+        // Register views before any history API use (popstate can fire early on some browsers)
+        router.registerView('home', 'home-view', () => {
+            // Home view is already visible
+        });
+
+        router.registerView('onboarding', 'onboarding-view', () => {
+            const container = document.getElementById('onboarding-container');
+            if (container) {
+                if (!window.onboardingUI) {
+                    window.onboardingUI = new OnboardingUI(engine, onboardingState);
+                }
+                window.onboardingUI.initialize('onboarding-container');
+            }
+        });
+
+        router.registerView('discovery', 'discovery-view', () => {
+            if (!window.discoveryUI) {
+                window.discoveryUI = new DiscoveryUI(engine);
+            }
+            window.discoveryUI.mount('discovery-ui-root');
+        });
+
+        router.registerView('decoder', 'decoder-view', () => {
+            if (!window.decoderUI) {
+                window.decoderUI = new DecoderUI(engine, userProfile);
+            }
+            window.decoderUI.mount('decoder-ui-root');
+        });
+
+        router.registerView('model-room', 'model-room-view', () => {
+            const opts = window._pendingRoomOpts || {};
+            window._pendingRoomOpts = {};
+            if (window.modelRoomUI) {
+                window.modelRoomUI.open(opts);
+            }
+        });
+
+        /** History: state + visible URL hash so the browser back/forward stack is real */
+        var AITUNER_HISTORY = 'aituner_v5';
+
+        function buildHistoryState(viewName) {
+            var state = { _: AITUNER_HISTORY, v: viewName };
+            if (viewName === 'model-room') {
+                var pending = window._pendingRoomOpts || {};
+                if (pending.modelId || pending.configId) {
+                    state.room = {
+                        modelId: pending.modelId,
+                        initialTab: pending.initialTab,
+                        configId: pending.configId
+                    };
+                }
+            }
+            return state;
+        }
+
+        function roomForUrl(viewName) {
+            if (viewName !== 'model-room') {
+                return null;
+            }
+            var pending = window._pendingRoomOpts || {};
+            if (pending.modelId || pending.configId) {
+                return {
+                    modelId: pending.modelId,
+                    initialTab: pending.initialTab,
+                    configId: pending.configId
+                };
+            }
+            return null;
+        }
+
+        function buildHistoryUrl(viewName, room) {
+            var base = window.location.pathname + window.location.search;
+            if (viewName === 'model-room' && room && room.modelId) {
+                var tab = room.initialTab || 'entry';
+                return base + '#/aituner/room/' + encodeURIComponent(room.modelId) + '/' + encodeURIComponent(tab);
+            }
+            return base + '#/aituner/v/' + encodeURIComponent(viewName);
+        }
+
+        function parseRouteFromLocation() {
+            var raw = (window.location.hash || '').replace(/^#/, '');
+            if (!raw || raw.indexOf('aituner/') !== 0) {
+                return null;
+            }
+            var parts = raw.split('/').filter(function (p) {
+                return p.length > 0;
+            });
+            if (parts.length < 2 || parts[0] !== 'aituner') {
+                return null;
+            }
+            if (parts[1] === 'v' && parts[2]) {
+                var v = decodeURIComponent(parts[2]);
+                if (
+                    v === 'home' ||
+                    v === 'onboarding' ||
+                    v === 'discovery' ||
+                    v === 'decoder' ||
+                    v === 'model-room'
+                ) {
+                    return { v: v };
+                }
+            }
+            if (parts[1] === 'room' && parts[2]) {
+                return {
+                    v: 'model-room',
+                    room: {
+                        modelId: decodeURIComponent(parts[2]),
+                        initialTab: parts[3] ? decodeURIComponent(parts[3]) : 'entry'
+                    }
+                };
+            }
+            return null;
+        }
+
+        function isAppHistoryState(st) {
+            return st && st._ === AITUNER_HISTORY && typeof st.v === 'string';
+        }
+
+        function applyRouteFromPopstate(evState) {
+            var st = evState;
+            if (!isAppHistoryState(st)) {
+                var fromHash = parseRouteFromLocation();
+                if (fromHash) {
+                    if (fromHash.v === 'model-room' && fromHash.room) {
+                        window._pendingRoomOpts = {
+                            modelId: fromHash.room.modelId,
+                            initialTab: fromHash.room.initialTab
+                        };
+                    } else {
+                        window._pendingRoomOpts = {};
+                    }
+                    router.navigateTo(fromHash.v, { fromPopstate: true });
+                    return;
+                }
+                window._pendingRoomOpts = {};
+                router.navigateTo('home', { fromPopstate: true });
+                return;
+            }
+            if (st.v === 'model-room' && st.room) {
+                window._pendingRoomOpts = {
+                    modelId: st.room.modelId,
+                    initialTab: st.room.initialTab,
+                    configId: st.room.configId
+                };
+            } else {
+                window._pendingRoomOpts = {};
+            }
+            router.navigateTo(st.v, { fromPopstate: true });
+        }
+
+        router.navigateTo = function (viewName, options) {
+            options = options || {};
+            var fromPopstate = options.fromPopstate === true;
+            if (!fromPopstate) {
+                var shouldPush =
+                    viewName !== router.currentView ||
+                    viewName === 'model-room';
+                if (shouldPush) {
+                    try {
+                        var st = buildHistoryState(viewName);
+                        var urlRoom = roomForUrl(viewName);
+                        var url = buildHistoryUrl(viewName, urlRoom || (st.room ? st.room : null));
+                        if (options.replace) {
+                            history.replaceState(st, '', url);
+                        } else {
+                            history.pushState(st, '', url);
+                        }
+                    } catch (histErr) {
+                        console.warn('AITuner: history update failed', histErr);
+                    }
+                }
+            }
+            if (router.currentView === 'decoder' && window.decoderUI) {
+                window.decoderUI.teardown();
+            }
+            if (router.currentView === 'model-room' && window.modelRoomUI) {
+                window.modelRoomUI.teardown();
+            }
+            _routerNavigate(viewName);
+            updateTierBadge();
+        };
+
+        window.addEventListener('popstate', function (ev) {
+            applyRouteFromPopstate(ev.state);
+        });
+
+        (function aitunerSeedHistory() {
+            var parsed = parseRouteFromLocation();
+            try {
+                if (parsed && parsed.v === 'home') {
+                    history.replaceState(
+                        { _: AITUNER_HISTORY, v: 'home' },
+                        '',
+                        buildHistoryUrl('home', null)
+                    );
+                    return;
+                }
+                if (parsed) {
+                    if (parsed.v === 'model-room' && parsed.room) {
+                        window._pendingRoomOpts = {
+                            modelId: parsed.room.modelId,
+                            initialTab: parsed.room.initialTab
+                        };
+                    } else {
+                        window._pendingRoomOpts = {};
+                    }
+                    router.navigateTo(parsed.v, { replace: true });
+                } else {
+                    history.replaceState(
+                        { _: AITUNER_HISTORY, v: 'home' },
+                        '',
+                        buildHistoryUrl('home', null)
+                    );
+                }
+            } catch (e) {
+                /* ignore */
+            }
+        })();
+        
+        // Update tier badge
+        function updateTierBadge() {
+            const badge = document.getElementById('tier-badge');
+            if (badge) {
+                const tierInfo = onboardingState.getTierBadge();
+                badge.textContent = tierInfo.name;
+                badge.setAttribute('data-tier', tierInfo.tier);
+            }
+        }
+        
+        function routeSessionContinue() {
+            if (engine.user.skip_onboarding) {
+                window.location.href = 'architect.html';
+                return;
+            }
+            if (engine.session && engine.session.model_id) {
+                if (!engine.session.entry_point) {
+                    engine.setEntryPoint('guided');
+                }
+                router.navigateTo('onboarding');
+                setTimeout(function () {
+                    if (window.onboardingUI) {
+                        if (engine.user.tier >= 2) {
+                            window.onboardingUI.showScreen(8);
+                        } else {
+                            window.onboardingUI.showScreen(7);
+                        }
+                    }
+                }, 0);
+                return;
+            }
+            router.navigateTo('home');
+        }
+        
+        function hideSessionBanner() {
+            const bar = document.getElementById('session-restore-banner');
+            if (bar) {
+                bar.style.display = 'none';
+            }
+        }
+        
+        function showSessionBannerIfNeeded() {
+            if (!sessionRestore.canRestore()) {
+                return;
+            }
+            const prompt = sessionRestore.getRestorePrompt();
+            if (!prompt) {
+                return;
+            }
+            const bar = document.getElementById('session-restore-banner');
+            const msg = document.getElementById('session-restore-msg');
+            if (bar && msg) {
+                msg.textContent = prompt.message;
+                bar.style.display = 'flex';
+            }
+        }
+        
+        document.getElementById('session-continue-btn').addEventListener('click', function () {
+            hideSessionBanner();
+            routeSessionContinue();
+        });
+        
+        document.getElementById('session-fresh-btn').addEventListener('click', function () {
+            try {
+                localStorage.removeItem('aituner_session');
+            } catch (e) {
+                /* ignore */
+            }
+            engine.createNewSession('guided');
+            engine.initializeLevers();
+            engine.generatePrompt();
+            hideSessionBanner();
+            router.navigateTo('home');
+        });
+        
+        document.getElementById('tier-badge').addEventListener('click', function (e) {
+            e.stopPropagation();
+            profilePanel.open();
+        });
+        
+        updateTierBadge();
+        showSessionBannerIfNeeded();
+        
+        function escHtmlUnsafe(s) {
+            const d = document.createElement('div');
+            d.textContent = s == null ? '' : String(s);
+            return d.innerHTML;
+        }
+
+        (function initHomeModelChips() {
+            const wrap = document.getElementById('home-model-chips');
+            if (!wrap || !window.MODELS_V5) return;
+            wrap.innerHTML = Object.values(window.MODELS_V5)
+                .map(function (m) {
+                    return (
+                        '<button type="button" class="home-model-chip" data-model-id="' +
+                        escHtmlUnsafe(m.id) +
+                        '">' +
+                        escHtmlUnsafe(m.name) +
+                        '</button>'
+                    );
+                })
+                .join('');
+            wrap.querySelectorAll('.home-model-chip').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    sessionStorage.removeItem('aituner_room_resume_onboarding');
+                    if (typeof window.openModelRoom === 'function') {
+                        window.openModelRoom({ modelId: btn.getAttribute('data-model-id'), initialTab: 'entry' });
+                    }
+                });
+            });
+        })();
+
+        (function initHomeSetupProjectCard() {
+            const picker = document.getElementById('home-setup-picker');
+            const wrap = document.getElementById('home-setup-model-chips');
+            const setupCard = document.getElementById('entry-card-project-setup');
+            const prefNote = document.getElementById('home-setup-preferred-note');
+            if (!wrap || !setupCard || !window.MODELS_V5) {
+                return;
+            }
+
+            const preferredId =
+                userProfile &&
+                userProfile.profile &&
+                userProfile.profile.preferred_model &&
+                window.MODELS_V5[userProfile.profile.preferred_model]
+                    ? userProfile.profile.preferred_model
+                    : null;
+
+            wrap.innerHTML = Object.values(window.MODELS_V5)
+                .map(function (m) {
+                    var isPref = preferredId && m.id === preferredId;
+                    var cls =
+                        'home-model-chip home-setup-model-chip' +
+                        (isPref ? ' home-model-chip-preferred' : '');
+                    return (
+                        '<button type="button" class="' +
+                        cls +
+                        '" data-model-id="' +
+                        escHtmlUnsafe(m.id) +
+                        '">' +
+                        escHtmlUnsafe(m.name) +
+                        '</button>'
+                    );
+                })
+                .join('');
+
+            if (preferredId && prefNote) {
+                var pm = window.MODELS_V5[preferredId];
+                prefNote.hidden = false;
+                prefNote.textContent =
+                    'Your preferred model is ' + pm.name + ' — it’s highlighted below. Tap any chip to open Setup.';
+            }
+
+            if (preferredId && picker) {
+                picker.classList.add('is-open');
+                picker.setAttribute('aria-hidden', 'false');
+            }
+
+            wrap.querySelectorAll('.home-setup-model-chip').forEach(function (btn) {
+                btn.addEventListener('click', function (ev) {
+                    ev.stopPropagation();
+                    sessionStorage.removeItem('aituner_room_resume_onboarding');
+                    var mid = btn.getAttribute('data-model-id');
+                    if (typeof window.openModelRoom === 'function') {
+                        window.openModelRoom({ modelId: mid, initialTab: 'setup' });
+                    }
+                });
+            });
+
+            setupCard.addEventListener('click', function (ev) {
+                if (ev.target.closest && ev.target.closest('.home-setup-model-chip')) {
+                    return;
+                }
+                if (!picker) {
+                    return;
+                }
+                var open = !picker.classList.contains('is-open');
+                picker.classList.toggle('is-open', open);
+                picker.setAttribute('aria-hidden', open ? 'false' : 'true');
+            });
+        })();
+
+        document.querySelectorAll('#entry-points .entry-card:not([data-entry="project-setup"])').forEach((card) => {
+            card.addEventListener('click', () => {
+                const entryPoint = card.getAttribute('data-entry');
+
+                switch (entryPoint) {
+                    case 'guided':
+                        router.navigateTo('onboarding');
+                        break;
+                    case 'discovery':
+                        router.navigateTo('discovery');
+                        break;
+                    case 'decoder':
+                        router.navigateTo('decoder');
+                        break;
+                    case 'full':
+                        onboardingState.skipToFullControls();
+                        engine.setEntryPoint('manual');
+                        window.location.href = 'architect.html';
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

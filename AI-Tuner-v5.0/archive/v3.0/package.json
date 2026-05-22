@@ -1,0 +1,21 @@
+{
+  "name": "ai-tuner",
+  "version": "3.0.0",
+  "description": "AI Tuner - Free web tool to visually tune AI behavior. Elite = Web + Cursor sidebar + Auto-Apply",
+  "scripts": {
+    "test": "echo 'Web app tests not yet implemented'",
+    "test:e2e": "cypress run",
+    "test:all": "npm run test && npm run test:e2e",
+    "test:watch": "cypress open"
+  },
+  "devDependencies": {
+    "cypress": "^13.0.0",
+    "jest": "^29.0.0"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SparXion/AI-Tuner.git"
+  }
+}
+

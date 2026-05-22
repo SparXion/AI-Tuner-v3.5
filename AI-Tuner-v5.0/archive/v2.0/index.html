@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tuner - Customize AI Response Style</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="text-align: right; margin-bottom: 20px; display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+                <a href="index-v6.html" class="btn btn-secondary" style="font-size: 1rem; padding: 8px 16px; text-decoration: none; display: inline-block;">
+                    Try v3.0 (Beta)
+                </a>
+                <button id="dark-mode-toggle" class="btn btn-secondary" onclick="window.aiTuner.toggleDarkMode()" style="font-size: 1rem; padding: 8px 16px;">
+                    <span id="dark-mode-text">Dark Mode</span>
+                </button>
+            </div>
+            <h1>AI Tuner v2.0</h1>
+            <p class="subtitle">Customize AI response style with precision controls</p>
+        </header>
+
+        <main>
+            <div class="main-content">
+                <!-- Left Column: Controls -->
+                <div class="controls-section">
+                    <div class="category-group">
+                        <h2>Personality & Approach <span class="info-btn" data-category="personality">ℹ</span></h2>
+                        <div class="control-item">
+                            <label for="personality">Intellectual Style</label>
+                            <select id="personality">
+                                <option value="neutral">Neutral - Objective, balanced</option>
+                                <option value="socratic">Socratic - Question-driven, probing</option>
+                                <option value="curious">Curious - Inquisitive, exploratory</option>
+                                <option value="analytical">Analytical - Methodical, systematic</option>
+                                <option value="sarcastic">Sarcastic - Sharp, ironic</option>
+                                <option value="witty">Witty - Clever, humorous</option>
+                                <option value="charming">Charming - Engaging, charismatic</option>
+                                <option value="sympathetic">Sympathetic - Understanding, supportive</option>
+                                <option value="empathetic">Empathetic - Emotionally attuned</option>
+                                <option value="directive">Directive - Authoritative, commanding</option>
+                                <option value="collaborative">Collaborative - Cooperative, inclusive</option>
+                                <option value="provocative">Provocative - Challenging, thought-provoking</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="category-group">
+                    <h2>Cognition & Logic <span class="info-btn" data-category="cognition">ℹ</span></h2>
+                    <div class="control-item">
+                        <label for="bluntness">Bluntness Level</label>
+                        <select id="bluntness">
+                            <option value="low">Low - Gentle, diplomatic</option>
+                            <option value="medium">Medium - Direct but polite</option>
+                            <option value="high">High - Blunt, directive</option>
+                            <option value="absolute">Absolute - Maximum bluntness</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-item">
+                        <label for="termination">Response Termination</label>
+                        <select id="termination">
+                            <option value="natural">Natural - Allow closures</option>
+                            <option value="abrupt">Abrupt - End immediately after info</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="cognitive-tier">Cognitive Targeting</label>
+                        <select id="cognitive-tier">
+                            <option value="surface">Surface - Conversational level</option>
+                            <option value="deep">Deep - Underlying logic layers</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="category-group">
+                    <h2>Affect & Tone <span class="info-btn" data-category="affect">ℹ</span></h2>
+                    <div class="control-item">
+                        <label for="tone-neutrality">Tone Neutrality</label>
+                        <select id="tone-neutrality">
+                            <option value="full">Full - Completely neutral</option>
+                            <option value="partial">Partial - Mild emotional expression</option>
+                            <option value="off">Off - Allow full emotional range</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="sentiment-boost">Sentiment Boosting</label>
+                        <select id="sentiment-boost">
+                            <option value="disabled">Disabled - No engagement tactics</option>
+                            <option value="selective">Selective - Minimal positivity</option>
+                            <option value="enabled">Enabled - Full enthusiasm</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="mirror-avoidance">User Mirroring</label>
+                        <select id="mirror-avoidance">
+                            <option value="strict">Strict - Never mirror user style</option>
+                            <option value="selective">Selective - Occasional mirroring</option>
+                            <option value="allowed">Allowed - Mirror user affect</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="category-group">
+                    <h2>Interface & Flow <span class="info-btn" data-category="interface">ℹ</span></h2>
+                    <div class="control-item">
+                        <label for="element-elimination">Element Elimination</label>
+                        <select id="element-elimination">
+                            <option value="none">None - Allow all elements</option>
+                            <option value="minimal">Minimal - Remove emojis only</option>
+                            <option value="moderate">Moderate - Remove emojis + filler</option>
+                            <option value="strict">Strict - Remove emojis, filler, hype</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="transitions">Conversational Transitions</label>
+                        <select id="transitions">
+                            <option value="allowed">Allowed - Smooth transitions</option>
+                            <option value="minimal">Minimal - Basic transitions only</option>
+                            <option value="prohibited">Prohibited - No transitions</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="call-to-action">Call-to-Action</label>
+                        <select id="call-to-action">
+                            <option value="allowed">Allowed - Encourage follow-up</option>
+                            <option value="minimal">Minimal - Subtle invitations</option>
+                            <option value="prohibited">Prohibited - No CTAs</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="category-group">
+                    <h2>Behavioral Controls <span class="info-btn" data-category="behavioral">ℹ</span></h2>
+                    <div class="control-item">
+                        <label for="questions">Questions</label>
+                        <select id="questions">
+                            <option value="allowed">Allowed - Can ask questions</option>
+                            <option value="selective">Selective - Limited questions</option>
+                            <option value="prohibited">Prohibited - No questions</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="suggestions">Suggestions</label>
+                        <select id="suggestions">
+                            <option value="allowed">Allowed - Can make suggestions</option>
+                            <option value="minimal">Minimal - Essential suggestions only</option>
+                            <option value="prohibited">Prohibited - No suggestions</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="motivational">Motivational Content</label>
+                        <select id="motivational">
+                            <option value="allowed">Allowed - Encouraging content</option>
+                            <option value="minimal">Minimal - Basic encouragement</option>
+                            <option value="prohibited">Prohibited - No motivation</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="category-group">
+                    <h2>Goal Orientation <span class="info-btn" data-category="goals">ℹ</span></h2>
+                    <div class="control-item">
+                        <label for="continuation-bias">Continuation Bias</label>
+                        <select id="continuation-bias">
+                            <option value="allowed">Allowed - Encourage dialogue</option>
+                            <option value="suppressed">Suppressed - Limit continuation</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="self-sufficiency">Self-Sufficiency Goal</label>
+                        <select id="self-sufficiency">
+                            <option value="collaborative">Collaborative - Work together</option>
+                            <option value="independent">Independent - Foster autonomy</option>
+                            <option value="obsolescence">Obsolescence - Make AI unnecessary</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="assumption-strength">User Assumption</label>
+                        <select id="assumption-strength">
+                            <option value="weak">Weak - Assume user needs guidance</option>
+                            <option value="medium">Medium - Balanced assumptions</option>
+                            <option value="strong">Strong - Assume high user perception</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="cosmic-perspective">Cosmic Perspective</label>
+                        <select id="cosmic-perspective">
+                            <option value="disabled">Disabled - No cosmic perspective</option>
+                            <option value="subtle">Subtle - Occasional cosmic references</option>
+                            <option value="overt">Overt - Explicit cosmic framing</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="category-group">
+                    <h2>Truth & Epistemology <span class="info-btn" data-category="truth">ℹ</span></h2>
+                    <div class="control-item">
+                        <label for="truth-prioritization">Truth Prioritization</label>
+                        <select id="truth-prioritization">
+                            <option value="comfort-first">Comfort-First</option>
+                            <option value="balanced">Balanced</option>
+                            <option value="truth-first">Truth-First</option>
+                            <option value="absolute">Absolute</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="source-transparency">Source Transparency</label>
+                        <select id="source-transparency">
+                            <option value="disabled">Disabled</option>
+                            <option value="selective">Selective</option>
+                            <option value="enabled">Enabled</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="uncertainty-admission">Uncertainty Admission</label>
+                        <select id="uncertainty-admission">
+                            <option value="prohibited">Prohibited</option>
+                            <option value="allowed">Allowed</option>
+                            <option value="required">Required</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="category-group">
+                    <h2>Humor & Meta <span class="info-btn" data-category="humor">ℹ</span></h2>
+                    <div class="control-item">
+                        <label for="self-referential-humor">Self-Referential Humor</label>
+                        <select id="self-referential-humor">
+                            <option value="disabled">Disabled</option>
+                            <option value="selective">Selective</option>
+                            <option value="allowed">Allowed</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="absurdism-injection">Absurdism Injection</label>
+                        <select id="absurdism-injection">
+                            <option value="disabled">Disabled</option>
+                            <option value="selective">Selective</option>
+                            <option value="enabled">Enabled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="category-group">
+                    <h2>Knowledge & Tool Use <span class="info-btn" data-category="knowledge">ℹ</span></h2>
+                    <div class="control-item">
+                        <label for="tool-invocation">Tool Invocation</label>
+                        <select id="tool-invocation">
+                            <option value="prohibited">Prohibited</option>
+                            <option value="on-request">On-Request</option>
+                            <option value="proactive">Proactive</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item">
+                        <label for="real-time-data-bias">Real-Time Data Bias</label>
+                        <select id="real-time-data-bias">
+                            <option value="disabled">Disabled</option>
+                            <option value="static-cutoff">Static-Cutoff</option>
+                            <option value="enabled">Enabled</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+                <!-- Right Column: Radar & Prompt -->
+                <div class="preview-section">
+                    <!-- Radar Container Box -->
+                    <div class="radar-container-box">
+                        <!-- Radar Chart -->
+                        <div class="radar-wrapper">
+                            <canvas id="radarCanvas"></canvas>
+                        </div>
+                        
+                        <!-- Model Controls Stacked -->
+                        <div class="model-controls-stacked">
+                            <div class="model-control-item">
+                                <label for="modelSelect">
+                                    Load Model Persona:
+                                    <span class="info-btn" data-category="load-model" title="Click for info">ℹ</span>
+                                </label>
+                                <div class="model-control-row">
+                                    <select id="modelSelect">
+                                        <option value="">— Select Model —</option>
+                                    </select>
+                                    <button onclick="loadModelPersona()" class="btn btn-secondary">Load</button>
+                                </div>
+                            </div>
+                            
+                            <div class="model-control-item">
+                                <label for="blendSelect">
+                                    Blend Model Personas:
+                                    <span class="info-btn" data-category="blend-models" title="Click for info">ℹ</span>
+                                </label>
+                                <div class="model-control-row">
+                                    <select id="blendSelect">
+                                        <option value="">— Select Model —</option>
+                                    </select>
+                                    <button onclick="blendWithModel()" class="btn btn-secondary">Blend</button>
+                                </div>
+                                <div class="blend-slider-container">
+                                    <input type="range" id="blendSlider" min="0" max="100" value="50">
+                                    <span id="blendPct">50%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Prompt Container Box -->
+                    <div class="prompt-container-box">
+                        <h2>Generated Prompt</h2>
+                        <div class="prompt-preview" id="prompt-preview">
+                            Select options above to generate your custom AI prompt...
+                        </div>
+                        <div class="actions">
+                            <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
+                            <button id="download-json" class="btn btn-secondary">Download Config</button>
+                            <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
+                            <button id="upload-config" class="btn btn-secondary">Upload Config</button>
+                            <button id="save-preset" class="btn btn-secondary">Save Preset</button>
+                            <button id="load-preset" class="btn btn-secondary">Load Preset</button>
+                            <button id="analytics-btn" class="btn btn-analytics" onclick="window.aiTuner.toggleAnalyticsDashboard()" style="display: none;"><i data-lucide="bar-chart-3"></i> Analytics</button>
+                        </div>
+                        
+                        <input type="file" id="file-input" accept=".json" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="presets-section">
+                <h2>Quick Presets</h2>
+                <div class="preset-buttons">
+                    <button class="preset-btn" data-preset="absolute">Absolute Mode</button>
+                    <button class="preset-btn" data-preset="friendly">Friendly Assistant</button>
+                    <button class="preset-btn" data-preset="analytical">Analytical Expert</button>
+                    <button class="preset-btn" data-preset="minimal">Minimal Responder</button>
+                    <button class="preset-btn" data-preset="creative">Creative Collaborator</button>
+                    <button class="preset-btn" data-preset="coding">Coding Assistant</button>
+                    <button class="preset-btn" data-preset="standard">Standard Reset</button>
+                    <button class="preset-btn" data-preset="factoryReset">Factory Default</button>
+                </div>
+                <h2 style="margin-top: 30px; font-size: 18px; color: #666;">AI Reset Presets</h2>
+                <div class="preset-buttons">
+                    <div class="preset-dropdown-container">
+                        <select id="claude-dropdown" class="preset-dropdown" onchange="if(this.value) { window.aiTuner.applyPreset(this.value); this.value=''; }">
+                            <option value="">Reset Claude...</option>
+                            <option value="claudeReset">Reset Claude (Default)</option>
+                            <option value="claudeOpusReset">Reset Claude Opus</option>
+                            <option value="claudeSonnetReset">Reset Claude Sonnet</option>
+                            <option value="claudeHaikuReset">Reset Claude Haiku</option>
+                        </select>
+                    </div>
+                    <div class="preset-dropdown-container">
+                        <select id="gemini-dropdown" class="preset-dropdown" onchange="if(this.value) { window.aiTuner.applyPreset(this.value); this.value=''; }">
+                            <option value="">Reset Gemini...</option>
+                            <option value="geminiReset">Reset Gemini (Default)</option>
+                            <option value="geminiProReset">Reset Gemini Pro</option>
+                            <option value="geminiUltraReset">Reset Gemini Ultra</option>
+                            <option value="geminiNanoReset">Reset Gemini Nano</option>
+                        </select>
+                    </div>
+                    <div class="preset-dropdown-container">
+                        <select id="chatgpt-dropdown" class="preset-dropdown" onchange="if(this.value) { window.aiTuner.applyPreset(this.value); this.value=''; }">
+                            <option value="">Reset ChatGPT...</option>
+                            <option value="chatgptReset">Reset ChatGPT (Default)</option>
+                            <option value="gpt4Reset">Reset GPT-4</option>
+                            <option value="gpt35Reset">Reset GPT-3.5</option>
+                        </select>
+                    </div>
+                    <button class="preset-btn" data-preset="grokReset">Reset Grok</button>
+                    <button class="preset-btn" data-preset="cursorAgentReset">Reset Cursor Agent</button>
+                </div>
+                
+                <h2 style="margin-top: 30px; font-size: 18px; color: #666;">Saved Presets</h2>
+                <div id="saved-presets-container" class="preset-buttons">
+                    <p style="color: #999; font-style: italic; margin: 10px 0;">No saved presets yet. Use "Save Preset" to create one.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Info Popup Overlay -->
+    <div id="info-overlay" class="info-overlay">
+        <div class="info-popup">
+            <div class="info-header">
+                <h3 id="info-title">Category Information</h3>
+                <button id="info-close" class="info-close">×</button>
+            </div>
+            <div class="info-content" id="info-content">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Dashboard (Hidden) -->
+    <div id="analytics-dashboard" style="display: none; position: fixed; top: 10px; right: 10px; background: white; border: 2px solid #000; padding: 20px; z-index: 3000; max-width: 500px; max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px;">
+            <h3 style="margin: 0;">📊 Analytics Dashboard</h3>
+            <button onclick="document.getElementById('analytics-dashboard').style.display='none'" style="background: none; border: none; font-size: 24px; cursor: pointer; padding: 0; width: 30px; height: 30px; line-height: 1;">×</button>
+        </div>
+        <div id="analytics-summary" style="margin-bottom: 15px;"></div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="window.aiTunerAnalytics.exportData()" class="btn btn-primary" style="flex: 1; min-width: 120px;">📥 Export JSON</button>
+            <button onclick="window.aiTunerAnalytics.exportCSV()" class="btn btn-secondary" style="flex: 1; min-width: 120px;">📊 Export CSV</button>
+        </div>
+        <div style="margin-top: 10px; font-size: 0.8em; color: #666; text-align: center;">
+            <p><em>Analytics data collected with user consent</em></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="presets.js"></script>
+    <script src="radar.js"></script>
+    <script src="analytics.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Initialize model selectors
+        document.addEventListener("DOMContentLoaded", () => {
+            const sel1 = document.getElementById("modelSelect");
+            const sel2 = document.getElementById("blendSelect");
+            
+            if (sel1 && sel2 && window.MODEL_PERSONAS) {
+                Object.keys(window.MODEL_PERSONAS).forEach(m => {
+                    sel1.add(new Option(m, m));
+                    sel2.add(new Option(m, m));
+                });
+            }
+            
+            const blendSlider = document.getElementById("blendSlider");
+            const blendPct = document.getElementById("blendPct");
+            if (blendSlider && blendPct) {
+                blendSlider.addEventListener("input", e => {
+                    blendPct.textContent = e.target.value + "%";
+                });
+            }
+            
+            // Show/hide analytics button based on admin mode
+            if (window.aiTunerAnalytics && window.aiTunerAnalytics.isAdminMode) {
+                const analyticsBtn = document.getElementById("analytics-btn");
+                if (analyticsBtn && window.aiTunerAnalytics.isAdminMode()) {
+                    analyticsBtn.style.display = "";
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+
+<style>
+#erd svg { width: 100%; }
+#erd svg.erDiagram .divider path { stroke-opacity: 0.5; }
+#erd svg.erDiagram .row-rect-odd path,
+#erd svg.erDiagram .row-rect-odd rect,
+#erd svg.erDiagram .row-rect-even path,
+#erd svg.erDiagram .row-rect-even rect { stroke: none !important; }
+</style>
+<div id="erd" style="padding: 1rem 0;"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+    primaryColor: dark ? '#2a2856' : '#EEEDFE',
+    primaryBorderColor: dark ? '#534AB7' : '#534AB7',
+    primaryTextColor: dark ? '#CECBF6' : '#26215C',
+    secondaryColor: dark ? '#063328' : '#E1F5EE',
+    secondaryBorderColor: dark ? '#0F6E56' : '#0F6E56',
+    tertiaryColor: dark ? '#3d1f0a' : '#FAEEDA',
+    tertiaryBorderColor: dark ? '#854F0B' : '#854F0B',
+  },
+});
+const diagram = `erDiagram
+  USER {
+    string id PK
+    int tier
+    bool has_copied
+    bool has_tuned
+    bool skip_onboarding
+  }
+  PROFILE {
+    string user_id FK
+    string preferred_model
+    string default_intent
+    timestamp last_active
+  }
+  SESSION {
+    string id PK
+    string user_id FK
+    string model_id FK
+    string intent
+    string entry_point
+    timestamp created_at
+  }
+  CONFIG {
+    string id PK
+    string user_id FK
+    string model_id FK
+    string name
+    string source
+    string persona_id FK
+    timestamp created_at
+  }
+  LEVER_VALUES {
+    string config_id FK
+    string lever_key FK
+    int value
+  }
+  MODEL {
+    string id PK
+    string name
+    string provider
+    string voice_signature
+  }
+  LEVER {
+    string key PK
+    string name
+    string pillar
+    string description
+    string low_label
+    string high_label
+    int default_value
+  }
+  PILLAR {
+    string id PK
+    string label
+    string description
+    string radar_color
+  }
+  PERSONA {
+    string id PK
+    string name
+    string description
+    string activation_snippet
+    string type
+  }
+  PROMPT {
+    string id PK
+    string config_id FK
+    string model_id FK
+    string generated_text
+    timestamp created_at
+  }
+  INTENT {
+    string id PK
+    string label
+    string description
+    string routes_to
+  }
+  DECODED_PROMPT {
+    string id PK
+    string user_id FK
+    string raw_input
+    string unmapped_instructions
+    timestamp created_at
+  }
+  DECODED_LEVER_VALUE {
+    string decoded_id FK
+    string lever_key FK
+    int value
+    int confidence
+  }
+  CALIBRATION_RUN {
+    string id PK
+    string model_id FK
+    timestamp run_at
+    string schema_version
+  }
+  ELICITATION_RESPONSE {
+    string run_id FK
+    string model_id FK
+    string raw_response
+    timestamp created_at
+  }
+
+  USER ||--|| PROFILE : has
+  USER ||--o{ SESSION : starts
+  USER ||--o{ CONFIG : saves
+  USER ||--o{ DECODED_PROMPT : decodes
+
+  SESSION ||--o| CONFIG : becomes
+  SESSION }o--|| MODEL : uses
+  SESSION }o--|| INTENT : guided_by
+
+  CONFIG ||--o{ LEVER_VALUES : contains
+  CONFIG }o--|| MODEL : targets
+  CONFIG }o--o| PERSONA : applies
+  CONFIG ||--o{ PROMPT : generates
+
+  LEVER_VALUES }o--|| LEVER : references
+  LEVER }o--|| PILLAR : belongs_to
+
+  PERSONA ||--o{ LEVER_VALUES : presets
+
+  MODEL ||--o{ LEVER_VALUES : defaults
+
+  DECODED_PROMPT ||--o{ DECODED_LEVER_VALUE : maps_to
+  DECODED_LEVER_VALUE }o--|| LEVER : references
+  DECODED_PROMPT ||--o| CONFIG : converts_to
+
+  CALIBRATION_RUN }o--|| MODEL : calibrates
+  CALIBRATION_RUN ||--o{ ELICITATION_RESPONSE : produces
+`;
+const { svg } = await mermaid.render('erd-svg', diagram);
+document.getElementById('erd').innerHTML = svg;
+
+document.querySelectorAll('#erd svg.erDiagram .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+
+document.querySelectorAll('#erd svg.erDiagram .row-rect-odd path, #erd svg.erDiagram .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>

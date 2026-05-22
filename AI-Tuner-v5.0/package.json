@@ -1,0 +1,22 @@
+{
+  "name": "aituner-v5",
+  "version": "5.0.0",
+  "description": "AI Tuner v5.0 - AI Literacy Platform",
+  "scripts": {
+    "interview": "node calibration/interview-tool.js",
+    "observe": "node calibration/observe-tool.js",
+    "calibrate": "node calibration/calibration-tool.js",
+    "apply-calibration": "node scripts/apply-calibration.js",
+    "sync-registry": "node scripts/export-model-rooms-json.js"
+  },
+  "keywords": [
+    "ai",
+    "prompt-engineering",
+    "llm",
+    "tuning"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}

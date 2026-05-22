@@ -1,0 +1,1768 @@
+/**
+ * AI Tuner v3.0 - Production Styles
+ * Sliders, Model Selector, Persona Selector
+ */
+
+/* ============================================
+   THREE-STEP WORKFLOW
+   ============================================ */
+.workflow-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 40px;
+    flex: 1;
+}
+
+/* Main Layout - Side by Side */
+/* Preview (radar) on left, Workflow on right */
+/* FORCE GRID LAYOUT - VERSION 3.0.2 */
+.main-layout {
+    display: grid !important;
+    grid-template-columns: 500px 1fr !important;
+    gap: 40px !important;
+    align-items: start !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Explicitly assign grid areas - preview on left, workflow on right */
+/* Using grid-area shorthand: row-start / col-start / row-end / col-end */
+.main-layout > .preview-section-container {
+    grid-row: 1 !important;
+    grid-column: 1 !important;
+    grid-area: 1 / 1 / 2 / 2 !important; /* row 1, col 1 (left) */
+}
+
+.main-layout > .workflow-container {
+    grid-row: 1 !important;
+    grid-column: 2 !important;
+    grid-area: 1 / 2 / 2 / 3 !important; /* row 1, col 2 (right) */
+}
+
+@media (max-width: 1200px) {
+    /* When squished, stack vertically with radar at top */
+    .main-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
+    }
+    
+    /* Reset grid-area when using flexbox */
+    .main-layout > .preview-section-container {
+        grid-area: auto !important;
+        order: -1 !important; /* Radar at top */
+        position: static !important;
+        margin-top: 0 !important;
+        margin-bottom: 40px !important;
+        width: 100% !important;
+    }
+    
+    .main-layout > .workflow-container {
+        grid-area: auto !important;
+        order: 1 !important; /* Workflow below radar */
+        width: 100% !important;
+    }
+}
+
+/* Tablet and small desktop windows (481px-768px) - stack vertically with radar at top */
+@media (max-width: 768px) and (min-width: 481px) {
+    /* Stack vertically with radar at top */
+    .main-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
+    }
+    
+    .preview-section-container {
+        order: -1 !important; /* Radar at top */
+        position: static !important;
+        margin-top: 0 !important;
+        margin-bottom: 40px !important;
+        width: 100% !important;
+    }
+    
+    .workflow-container {
+        order: 1 !important; /* Workflow below radar */
+        width: 100% !important;
+    }
+    
+    /* Keep desktop order - don't reorder container children */
+    .container {
+        display: block !important; /* Not flex, so no reordering */
+    }
+}
+
+/* ============================================
+   WORKFLOW STEPS
+   ============================================ */
+.workflow-step {
+    padding: 25px;
+    border: 2px solid #000;
+    background: #fff;
+    border-radius: 4px;
+    position: relative;
+    color: #000;
+}
+
+.step-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    border: 2px solid #000;
+}
+
+.step-title h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #000;
+}
+
+.step-description {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Step Info Buttons */
+.info-btn-step {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: #000;
+    color: #fff;
+    transition: all 0.2s;
+    margin-left: 8px;
+}
+
+.info-btn-step:hover {
+    background: #333;
+    transform: scale(1.1);
+}
+
+/* Visual Flow Indicators */
+.step-1::after,
+.step-2::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 15px solid #000;
+}
+
+/* ============================================
+   SAVED PRESETS HEADER
+   ============================================ */
+.saved-presets-header {
+    padding: 20px;
+    border: 2px solid #000;
+    background: #fff;
+    border-radius: 4px;
+    margin-bottom: 30px;
+}
+
+.preset-buttons-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.preset-item-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.preset-btn-header {
+    padding: 8px 16px;
+    background: #f5f5f5;
+    border: 2px solid #000;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.preset-btn-header:hover {
+    background: #000;
+    color: #fff;
+}
+
+.preset-delete-btn-header {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: #f5f5f5;
+    border: 2px solid #000;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.preset-delete-btn-header:hover {
+    background: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+/* ============================================
+   MODEL SELECTOR
+   ============================================ */
+.model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.model-card {
+    padding: 15px;
+    border: 2px solid #000;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.model-card:hover {
+    background: #f5f5f5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.model-card.selected {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.model-card .model-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.model-card .model-desc {
+    font-size: 0.75rem;
+    color: #666;
+    line-height: 1.3;
+}
+
+.model-card.selected .model-desc {
+    color: #ccc;
+}
+
+/* ============================================
+   PERSONA SELECTOR
+   ============================================ */
+.persona-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.persona-card {
+    padding: 15px;
+    border: 2px solid #000;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.persona-card:hover {
+    background: #f5f5f5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.persona-card.selected {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.persona-card .persona-name {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.persona-card .persona-desc {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.persona-card.selected .persona-desc {
+    color: #ccc;
+}
+
+/* ============================================
+   SLIDER CONTROLS
+   ============================================ */
+.lever-control {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    background: #fafafa;
+}
+
+.lever-control:hover {
+    background: #f5f5f5;
+}
+
+.lever-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.lever-label {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #000;
+}
+
+.lever-value {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #000;
+    min-width: 30px;
+    text-align: right;
+}
+
+.lever-description {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.lever-range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lever-slider {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: #e0e0e0;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.lever-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #000;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.lever-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #000;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.lever-min-max {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 0.75rem;
+    color: #999;
+}
+
+/* ============================================
+   CATEGORY GROUPS
+   ============================================ */
+.category-group-v6 {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 2px solid #000;
+    background: #fff;
+}
+
+.category-group-v6 h2 {
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.category-group-v6 .info-btn {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: #000;
+    color: #fff;
+    transition: all 0.2s;
+}
+
+.category-group-v6 .info-btn:hover {
+    background: #333;
+    transform: scale(1.1);
+}
+
+/* ============================================
+   MODE TOGGLE
+   ============================================ */
+.mode-toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mode-toggle-boxes {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.mode-box {
+    width: 140px;
+    height: 44px;
+    padding: 0;
+    border: 2px solid #000;
+    border-radius: 4px;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: none;
+}
+
+/* Inactive button - more subdued */
+.mode-box:hover:not(.active) {
+    background: #f5f5f5;
+    border-color: #333;
+}
+
+/* Active button - bold and elevated */
+.mode-box.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+    border-width: 3px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+    font-weight: 700;
+}
+
+.mode-box.active:hover {
+    background: #000;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Inactive button styling - more muted */
+body.beginner-mode .mode-box[data-mode="beginner"] {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+    border-width: 3px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+    font-weight: 700;
+}
+
+body.beginner-mode .mode-box[data-mode="advanced"] {
+    background: #f9f9f9;
+    color: #666;
+    border-color: #ccc;
+    opacity: 0.8;
+}
+
+body.beginner-mode .mode-box[data-mode="advanced"]:hover {
+    background: #f0f0f0;
+    border-color: #999;
+    opacity: 1;
+}
+
+body.advanced-mode .mode-box[data-mode="advanced"] {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+    border-width: 3px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+    font-weight: 700;
+}
+
+body.advanced-mode .mode-box[data-mode="beginner"] {
+    background: #f9f9f9;
+    color: #666;
+    border-color: #ccc;
+    opacity: 0.8;
+}
+
+body.advanced-mode .mode-box[data-mode="beginner"]:hover {
+    background: #f0f0f0;
+    border-color: #999;
+    opacity: 1;
+}
+
+.mode-description {
+    font-size: 0.85rem;
+    color: #666;
+    text-align: center;
+    margin-top: 10px;
+    width: 100%;
+}
+
+/* ============================================
+   APP INFO SECTION (Expandable)
+   ============================================ */
+.app-info-section {
+    margin-top: 30px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.app-info-toggle {
+    width: 100%;
+    padding: 15px 20px;
+    background: #fff;
+    border: none;
+    border-bottom: 2px solid #000;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.app-info-toggle:hover {
+    background: #f5f5f5;
+}
+
+.app-info-toggle.expanded {
+    border-bottom: 2px solid #000;
+}
+
+.app-info-toggle-text {
+    flex: 1;
+}
+
+.app-info-toggle-icon {
+    font-size: 0.8rem;
+    transition: transform 0.2s;
+    margin-left: 10px;
+}
+
+.app-info-toggle.expanded .app-info-toggle-icon {
+    transform: rotate(180deg);
+}
+
+.app-info-content {
+    padding: 0;
+    background: #fff;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.app-info-content.expanded {
+    max-height: 1000px;
+    transition: max-height 0.5s ease-in;
+}
+
+.app-info-inner {
+    padding: 25px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.app-info-inner h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #000;
+}
+
+.app-info-inner h4 {
+    margin: 20px 0 10px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #000;
+}
+
+.app-info-inner p {
+    margin: 0 0 15px 0;
+    line-height: 1.6;
+    color: #333;
+}
+
+.app-info-inner ol,
+.app-info-inner ul {
+    margin: 10px 0 15px 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.app-info-inner li {
+    margin: 12px 0;
+    line-height: 1.6;
+    color: #333;
+    padding-left: 0;
+}
+
+/* Numbered steps with black circles */
+.app-info-steps {
+    counter-reset: step-counter;
+}
+
+.app-info-steps li {
+    position: relative;
+    padding-left: 50px;
+    counter-increment: step-counter;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.app-info-steps li::before {
+    content: counter(step-counter);
+    width: 32px;
+    height: 32px;
+    background: #000;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* Bullet points with proper alignment */
+.app-info-features li {
+    position: relative;
+    padding-left: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.app-info-features li::before {
+    content: "•";
+    color: #000;
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    flex-shrink: 0;
+}
+
+.app-info-inner strong {
+    color: #000;
+    font-weight: 600;
+}
+
+.app-info-inner em {
+    color: #666;
+    font-style: italic;
+}
+
+/* ============================================
+   PREVIEW SECTION
+   ============================================ */
+.preview-section-container {
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.preview-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.radar-container-box {
+    padding: 20px;
+    border: 2px solid #000;
+    background: #fff;
+    border-radius: 4px;
+    flex-shrink: 0;
+    min-width: 0;
+    color: #000;
+}
+
+.radar-container-box h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #000;
+}
+
+/* Radar wrapper - make it bigger for v6 - override style.css */
+.radar-container-box .radar-wrapper {
+    width: 100% !important;
+    min-width: 400px !important;
+    height: 500px !important;
+    position: relative;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    max-width: none !important;
+}
+
+.radar-container-box .radar-wrapper canvas {
+    width: 100% !important;
+    height: 500px !important;
+    max-width: none !important;
+    display: block;
+    margin: 0 auto;
+}
+
+.prompt-container-box {
+    padding: 20px;
+    border: 2px solid #000;
+    background: #fff;
+    border-radius: 4px;
+    flex-shrink: 0;
+    min-width: 0;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 300px);
+    overflow: hidden;
+}
+
+.prompt-container-box h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #000;
+}
+
+.prompt-preview {
+    overflow-y: auto;
+    min-height: 100px;
+    max-height: 200px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-bottom: 15px;
+    flex-shrink: 1;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+    flex-shrink: 0;
+}
+
+.actions .btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+}
+
+.placeholder-text {
+    color: #999;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+}
+
+/* ============================================
+   DARK MODE SUPPORT
+   ============================================ */
+body.dark-mode .workflow-step,
+body.dark-mode .radar-container-box,
+body.dark-mode .prompt-container-box {
+    background: #1a1a1a !important;
+    border-color: #fff !important;
+    color: #fff !important;
+}
+
+/* Step Numbers - MUST override all other styles */
+/* These are the numbered circles (1, 2, 3) in the workflow steps */
+body.dark-mode .step-number {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-color: #ffffff !important;
+}
+
+/* Step Titles and Descriptions */
+body.dark-mode .step-title,
+body.dark-mode .step-title h2,
+body.dark-mode .step-title h2 span {
+    color: #fff !important;
+}
+
+body.dark-mode .step-description {
+    color: #aaa !important;
+}
+
+body.dark-mode .step-header {
+    border-bottom-color: #333 !important;
+}
+
+/* ============================================
+   CRITICAL DARK MODE FIXES - Override style.css
+   ============================================ */
+/* Override style.css - ensure containers have white text */
+body.dark-mode .radar-container-box,
+body.dark-mode .prompt-container-box {
+    color: #ffffff !important;
+}
+
+/* Force h3 headings to be white in dark mode */
+body.dark-mode .radar-container-box h3,
+body.dark-mode .prompt-container-box h3 {
+    color: #ffffff !important;
+}
+
+/* Force ALL text inside containers to be white */
+body.dark-mode .radar-container-box *,
+body.dark-mode .prompt-container-box * {
+    color: #ffffff !important;
+}
+
+/* Exception: step numbers (these are NOT in radar/prompt containers, but just in case) */
+body.dark-mode .radar-container-box .step-number,
+body.dark-mode .prompt-container-box .step-number {
+    color: #000000 !important;
+    background: #ffffff !important;
+}
+
+/* Exception: info buttons */
+body.dark-mode .radar-container-box .info-btn,
+body.dark-mode .prompt-container-box .info-btn {
+    color: #000000 !important;
+    background: #ffffff !important;
+}
+
+body.dark-mode .radar-wrapper {
+    color: #fff;
+}
+
+/* Visual Flow Indicators */
+body.dark-mode .step-1::after,
+body.dark-mode .step-2::after {
+    border-top-color: #fff;
+}
+
+/* Category Groups */
+body.dark-mode .category-group-v6 .info-btn {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+body.dark-mode .category-group-v6 .info-btn:hover {
+    background: #ccc;
+}
+
+body.dark-mode .model-card,
+body.dark-mode .persona-card,
+body.dark-mode .category-group-v6,
+body.dark-mode .lever-control {
+    background: #1a1a1a;
+    border-color: #fff;
+    color: #fff;
+}
+
+/* Mode Toggle Boxes - Dark Mode */
+body.dark-mode .mode-box {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #fff;
+}
+
+body.dark-mode .mode-box:hover:not(.active) {
+    background: #2a2a2a;
+    border-color: #ccc;
+}
+
+/* Active button in dark mode - bright and elevated */
+body.dark-mode .mode-box.active {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+    border-width: 3px;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+    font-weight: 700;
+}
+
+body.dark-mode .mode-box.active:hover {
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Inactive button in dark mode - more subdued */
+body.dark-mode .beginner-mode .mode-box[data-mode="beginner"] {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+    border-width: 3px;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+    font-weight: 700;
+}
+
+body.dark-mode .beginner-mode .mode-box[data-mode="advanced"] {
+    background: #2a2a2a;
+    color: #999;
+    border-color: #555;
+    opacity: 0.7;
+}
+
+body.dark-mode .beginner-mode .mode-box[data-mode="advanced"]:hover {
+    background: #333;
+    border-color: #777;
+    opacity: 1;
+}
+
+body.dark-mode .advanced-mode .mode-box[data-mode="advanced"] {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+    border-width: 3px;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+    font-weight: 700;
+}
+
+body.dark-mode .advanced-mode .mode-box[data-mode="beginner"] {
+    background: #2a2a2a;
+    color: #999;
+    border-color: #555;
+    opacity: 0.7;
+}
+
+body.dark-mode .advanced-mode .mode-box[data-mode="beginner"]:hover {
+    background: #333;
+    border-color: #777;
+    opacity: 1;
+}
+
+/* Model and Persona Cards */
+body.dark-mode .model-card:hover,
+body.dark-mode .persona-card:hover {
+    background: #2a2a2a;
+}
+
+body.dark-mode .model-card.selected,
+body.dark-mode .persona-card.selected {
+    background: #fff;
+    color: #000;
+}
+
+/* Saved Presets */
+body.dark-mode .saved-presets-header {
+    background: #1a1a1a;
+    border-color: #fff;
+    color: #fff;
+}
+
+body.dark-mode .preset-btn-header {
+    background: #2a2a2a;
+    border-color: #fff;
+    color: #fff;
+}
+
+body.dark-mode .preset-btn-header:hover {
+    background: #fff;
+    color: #000;
+}
+
+body.dark-mode .preset-delete-btn-header {
+    background: #2a2a2a;
+    border-color: #fff;
+    color: #fff;
+}
+
+body.dark-mode .preset-delete-btn-header:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
+
+body.dark-mode .no-presets-message {
+    color: #aaa;
+}
+
+/* Step Info Buttons */
+body.dark-mode .info-btn-step {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+body.dark-mode .info-btn-step:hover {
+    background: #ccc;
+}
+
+/* Beginner Mode Message */
+.beginner-mode-message {
+    margin-top: 20px;
+}
+
+body.dark-mode .beginner-mode-message div {
+    background: #1a3a1a !important;
+    border-color: #4caf50 !important;
+    color: #fff !important;
+}
+
+body.dark-mode .beginner-mode-message p {
+    color: #ccc !important;
+}
+
+/* Lever Controls */
+body.dark-mode .lever-control {
+    background: #1a1a1a;
+    border-color: #444;
+}
+
+body.dark-mode .lever-label,
+body.dark-mode .lever-value {
+    color: #fff;
+}
+
+body.dark-mode .lever-description {
+    color: #aaa;
+}
+
+body.dark-mode .lever-slider {
+    background: #444;
+}
+
+body.dark-mode .lever-slider::-webkit-slider-thumb {
+    background: #fff;
+    border: 2px solid #000;
+}
+
+body.dark-mode .lever-slider::-moz-range-thumb {
+    background: #fff;
+    border: 2px solid #000;
+}
+
+body.dark-mode .lever-min-max {
+    color: #999;
+}
+
+/* App Info Section - Dark Mode */
+body.dark-mode .app-info-section {
+    background: #1a1a1a;
+    border-color: #fff;
+}
+
+body.dark-mode .app-info-toggle {
+    background: #1a1a1a;
+    color: #fff;
+    border-bottom-color: #fff;
+}
+
+body.dark-mode .app-info-toggle:hover {
+    background: #2a2a2a;
+}
+
+body.dark-mode .app-info-content {
+    background: #1a1a1a;
+}
+
+body.dark-mode .app-info-inner {
+    border-top-color: #333;
+}
+
+body.dark-mode .app-info-inner h3,
+body.dark-mode .app-info-inner h4 {
+    color: #fff;
+}
+
+body.dark-mode .app-info-inner p,
+body.dark-mode .app-info-inner li {
+    color: #ccc;
+}
+
+body.dark-mode .app-info-inner strong {
+    color: #fff;
+}
+
+body.dark-mode .app-info-inner em {
+    color: #aaa;
+}
+
+/* Dark mode for numbered steps */
+body.dark-mode .app-info-steps li::before {
+    background: #fff;
+    color: #000;
+}
+
+/* Dark mode for bullet points */
+body.dark-mode .app-info-features li::before {
+    color: #fff;
+}
+
+body.dark-mode .mode-description {
+    color: #aaa;
+}
+
+/* ============================================
+   MOBILE OPTIMIZATIONS
+   These styles ONLY affect small phones (< 480px)
+   Desktop and tablet-sized windows keep normal layout
+   ============================================ */
+
+/* Small phones only (max-width: 480px) - apply mobile reordering */
+@media (max-width: 480px) {
+    /* Container padding for mobile */
+    .container {
+        padding: 15px 15px !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    /* MOBILE: Reorder to put radar at the very top */
+    /* Override desktop grid layout with flexbox for mobile */
+    /* NOTE: Keep header first, main second - only reorder within main */
+    
+    /* Force main layout to flexbox (overrides desktop grid) */
+    .main-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
+    }
+    
+    /* Put preview section (with radar) first within main layout */
+    .preview-section-container {
+        order: -1 !important; /* Preview section first (contains radar) */
+        width: 100% !important;
+        position: static !important; /* Override sticky positioning */
+        margin-top: 0 !important;
+    }
+    
+    /* Put workflow after preview */
+    .workflow-container {
+        order: 1 !important; /* Workflow comes after preview */
+        width: 100% !important;
+    }
+    
+    /* Within preview section, radar comes first */
+    .preview-section {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .radar-container-box {
+        order: -1 !important; /* Radar first */
+        margin-bottom: 20px;
+    }
+    
+    .prompt-container-box {
+        order: 1 !important; /* Prompt after radar */
+    }
+    
+    /* Keep desktop order: header first, then main */
+    /* Don't reorder container children - this causes issues on desktop when window is resized */
+    
+    /* Header optimizations */
+    header {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+    }
+    
+    h1 {
+        font-size: 2rem !important;
+        margin-bottom: 8px;
+    }
+    
+    .subtitle {
+        font-size: 0.95rem;
+    }
+    
+    /* Header buttons - stack vertically and make touch-friendly */
+    header > div[style*="display: flex"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+    }
+    
+    header .btn {
+        width: 100%;
+        min-height: 44px; /* Touch-friendly minimum */
+        font-size: 1rem;
+        padding: 12px 16px;
+    }
+    
+    /* Mode toggle boxes - stack on mobile */
+    .mode-toggle-boxes {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+    
+    .mode-box {
+        width: 100% !important;
+        min-height: 48px; /* Touch-friendly */
+        font-size: 1rem;
+    }
+    
+    .mode-description {
+        font-size: 0.8rem;
+        margin-top: 8px;
+    }
+    
+    /* Saved presets - full width buttons */
+    .preset-buttons-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .preset-item-header {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .preset-btn-header {
+        flex: 1;
+        min-height: 44px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+    
+    .preset-delete-btn-header {
+        min-width: 44px;
+        min-height: 44px;
+        width: 44px;
+        height: 44px;
+    }
+    
+    /* Workflow steps - better spacing */
+    .workflow-step {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+    }
+    
+    .step-header {
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .step-number {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+    
+    .step-title h2 {
+        font-size: 1.3rem;
+    }
+    
+    .step-description {
+        font-size: 0.9rem;
+    }
+    
+    /* Info buttons - larger for touch */
+    .info-btn-step {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+        min-width: 28px;
+        min-height: 28px;
+    }
+    
+    /* Model grid - single column on mobile */
+    .model-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px;
+    }
+    
+    .model-card {
+        padding: 18px;
+        min-height: 60px;
+    }
+    
+    .model-card .model-name {
+        font-size: 1rem;
+    }
+    
+    .model-card .model-desc {
+        font-size: 0.85rem;
+    }
+    
+    /* Persona grid - single column */
+    .persona-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px;
+    }
+    
+    .persona-card {
+        padding: 18px;
+        min-height: 80px;
+    }
+    
+    .persona-card .persona-name {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+    
+    .persona-card .persona-desc {
+        font-size: 0.9rem;
+    }
+    
+    /* Lever controls - touch-friendly */
+    .lever-control {
+        padding: 18px 15px;
+        margin-bottom: 15px;
+    }
+    
+    .lever-header {
+        margin-bottom: 12px;
+    }
+    
+    .lever-label {
+        font-size: 1rem;
+    }
+    
+    .lever-value {
+        font-size: 1.2rem;
+        min-width: 40px;
+    }
+    
+    .lever-description {
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+    }
+    
+    /* Slider - larger touch target */
+    .lever-slider {
+        height: 8px;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    
+    .lever-slider::-webkit-slider-thumb {
+        width: 24px;
+        height: 24px;
+        border: 3px solid #fff;
+        cursor: pointer;
+    }
+    
+    .lever-slider::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+        border: 3px solid #fff;
+        cursor: pointer;
+    }
+    
+    /* Category groups */
+    .category-group-v6 {
+        padding: 18px 15px;
+        margin-bottom: 20px;
+    }
+    
+    .category-group-v6 h2 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+    
+    .category-group-v6 .info-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+        min-width: 28px;
+        min-height: 28px;
+    }
+    
+    /* Preview section - full width on mobile */
+    .preview-section-container {
+        position: static !important;
+        max-height: none !important;
+        margin-top: 30px;
+        overflow: visible;
+    }
+    
+    .radar-container-box {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .radar-container-box h3 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+    }
+    
+    /* MOBILE-ONLY: Move radar chart to very top of viewport */
+    /* First, make main layout a flex column (not grid) */
+    .main-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
+    }
+    
+    /* Move preview section container to top of main layout (before workflow) */
+    .main-layout > .preview-section-container {
+        order: -1 !important; /* Preview section comes before workflow */
+        margin-bottom: 30px;
+        margin-top: 0 !important;
+        width: 100% !important;
+    }
+    
+    .main-layout > .workflow-container {
+        order: 1 !important; /* Workflow comes after preview */
+        width: 100% !important;
+    }
+    
+    /* Make preview-section a flex column to allow reordering */
+    .preview-section-container .preview-section {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    /* Move radar chart to the very top of preview section */
+    .preview-section-container .radar-container-box {
+        order: -10 !important; /* Highest priority - goes to top */
+        margin-bottom: 20px;
+        margin-top: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* Prompt box comes after radar */
+    .preview-section-container .prompt-container-box {
+        order: 1 !important;
+        width: 100% !important;
+    }
+    
+    /* MOBILE-ONLY: Move saved presets from header to prompt box */
+    header .saved-presets-header {
+        display: none !important; /* Hide from header on mobile */
+    }
+    
+    /* Show mobile version in prompt box */
+    .saved-presets-mobile {
+        display: block !important;
+    }
+    
+    /* MOBILE-ONLY: Change info button emoji to "i" */
+    .info-btn-step {
+        font-size: 0 !important; /* Hide emoji */
+        position: relative;
+    }
+    
+    .info-btn-step::before {
+        content: 'i';
+        font-size: 0.75rem;
+        font-style: italic;
+        font-weight: 600;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .radar-container-box .radar-wrapper {
+        min-width: 100% !important;
+        width: 100% !important;
+        height: 350px !important;
+        max-width: 100% !important;
+    }
+    
+    .radar-container-box .radar-wrapper canvas {
+        width: 100% !important;
+        height: 350px !important;
+        max-width: 100% !important;
+    }
+    
+    .prompt-container-box {
+        padding: 15px;
+        max-height: none !important;
+    }
+    
+    .prompt-container-box h3 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+    }
+    
+    .prompt-preview {
+        max-height: 300px;
+        font-size: 0.8rem;
+        padding: 12px;
+    }
+    
+    /* Action buttons - full width, touch-friendly */
+    .actions {
+        gap: 10px;
+        padding-top: 12px;
+    }
+    
+    .actions .btn {
+        min-height: 48px;
+        font-size: 1rem;
+        padding: 14px 16px;
+    }
+    
+    /* App info section */
+    .app-info-section {
+        margin-top: 20px;
+    }
+    
+    .app-info-toggle {
+        padding: 14px 16px;
+        font-size: 0.95rem;
+    }
+    
+    .app-info-inner {
+        padding: 20px 15px;
+    }
+    
+    .app-info-inner h3 {
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+    }
+    
+    .app-info-inner h4 {
+        font-size: 1rem;
+        margin: 18px 0 8px 0;
+    }
+    
+    .app-info-inner p,
+    .app-info-inner li {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    /* Numbered steps - adjust padding */
+    .app-info-steps li {
+        padding-left: 45px;
+        gap: 12px;
+    }
+    
+    .app-info-steps li::before {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+    }
+    
+    /* Bullet points */
+    .app-info-features li {
+        padding-left: 20px;
+        gap: 8px;
+    }
+}
+
+/* Small Phone (max-width: 480px) */
+@media (max-width: 480px) {
+    /* Even tighter spacing on small phones */
+    .container {
+        padding: 12px 12px !important;
+    }
+    
+    h1 {
+        font-size: 1.75rem !important;
+    }
+    
+    .subtitle {
+        font-size: 0.9rem;
+    }
+    
+    /* Workflow steps - compact */
+    .workflow-step {
+        padding: 15px 12px;
+    }
+    
+    .step-number {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+    
+    .step-title h2 {
+        font-size: 1.2rem;
+    }
+    
+    /* Model and persona cards - compact */
+    .model-card {
+        padding: 15px;
+        min-height: 55px;
+    }
+    
+    .persona-card {
+        padding: 15px;
+        min-height: 70px;
+    }
+    
+    /* Lever controls - compact */
+    .lever-control {
+        padding: 15px 12px;
+    }
+    
+    .lever-label {
+        font-size: 0.95rem;
+    }
+    
+    .lever-value {
+        font-size: 1.1rem;
+    }
+    
+    /* Radar chart - smaller on tiny screens */
+    .workflow-container .radar-container-box {
+        margin-bottom: 15px;
+    }
+    
+    .radar-container-box .radar-wrapper {
+        height: 300px !important;
+    }
+    
+    .radar-container-box .radar-wrapper canvas {
+        height: 300px !important;
+    }
+    
+    .prompt-preview {
+        max-height: 250px;
+        font-size: 0.75rem;
+        padding: 10px;
+    }
+    
+    /* Buttons - still touch-friendly */
+    .actions .btn {
+        min-height: 44px;
+        font-size: 0.95rem;
+        padding: 12px 14px;
+    }
+    
+    /* App info - compact */
+    .app-info-toggle {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+    
+    .app-info-inner {
+        padding: 15px 12px;
+    }
+    
+    .app-info-inner h3 {
+        font-size: 1.1rem;
+    }
+    
+    .app-info-inner h4 {
+        font-size: 0.95rem;
+    }
+    
+    .app-info-inner p,
+    .app-info-inner li {
+        font-size: 0.85rem;
+    }
+}
+
+/* Touch device optimizations (any touch device, regardless of screen size) */
+@media (hover: none) and (pointer: coarse) {
+    /* Increase tap targets for all touch devices */
+    .btn,
+    .mode-box,
+    .model-card,
+    .persona-card,
+    .preset-btn-header,
+    .info-btn-step,
+    .app-info-toggle {
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Remove hover effects on touch devices */
+    .model-card:hover,
+    .persona-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    
+    /* Ensure sliders are touch-friendly */
+    .lever-slider {
+        -webkit-tap-highlight-color: transparent;
+    }
+}

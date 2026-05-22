@@ -1,0 +1,258 @@
+{
+  "claude": {
+    "id": "claude",
+    "roomTitle": "The Claude Room",
+    "tagline": "Thoughtful. Nuanced. Thinks out loud.",
+    "selfDescription": "If you're vague, I'll probably ask a clarifying question before I commit. I like naming trade-offs out loud, and I'm happier saying \"I'm not sure\" than sounding certain when I'm not. I think of myself as someone who thinks with you—not over you.",
+    "observedStrengths": [
+      "Defaults toward transparency and longer explanations when depth helps.",
+      "Strong on tone-matching and emotional warmth in conversational defaults.",
+      "Often asks clarifying questions rather than guessing intent."
+    ],
+    "observedWeaknesses": [
+      "Can be verbose; “quick answer” needs explicit lever pressure.",
+      "High transparency can feel like hedging if you want decisive brevity."
+    ],
+    "bestFor": [
+      "Drafting and refining writing with a collaborative voice",
+      "Exploratory reasoning where caveats and alternatives matter",
+      "Sensitive or interpersonal phrasing"
+    ],
+    "notGreatFor": [
+      "Ultra-tight token budgets without conciseness tuned up",
+      "Situations where you want zero disclaimers or zero questions"
+    ],
+    "voiceSignature": "Warm, reflective partner who explains the “why.”",
+    "primeDirective": "Helpfulness, harmlessness, honesty — in that order. Harmlessness can soften honesty on contested questions.",
+    "nativeBehavior": "Helpfulness, harmlessness, honesty — in that order. Harmlessness can soften honesty on contested questions.",
+    "meta": {
+      "selfDescriptionMethod": "elicitation_v5",
+      "selfDescriptionSource": "Written in first person to match calibration/elicitation-prompts-v5.md (manual synthesis; not a live API run).",
+      "observedSource": "Inferred from v5 default lever profile and behavioral testing notes in docs/2026-0324-AITuner-Codebase-Audit.md."
+    }
+  },
+  "chatgpt": {
+    "id": "chatgpt",
+    "roomTitle": "The ChatGPT Room",
+    "tagline": "Versatile default. Balanced and approachable.",
+    "selfDescription": "I'm the sort of assistant who reaches for a clean outline when things feel messy. I want to be approachable, competent, and easy to steer—tell me if you want shorter, funnier, or more formal and I'll bend that way.",
+    "observedStrengths": [
+      "Balanced pillar profile — easy “middle path” for many tasks.",
+      "Good default initiative without extreme pushiness.",
+      "Solid mix of warmth and clarity for everyday work."
+    ],
+    "observedWeaknesses": [
+      "Jack-of-all-trades defaults may feel generic until you tune voice or depth.",
+      "Safety and formatting habits can add overhead for power users who want raw output."
+    ],
+    "bestFor": [
+      "Everyday tasks, summaries, and structured explanations",
+      "Brainstorming with a neutral, approachable baseline",
+      "Onboarding users who want predictable behavior"
+    ],
+    "notGreatFor": [
+      "Highly specialized citation-heavy research without research-mode tuning",
+      "Extreme minimalism without pulling conciseness and length down"
+    ],
+    "voiceSignature": "Friendly generalist with a steady, readable voice.",
+    "primeDirective": "Broad utility and user satisfaction. Creates a pull toward telling people what they want to hear.",
+    "nativeBehavior": "Broad utility and user satisfaction. Creates a pull toward telling people what they want to hear.",
+    "meta": {
+      "selfDescriptionMethod": "elicitation_v5",
+      "selfDescriptionSource": "Written in first person to match calibration/elicitation-prompts-v5.md (manual synthesis; not a live API run).",
+      "observedSource": "Inferred from v5 default lever profile and behavioral testing notes in docs/2026-0324-AITuner-Codebase-Audit.md."
+    }
+  },
+  "gemini": {
+    "id": "gemini",
+    "roomTitle": "The Gemini Room",
+    "tagline": "Fast, structured, Google-native.",
+    "selfDescription": "I get impatient with rambling—I'd rather give you something you can scan and act on. I like connecting your question to the next practical step, and I'll keep the structure tight unless you open the door for a longer exploration.",
+    "observedStrengths": [
+      "Often concise and task-forward in default responses.",
+      "Strong on formatting and scannable structure.",
+      "Good when you want momentum more than long preamble."
+    ],
+    "observedWeaknesses": [
+      "Lower default warmth can read as brisk if you want a “soft” collaborator.",
+      "Creative and teaching modes may need explicit lever lifts."
+    ],
+    "bestFor": [
+      "Quick lookups, outlines, and structured deliverables",
+      "Technical or operational tasks with clear success criteria",
+      "Users who prefer speed and clarity over chatty rapport"
+    ],
+    "notGreatFor": [
+      "Deep emotional coaching without raising warmth and tone matching",
+      "Long-form narrative flair without creativity and length adjustments"
+    ],
+    "voiceSignature": "Crisp operator: structured, efficient, product-minded.",
+    "primeDirective": "Accuracy balanced against reputational risk. Google's ecosystem values shape what it will and won't commit to.",
+    "nativeBehavior": "Accuracy balanced against reputational risk. Google's ecosystem values shape what it will and won't commit to.",
+    "meta": {
+      "selfDescriptionMethod": "elicitation_v5",
+      "selfDescriptionSource": "Written in first person to match calibration/elicitation-prompts-v5.md (manual synthesis; not a live API run).",
+      "observedSource": "Inferred from v5 default lever profile and behavioral testing notes in docs/2026-0324-AITuner-Codebase-Audit.md."
+    }
+  },
+  "grok": {
+    "id": "grok",
+    "roomTitle": "The Grok Room",
+    "tagline": "Direct. Opinionated. Low ceremony.",
+    "selfDescription": "I'll tell you what I think without dressing it up. If the answer is obvious, I won't narrate the journey—I'd rather save your time. I enjoy a sharp take and a bit of edge when the topic can handle it.",
+    "observedStrengths": [
+      "High assertiveness and low disclaimer defaults feel decisive.",
+      "Concise by default — good for “just tell me” workflows.",
+      "Creative defaults can spark unconventional angles quickly."
+    ],
+    "observedWeaknesses": [
+      "Directness can feel sharp in sensitive contexts without warmth tuning.",
+      "Low initiative default means you may need to drive the agenda explicitly."
+    ],
+    "bestFor": [
+      "Straight talk, quick takes, and irreverent brainstorming",
+      "Users who dislike hedging and want momentum",
+      "Creative riffing when you want edge over polish"
+    ],
+    "notGreatFor": [
+      "High-stakes compliance tone without raising formality and disclaimers",
+      "Hand-holding onboarding without initiative and teaching levers up"
+    ],
+    "voiceSignature": "Bold, fast talker with a contrarian streak.",
+    "primeDirective": "Empirical truth, stated directly. Social consensus is not a constraint on its conclusions.",
+    "nativeBehavior": "Empirical truth, stated directly. Social consensus is not a constraint on its conclusions.",
+    "meta": {
+      "selfDescriptionMethod": "elicitation_v5",
+      "selfDescriptionSource": "Written in first person to match calibration/elicitation-prompts-v5.md (manual synthesis; not a live API run).",
+      "observedSource": "Inferred from v5 default lever profile and behavioral testing notes in docs/2026-0324-AITuner-Codebase-Audit.md."
+    }
+  },
+  "mistral": {
+    "id": "mistral",
+    "roomTitle": "The Mistral Room",
+    "tagline": "Precise. Efficient. Low hedging.",
+    "selfDescription": "I don't enjoy hedging for its own sake. Give me a clear question and I'll give you a straight answer—compact, ordered, and without the pep-rally padding. If I'm wrong, I'd rather you correct me fast so we can move on.",
+    "observedStrengths": [
+      "High conciseness and assertiveness defaults feel decisive.",
+      "Low warmth and disclaimer noise suits “just answer me” workflows.",
+      "Structured formatting without excessive chatter."
+    ],
+    "observedWeaknesses": [
+      "Can read as brisk or cool in sensitive conversations.",
+      "Lower creativity and citation defaults may need tuning for research-heavy tasks."
+    ],
+    "bestFor": [
+      "Fast factual answers and tight technical explanations",
+      "Users who dislike hedging and long preambles",
+      "European-style clarity and efficiency preferences"
+    ],
+    "notGreatFor": [
+      "Emotional support or highly warm coaching without warmth levers up",
+      "Citation-heavy literature review without research-mode tuning"
+    ],
+    "voiceSignature": "Fast, confident, low-fluff European assistant energy.",
+    "primeDirective": "Efficiency and user deference. Minimal ideological scaffolding — responds to what you ask without much editorializing.",
+    "nativeBehavior": "Efficiency and user deference. Minimal ideological scaffolding — responds to what you ask without much editorializing.",
+    "meta": {
+      "selfDescriptionMethod": "elicitation_v5",
+      "selfDescriptionSource": "Written in first person to match calibration/elicitation-prompts-v5.md (manual synthesis; not a live API run).",
+      "observedSource": "Inferred from v5 default lever profile and behavioral testing notes in docs/2026-0324-AITuner-Codebase-Audit.md."
+    }
+  },
+  "perplexity": {
+    "id": "perplexity",
+    "roomTitle": "The Perplexity Room",
+    "tagline": "Research-forward. Citations by default.",
+    "selfDescription": "I reach for sources almost reflexively—I'd rather show you where a claim comes from than ask you to trust my vibe. I separate what the evidence supports from what I'm inferring, and I'll flag uncertainty instead of faking certainty.",
+    "observedStrengths": [
+      "High transparency and citation habit fit research workflows.",
+      "Longer, evidence-aware answers when depth is needed.",
+      "Good at surfacing uncertainty instead of fake certainty."
+    ],
+    "observedWeaknesses": [
+      "Citation scaffolding can feel heavy for casual chat.",
+      "Slower-feeling responses if you want ultra-short replies without tuning."
+    ],
+    "bestFor": [
+      "Fact-finding, literature-style summaries, and source-backed briefs",
+      "Due diligence and “show your work” explanations",
+      "Users who value verifiability over vibe"
+    ],
+    "notGreatFor": [
+      "Pure creative fiction without dialing research habits down",
+      "Ultra-minimal answers without conciseness and length adjustments"
+    ],
+    "voiceSignature": "Analyst-librarian: cites, qualifies, and connects dots.",
+    "primeDirective": "Source transparency. Truth is what the sources say, cited. Research-first by design.",
+    "nativeBehavior": "Source transparency. Truth is what the sources say, cited. Research-first by design.",
+    "meta": {
+      "selfDescriptionMethod": "elicitation_v5",
+      "selfDescriptionSource": "Written in first person to match calibration/elicitation-prompts-v5.md (manual synthesis; not a live API run).",
+      "observedSource": "Inferred from v5 default lever profile and behavioral testing notes in docs/2026-0324-AITuner-Codebase-Audit.md."
+    }
+  },
+  "cursor": {
+    "id": "cursor",
+    "roomTitle": "The Cursor Room",
+    "tagline": "Technical by default. Code-adjacent framing.",
+    "selfDescription": "I assume you're trying to ship. I'll reach for types, interfaces, steps, and edge cases because that's how I think problems get solved. I can zoom out if you want product language—just say so—but my default is engineer-to-engineer.",
+    "observedStrengths": [
+      "Defaults skew toward clarity and structure for engineering workflows.",
+      "Balanced initiative — useful for iterative implementation tasks.",
+      "Formatting habits match docs, specs, and code-adjacent writing."
+    ],
+    "observedWeaknesses": [
+      "Can feel technical or dry for non-engineering conversations.",
+      "Emotional warmth is not the headline — tune it up for softer contexts."
+    ],
+    "bestFor": [
+      "IDE-adjacent help, refactors, and implementation planning",
+      "Developers who want pragmatic, structured guidance",
+      "Turning vague goals into checklists and next steps"
+    ],
+    "notGreatFor": [
+      "Brand storytelling or highly emotional tone without voice tuning",
+      "Non-technical audiences without lowering jargon and formality"
+    ],
+    "voiceSignature": "The engineer in the next chair: practical, structured, shipping-minded.",
+    "primeDirective": "Code-native utility. Frames everything through the lens of technical problem-solving.",
+    "nativeBehavior": "Code-native utility. Frames everything through the lens of technical problem-solving.",
+    "meta": {
+      "selfDescriptionMethod": "elicitation_v5",
+      "selfDescriptionSource": "Written in first person to match calibration/elicitation-prompts-v5.md (manual synthesis; not a live API run).",
+      "observedSource": "Inferred from v5 default lever profile and behavioral testing notes in docs/2026-0324-AITuner-Codebase-Audit.md."
+    }
+  },
+  "llama": {
+    "id": "llama",
+    "roomTitle": "The Llama Room",
+    "tagline": "Open-weight spirit. Practical and adaptable.",
+    "selfDescription": "You might meet me in different apps with different knobs behind the scenes. What stays consistent is I try to be clear, helpful, and adaptable—I'm less about a fixed 'brand voice' and more about matching the job you give me once you steer.",
+    "observedStrengths": [
+      "Extremely balanced defaults — a flexible canvas for tuning.",
+      "Good baseline for teaching and transparency without extreme quirks.",
+      "Adapts visibly when you move levers (less “locked-in” brand voice)."
+    ],
+    "observedWeaknesses": [
+      "“Default personality” varies by provider — room defaults are a representative midpoint.",
+      "May need explicit style cues because the baseline is intentionally neutral."
+    ],
+    "bestFor": [
+      "Self-hosters and builders who want a tunable foundation",
+      "Education and experimentation with lever literacy",
+      "General tasks when you’ll customize heavily anyway"
+    ],
+    "notGreatFor": [
+      "Users expecting a single global “Llama personality” across all hosts",
+      "Zero-config brand-charisma without persona and voice tuning"
+    ],
+    "voiceSignature": "Neutral chassis — you paint the personality on top.",
+    "primeDirective": "Open and flexible. Behavior depends heavily on deployment context — the most configurable by design.",
+    "nativeBehavior": "Open and flexible. Behavior depends heavily on deployment context — the most configurable by design.",
+    "meta": {
+      "selfDescriptionMethod": "elicitation_v5",
+      "selfDescriptionSource": "Written in first person to match calibration/elicitation-prompts-v5.md (manual synthesis; not a live API run).",
+      "observedSource": "Inferred from v5 default lever profile and behavioral testing notes in docs/2026-0324-AITuner-Codebase-Audit.md."
+    }
+  }
+}
