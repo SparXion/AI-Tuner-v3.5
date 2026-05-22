@@ -1,0 +1,52 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor files
+.vscode/
+!vscode/settings.json.example
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Calibration outputs
+calibration/last-run.json
+calibration/drift-history.json
+calibration/elicitation-responses/*.json
+
+# Build outputs
+dist/
+build/
+out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Archive (keep structure, ignore large binaries)
+archive/**/*.xcodeproj/
+archive/**/*.xcworkspace/
+archive/**/DerivedData/
+archive/**/build/

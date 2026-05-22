@@ -117,3 +117,9 @@ AI-Tuner-iOS/AITuner4/AITuner4/Resources/GoogleService-Info.plist
 *.mobileprovision
 *.cer
 *.certSigningRequest
+
+# Nest repo backup (do not commit)
+AI-Tuner-v5.0/.git-backup/
+
+# Large chat exports (may contain third-party tokens; not for remote)
+AI-Tuner-v5.0/AI Tuner Origin - OG Cursor Chats/

@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aituner.local/schemas/model-room-v5.json",
+  "title": "AI Tuner model room entry (v5)",
+  "type": "object",
+  "description": "Each key is a model id (e.g. claude). Values describe the model room literacy content.",
+  "additionalProperties": {
+    "type": "object",
+    "required": [
+      "id",
+      "roomTitle",
+      "tagline",
+      "selfDescription",
+      "observedStrengths",
+      "observedWeaknesses",
+      "bestFor",
+      "notGreatFor",
+      "voiceSignature",
+      "meta"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Stable id; must match v5-models.js key."
+      },
+      "roomTitle": {
+        "type": "string",
+        "description": "Display title, e.g. The Claude Room."
+      },
+      "tagline": {
+        "type": "string",
+        "description": "Short hook shown on room entry."
+      },
+      "selfDescription": {
+        "type": "string",
+        "description": "First-person self portrait; sourced via elicitation pipeline when available."
+      },
+      "observedStrengths": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Plain-language strengths from behavioral testing / calibration."
+      },
+      "observedWeaknesses": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Plain-language caveats (worth knowing)."
+      },
+      "bestFor": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Task categories where the model tends to shine."
+      },
+      "notGreatFor": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Honest limitations."
+      },
+      "voiceSignature": {
+        "type": "string",
+        "description": "One-line voice descriptor for selection UX."
+      },
+      "meta": {
+        "type": "object",
+        "required": ["observedSource"],
+        "properties": {
+          "selfDescriptionMethod": {
+            "type": "string",
+            "enum": ["elicitation_v5", "paraphrased_vendor"],
+            "description": "How selfDescription was produced; paraphrased_vendor means pending real elicitation run."
+          },
+          "selfDescriptionSource": {
+            "type": "string",
+            "description": "Human-readable provenance for self text."
+          },
+          "observedSource": {
+            "type": "string",
+            "description": "Human-readable provenance for observed lists."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+        "additionalProperties": true
+    }
+}

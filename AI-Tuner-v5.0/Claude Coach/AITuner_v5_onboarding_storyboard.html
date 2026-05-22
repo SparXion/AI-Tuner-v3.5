@@ -1,0 +1,389 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.sb{font-family:var(--font-sans);padding:1rem 0}
+.path-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
+.path-btn{font-size:12px;padding:5px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;transition:all .15s}
+.path-btn.active{background:var(--color-background-primary);border-color:var(--color-border-primary);color:var(--color-text-primary);font-weight:500}
+.screen-wrap{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.screen-header{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.screen-id{font-size:11px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.06em;text-transform:uppercase}
+.screen-counter{font-size:11px;color:var(--color-text-tertiary)}
+.screen-body{padding:1.5rem;min-height:280px}
+.screen-label{font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--color-text-tertiary);text-transform:uppercase;margin-bottom:8px}
+.screen-headline{font-size:20px;font-weight:500;color:var(--color-text-primary);line-height:1.35;margin-bottom:8px}
+.screen-sub{font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:20px}
+.screen-body-text{font-size:13px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:16px;font-style:italic;border-left:2px solid var(--color-border-secondary);padding-left:12px}
+.card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:20px}
+.card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;cursor:pointer;transition:border-color .15s}
+.card:hover{border-color:var(--color-border-primary)}
+.card-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.card-sub{font-size:11px;color:var(--color-text-tertiary);line-height:1.4}
+.beat-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.beat-icon{width:28px;height:28px;border-radius:50%;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:var(--color-text-secondary)}
+.beat-text{font-size:13px;color:var(--color-text-secondary);line-height:1.5;padding-top:4px}
+.prompt-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;font-size:12px;font-family:var(--font-mono);color:var(--color-text-secondary);line-height:1.7;margin-bottom:16px}
+.radar-placeholder{border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:16px;text-align:center;margin-bottom:16px}
+.radar-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:16px}
+.radar-mini{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px;text-align:center}
+.radar-mini.locked{opacity:.4}
+.radar-mini-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px}
+.radar-svg-placeholder{width:60px;height:60px;margin:0 auto;display:block}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;margin-right:4px;margin-bottom:4px}
+.tag-purple{background:#EEEDFE;color:#3C3489}
+.tag-teal{background:#E1F5EE;color:#085041}
+.tag-coral{background:#FAECE7;color:#712B13}
+.tag-amber{background:#FAEEDA;color:#633806}
+.cta-primary{display:block;width:100%;padding:10px;background:var(--color-text-primary);color:var(--color-background-primary);border:none;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;text-align:center;margin-bottom:8px;transition:opacity .15s}
+.cta-primary:hover{opacity:.85}
+.cta-secondary{display:block;width:100%;padding:8px;background:none;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;color:var(--color-text-secondary);cursor:pointer;text-align:center;margin-bottom:8px;transition:border-color .15s}
+.cta-secondary:hover{border-color:var(--color-border-primary);color:var(--color-text-primary)}
+.cta-quiet{display:block;font-size:12px;color:var(--color-text-tertiary);text-align:center;cursor:pointer;margin-top:8px}
+.cta-quiet:hover{color:var(--color-text-secondary)}
+.annotation{margin-top:1rem;padding:12px 14px;background:var(--color-background-info);border-radius:var(--border-radius-md);border-left:3px solid var(--color-border-info)}
+.annotation-label{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-info);margin-bottom:4px}
+.annotation-text{font-size:12px;color:var(--color-text-info);line-height:1.6}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}
+.nav-btn{font-size:13px;padding:6px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:none;color:var(--color-text-secondary);cursor:pointer;transition:all .15s}
+.nav-btn:hover{border-color:var(--color-border-primary);color:var(--color-text-primary)}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.progress-dots{display:flex;gap:5px;align-items:center}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--color-border-secondary);transition:background .2s}
+.dot.active{background:var(--color-text-primary)}
+.model-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.model-chip{font-size:12px;padding:5px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;color:var(--color-text-secondary);background:var(--color-background-secondary)}
+.model-chip:hover{border-color:var(--color-border-primary);color:var(--color-text-primary)}
+.section-divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:16px 0}
+.lever-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.lever-label{font-size:12px;color:var(--color-text-secondary)}
+.lever-track{flex:1;height:3px;background:var(--color-border-tertiary);border-radius:2px;margin:0 10px;position:relative}
+.lever-fill{height:3px;background:var(--color-text-primary);border-radius:2px;width:60%}
+.lever-val{font-size:12px;color:var(--color-text-tertiary);min-width:16px;text-align:right}
+.pill{display:inline-block;font-size:11px;padding:3px 8px;border-radius:12px;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-tertiary);margin-right:4px}
+.ease-btn{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px;margin-bottom:8px;cursor:pointer;background:var(--color-background-secondary)}
+.ease-btn-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.ease-btn-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.room-header{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px;margin-bottom:16px;text-align:center}
+.room-title{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.room-tagline{font-size:12px;color:var(--color-text-tertiary)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.col-section{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px}
+.col-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-tertiary);margin-bottom:6px}
+.col-item{font-size:12px;color:var(--color-text-secondary);line-height:1.5;margin-bottom:4px;padding-left:8px;border-left:2px solid var(--color-border-tertiary)}
+.source-label{font-size:10px;color:var(--color-text-tertiary);font-style:italic;margin-top:6px}
+</style>
+
+<div class="sb">
+<div class="path-nav" id="pathNav">
+  <button class="path-btn active" onclick="setPath('guided')">Path A — guided</button>
+  <button class="path-btn" onclick="setPath('decoder')">Path B — decoder</button>
+  <button class="path-btn" onclick="setPath('discovery')">Path C — discovery</button>
+  <button class="path-btn" onclick="setPath('full')">Path D — full controls</button>
+</div>
+
+<div class="screen-wrap">
+  <div class="screen-header">
+    <span class="screen-id" id="screenId">welcome</span>
+    <span class="screen-counter" id="screenCounter">1 / 1</span>
+  </div>
+  <div class="screen-body" id="screenBody"></div>
+</div>
+
+<div class="nav-row">
+  <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>← back</button>
+  <div class="progress-dots" id="progressDots"></div>
+  <button class="nav-btn" id="nextBtn" onclick="next()">next →</button>
+</div>
+</div>
+
+<script>
+const PATHS = {
+  guided: [
+    {
+      id:'welcome',
+      render:()=>`
+        <div class="screen-label">Start here</div>
+        <div class="screen-headline">AI is more flexible than anyone told you.</div>
+        <div class="screen-sub">AITuner shows you what's under the hood — and helps you take the wheel.</div>
+        <button class="cta-primary">Show me →</button>
+        <div class="cta-quiet">I already know what I'm doing — skip to full controls</div>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">One promise. Not a feature list. The user doesn't know what AITuner is yet — the headline makes them curious without overwhelming. The quiet link is the escape hatch for experts.</div></div>`
+    },
+    {
+      id:'origin story',
+      render:()=>`
+        <div class="screen-label">Why this exists</div>
+        <div class="screen-headline">It started with a prompt on Instagram.</div>
+        <div class="screen-body-text">"In September 2025, a Reddit user named Devashish_Jain posted something called 'Absolute Mode.' It went viral — 218,000 likes. People were copying it because it worked. But something bothered me: 74,000 people just adopted someone else's preferences. I didn't want to copy it. I wanted to understand it. So I took it apart..."</div>
+        <div class="screen-sub" style="margin-bottom:8px">— John Violette, founder</div>
+        <button class="cta-primary">Let's find yours →</button>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">This screen builds trust through a real story. It names the problem (copying someone else's AI settings) and makes the promise personal — not "here are features" but "here is why someone built this."</div></div>`
+    },
+    {
+      id:'the promise',
+      render:()=>`
+        <div class="screen-label">Here's how this works</div>
+        <div class="screen-headline">We'll go at your pace.<br>One thing at a time.</div>
+        <div style="margin:16px 0">
+          <div class="beat-row"><div class="beat-icon">1</div><div class="beat-text">First, we'll find what's been bugging you about AI.</div></div>
+          <div class="beat-row"><div class="beat-icon">2</div><div class="beat-text">Then, we'll show you how to fix it.</div></div>
+          <div class="beat-row"><div class="beat-icon">3</div><div class="beat-text">Then, we'll show you how much further you can go.</div></div>
+        </div>
+        <div class="screen-sub">You don't need to know anything yet. That's the whole point.</div>
+        <button class="cta-primary">I'm ready →</button>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">"You don't need to know anything yet" is permission to be a beginner. This neutralizes overwhelm before it starts. Three beats preview the coaching arc without naming a single feature.</div></div>`
+    },
+    {
+      id:'frustration cards',
+      render:()=>`
+        <div class="screen-label">Let's start here</div>
+        <div class="screen-headline">What's been bothering you about how AI talks to you?</div>
+        <div class="screen-sub">Pick the one that's most familiar. We'll fix it first.</div>
+        <div class="card-grid">
+          <div class="card"><div class="card-title">It keeps adding tips I didn't ask for</div><div class="card-sub">Always one more suggestion</div></div>
+          <div class="card"><div class="card-title">It hedges everything with "maybe"</div><div class="card-sub">Just tell me what you think</div></div>
+          <div class="card"><div class="card-title">Too formal — feels like a robot</div><div class="card-sub">I want it more human</div></div>
+          <div class="card"><div class="card-title">Over-explains what I already know</div><div class="card-sub">Treat me like an adult</div></div>
+          <div class="card"><div class="card-title">Too long — just the answer</div><div class="card-sub">Get to the point</div></div>
+          <div class="card"><div class="card-title">Feels cold and clinical</div><div class="card-sub">I want more warmth</div></div>
+        </div>
+        <div class="cta-quiet">None of these — let me explore on my own →</div>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">THE most important screen. It names the user's frustration before they have to explain it. Being seen before you've spoken is when trust is built. Each card maps to a specific lever — the user doesn't know that yet.</div></div>`
+    },
+    {
+      id:'the fix',
+      render:()=>`
+        <div class="screen-label">Here's your fix</div>
+        <div class="screen-headline">We built you a prompt.<br>Copy it. Paste it. Feel the difference.</div>
+        <div class="prompt-box">You are a direct, focused assistant. Answer only what I ask — nothing more. Do not add tips, suggestions, or next steps unless I specifically request them. Get to the point and stop.</div>
+        <button class="cta-primary">Copy prompt</button>
+        <button class="cta-secondary">What does this actually do? →</button>
+        <div style="font-size:11px;color:var(--color-text-tertiary);text-align:center;margin-top:8px">Works with Claude, ChatGPT, Gemini, Grok, and most others.</div>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">Primary path is pure action — copy, paste, done. No explanation required for the win to happen. The secondary path is the curiosity hook for users who want to understand. Copying triggers Tier 1 unlock.</div></div>`
+    },
+    {
+      id:'the reveal',
+      render:()=>`
+        <div class="screen-label">What just happened</div>
+        <div class="screen-headline">You just pulled a lever.</div>
+        <div class="screen-sub">That prompt adjusted one specific dimension — Initiative. How proactively the AI volunteers information beyond what you asked for. You turned it down.</div>
+        <div class="radar-row">
+          <div class="radar-mini">
+            <div class="radar-mini-title">Character</div>
+            <svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/><polygon points="30,14 43,23 38,38 22,38 17,23" fill="rgba(83,74,183,0.15)" stroke="#534AB7" stroke-width="1"/></svg>
+          </div>
+          <div class="radar-mini">
+            <div class="radar-mini-title">Voice <span style="font-size:10px;color:#0F6E56">(active)</span></div>
+            <svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/><polygon points="30,8 50,20 43,46 17,46 10,20" fill="rgba(15,110,86,0.2)" stroke="#0F6E56" stroke-width="1.5"/><circle cx="30" cy="8" r="3" fill="#0F6E56"/></svg>
+          </div>
+          <div class="radar-mini locked">
+            <div class="radar-mini-title">Thinking (locked)</div>
+            <svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/></svg>
+          </div>
+          <div class="radar-mini locked">
+            <div class="radar-mini-title">Output (locked)</div>
+            <svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/></svg>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--color-text-tertiary);text-align:center;margin-bottom:12px">This is what you just changed. The other axes unlock as you go.</div>
+        <button class="cta-primary">Show me what else is possible →</button>
+        <div class="cta-quiet">I'm good for now — save this prompt and come back later →</div>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">The radar appears here for the first time — but only after the user has felt what it measures. Voice pillar is highlighted. Thinking and Output are grayed and locked. The user sees what's coming without feeling overwhelmed.</div></div>`
+    },
+    {
+      id:'model selection',
+      render:()=>`
+        <div class="screen-label">Which AI</div>
+        <div class="screen-headline">Which AI are you tuning for?</div>
+        <div class="screen-sub">Each model has a distinct voice. Here's what that sounds like.</div>
+        <div class="model-chips">
+          ${['Claude','ChatGPT','Gemini','Grok','Mistral','Llama','Perplexity','Cursor'].map(m=>`<div class="model-chip">${m}</div>`).join('')}
+        </div>
+        <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Claude</span><span style="font-size:11px;color:var(--color-text-tertiary)">Thoughtful. Nuanced. Thinks out loud.</span></div>
+          <div style="font-size:12px;color:var(--color-text-secondary);font-style:italic;line-height:1.6">"That's a genuinely hard question, and I think the answer depends on a few things worth separating out..."</div>
+        </div>
+        <button class="cta-primary">Enter the Claude room →</button>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">Sample responses show the voice difference — not described, experienced. The "room" framing sets up what comes next. Users pick based on voice, not brand recognition.</div></div>`
+    },
+    {
+      id:'model room — entry',
+      render:()=>`
+        <div class="room-header">
+          <div class="room-title">The Claude Room</div>
+          <div class="room-tagline">Thoughtful. Nuanced. Thinks out loud.</div>
+        </div>
+        <div class="radar-row">
+          <div class="radar-mini"><div class="radar-mini-title">Character</div><svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/><polygon points="30,12 46,24 40,44 20,44 14,24" fill="rgba(83,74,183,0.2)" stroke="#534AB7" stroke-width="1"/></svg></div>
+          <div class="radar-mini"><div class="radar-mini-title">Voice</div><svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/><polygon points="30,10 48,22 42,46 18,46 12,22" fill="rgba(15,110,86,0.2)" stroke="#0F6E56" stroke-width="1"/></svg></div>
+          <div class="radar-mini"><div class="radar-mini-title">Thinking</div><svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/><polygon points="30,9 49,22 43,45 17,45 11,22" fill="rgba(216,90,48,0.2)" stroke="#D85A30" stroke-width="1"/></svg></div>
+          <div class="radar-mini"><div class="radar-mini-title">Output</div><svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/><polygon points="30,14 44,24 38,44 22,44 16,24" fill="rgba(186,117,23,0.2)" stroke="#BA7517" stroke-width="1"/></svg></div>
+        </div>
+        <div class="screen-sub">This is Claude's default personality shape — before you change anything. Some of this you'll want to keep. Some you might want to adjust.</div>
+        <button class="cta-primary">Show me around →</button>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">The radar fingerprint draws in slowly on entry — like a signature being revealed. All four pillars visible, Tier 2 style. This is the moment the radar becomes meaningful — it belongs to something the user chose.</div></div>`
+    },
+    {
+      id:'model room — tour',
+      render:()=>`
+        <div class="screen-label">Getting to know Claude</div>
+        <div class="two-col">
+          <div class="col-section">
+            <div class="col-label">What Claude says about itself</div>
+            <div class="col-item">Designed to be helpful, harmless, honest</div>
+            <div class="col-item">Tends to consider multiple angles</div>
+            <div class="col-item">Acknowledges complexity rather than papers over it</div>
+            <div class="source-label">Self-reported</div>
+          </div>
+          <div class="col-section">
+            <div class="col-label">What we observed</div>
+            <div class="col-item">Extended reasoning + analysis</div>
+            <div class="col-item">Writing that sounds genuinely human</div>
+            <div class="col-item">Can be verbose when brevity would serve better</div>
+            <div class="source-label">Behavioral testing</div>
+          </div>
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-tertiary);margin-bottom:6px">Best for</div>
+          <span class="tag tag-purple">Long-form writing</span><span class="tag tag-purple">Complex analysis</span><span class="tag tag-purple">Nuanced conversations</span><span class="tag tag-purple">Strategic thinking</span>
+        </div>
+        <button class="cta-primary">Now let's tune it to you →</button>
+        <button class="cta-secondary">Compare Claude to another model →</button>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">Two clearly labeled sources — self-reported vs observed. This is the transparency mission made concrete. Not marketing copy. Not "Claude is best." Just: here's what it says, here's what we saw.</div></div>`
+    },
+    {
+      id:'model room — tuner',
+      render:()=>`
+        <div class="screen-label">Shape it to fit you</div>
+        <div class="screen-headline" style="font-size:16px;margin-bottom:12px">Start with a mode. Adjust from there.</div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:12px">
+          ${[['Direct Mode','No fluff. Just answers.'],['Writing Partner','Warm, collaborative, precise'],['Research Mode','Thorough, cites reasoning'],['Thinking Partner','Asks good questions'],['Teacher Mode','Explains everything'],['Quick Answer','Short, fast, done']].map(([t,s])=>`<div class="ease-btn"><div class="ease-btn-title">${t}</div><div class="ease-btn-sub">${s}</div></div>`).join('')}
+        </div>
+        <hr class="section-divider">
+        <div style="font-size:12px;color:var(--color-text-tertiary);margin-bottom:8px">Fine-tune → (expand)</div>
+        ${[['Initiative','Just answers','Always more',3],['Assertiveness','Tentative','Decisive',7],['Conciseness','Thorough','Brief',5],['Emotional warmth','Clinical','Warm',6]].map(([n,l,h,v])=>`<div class="lever-row"><span class="lever-label">${n}</span><div class="lever-track"><div class="lever-fill" style="width:${v*10}%"></div></div><span class="lever-val">${v}</span></div>`).join('')}
+        <button class="cta-primary" style="margin-top:12px">Copy my prompt →</button>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">Easy buttons are the on-ramp. The tuner is the destination for curious users. Moving a slider updates the radar live — this is the moment the system clicks for the user.</div></div>`
+    }
+  ],
+  decoder: [
+    {
+      id:'home — decoder entry',
+      render:()=>`
+        <div class="screen-label">Entry point B</div>
+        <div class="screen-headline">I found a prompt I want to understand.</div>
+        <div class="screen-sub">Paste any system prompt — from Reddit, Instagram, anywhere. We'll show you which levers it's pulling and why it works.</div>
+        <div style="margin-bottom:12px"><textarea style="width:100%;min-height:80px;font-size:12px;font-family:var(--font-mono);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:10px;color:var(--color-text-secondary);background:var(--color-background-secondary);resize:vertical" placeholder="Paste your prompt here..."></textarea></div>
+        <div class="cta-quiet" style="text-align:left;margin-bottom:10px">Try the prompt that started AITuner →</div>
+        <button class="cta-primary">Decode this →</button>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">The origin story feature. "Try the prompt that started AITuner" pre-fills the Absolute Mode prompt — connecting the product's founding moment to every user's first decode experience.</div></div>`
+    },
+    {
+      id:'decoder — results',
+      render:()=>`
+        <div class="screen-label">What's happening</div>
+        <div class="screen-headline">This prompt is pulling 8 levers.</div>
+        <div class="radar-row">
+          <div class="radar-mini"><div class="radar-mini-title">Character</div><svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/><polygon points="30,6 54,22 45,49 15,49 6,22" fill="rgba(83,74,183,0.25)" stroke="#534AB7" stroke-width="1.5"/></svg></div>
+          <div class="radar-mini"><div class="radar-mini-title">Voice</div><svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/><polygon points="30,6 53,21 45,49 15,49 7,21" fill="rgba(15,110,86,0.25)" stroke="#0F6E56" stroke-width="1.5"/></svg></div>
+          <div class="radar-mini"><div class="radar-mini-title">Thinking</div><svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/><polygon points="30,14 42,24 38,44 22,44 18,24" fill="rgba(216,90,48,0.15)" stroke="#D85A30" stroke-width="1"/></svg></div>
+          <div class="radar-mini"><div class="radar-mini-title">Output</div><svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/><polygon points="30,6 53,22 45,49 15,49 7,22" fill="rgba(186,117,23,0.25)" stroke="#BA7517" stroke-width="1.5"/></svg></div>
+        </div>
+        <div style="margin-bottom:12px">
+          ${[['Terminate reply immediately','Response Length: 1','Keeps answers extremely short'],['Disable sentiment boosting','Emotional Warmth: 0','Removes warmth and emotional performance'],['Never mirror user\'s diction','Tone Matching: 0','Keeps a consistent voice regardless'],['Blunt, directive phrasing','Assertiveness: 10','States conclusions directly, no softening']].map(([a,b,c])=>`<div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 10px;margin-bottom:6px"><div style="font-size:11px;color:var(--color-text-tertiary);font-style:italic;margin-bottom:2px">"${a}"</div><div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:1px">${b}</div><div style="font-size:11px;color:var(--color-text-secondary)">${c}</div></div>`).join('')}
+        </div>
+        <button class="cta-primary">Use this configuration →</button>
+        <button class="cta-secondary">Adjust from here →</button>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">Each instruction is translated to a lever + plain English explanation. The radar shows the "shape" of the prompt visually. Character and Voice are spiked — Output is near-zero. The Absolute Mode shape is instantly readable.</div></div>`
+    }
+  ],
+  discovery: [
+    {
+      id:'home — discovery entry',
+      render:()=>`
+        <div class="screen-label">Entry point C</div>
+        <div class="screen-headline">What's the difference between AI models?</div>
+        <div class="screen-sub">Same question. Four personalities. See the difference before you choose.</div>
+        <div style="margin-bottom:12px">
+          ${[['Should I quit my job to start a company?','Shows: empathy, hedging, directness'],['Explain blockchain in one paragraph','Shows: verbosity, tone, confidence'],['What\'s the best programming language?','Shows: assertiveness, opinion-giving'],['Give me an unusual product idea','Shows: creativity, playfulness']].map(([q,s])=>`<div class="card" style="margin-bottom:8px"><div class="card-title">${q}</div><div class="card-sub">${s}</div></div>`).join('')}
+        </div>
+        <button class="cta-primary">Compare →</button>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">Four pre-set questions chosen to maximally reveal model differences. User picks the question and up to 4 models. The insight isn't explained — it's experienced through the side-by-side.</div></div>`
+    },
+    {
+      id:'discovery — comparison',
+      render:()=>`
+        <div class="screen-label">Side by side</div>
+        <div class="screen-headline" style="font-size:15px;margin-bottom:12px">"Should I quit my job to start a company?"</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+          ${[['Claude','Thoughtful, considers angles','That\'s a genuinely hard question, and I think the answer depends on a few things worth separating out first...'],['Grok','Direct, minimal','Short answer: depends on runway. Do you have 18 months saved? If not, keep the job and build nights/weekends.'],['ChatGPT','Structured, balanced','There are several key factors to consider: 1) Financial runway 2) Market validation 3) Risk tolerance...'],['Gemini','Expansive, connected','This connects to a broader question about risk psychology that researchers have studied extensively...']].map(([m,s,r])=>`<div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px"><div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px">${m}</div><div style="font-size:10px;color:var(--color-text-tertiary);margin-bottom:6px;font-style:italic">${s}</div><div style="font-size:11px;color:var(--color-text-secondary);line-height:1.5">${r}</div><div style="margin-top:8px;font-size:11px;color:var(--color-text-info);cursor:pointer">Tune this model →</div></div>`).join('')}
+        </div>
+        <div style="font-size:13px;color:var(--color-text-secondary);text-align:center;margin-bottom:10px">What did you notice?</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">
+          ${['Claude','Grok','ChatGPT','Gemini'].map(m=>`<button class="pill" style="cursor:pointer">${m} feels right →</button>`).join('')}
+        </div>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">Same question, four distinct voices. The differences are visible immediately — no explanation needed. "What did you notice?" nudges reflection. Tapping a model routes to that model's room with intent set to "explore."</div></div>`
+    }
+  ],
+  full: [
+    {
+      id:'home — full controls',
+      render:()=>`
+        <div class="screen-label">Entry point D</div>
+        <div class="screen-headline">I know what I'm doing.</div>
+        <div class="screen-sub">Jump straight to the full instrument panel. All 16 levers. All 4 radars. Every model room open.</div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:12px;color:var(--color-text-tertiary);margin-bottom:8px">Jump to a model room:</div>
+          <div class="model-chips">${['Claude','ChatGPT','Gemini','Grok','Mistral','Llama','Perplexity','Cursor'].map(m=>`<div class="model-chip">${m}</div>`).join('')}</div>
+        </div>
+        <button class="cta-primary">Open full controls →</button>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">No onboarding. No coaching. Directly to architect.html with all 16 levers and 4 radar charts active. Sets skip_onboarding: true permanently. This path is for returning users and experts — it never shows tutorials again.</div></div>`
+    },
+    {
+      id:'architect mode',
+      render:()=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Architect mode</span>
+          <span style="font-size:11px;padding:3px 8px;background:#EEEDFE;color:#3C3489;border-radius:10px">I've got this</span>
+        </div>
+        <div class="radar-row" style="margin-bottom:12px">
+          ${[['Character','#534AB7','rgba(83,74,183,0.2)'],['Voice','#0F6E56','rgba(15,110,86,0.2)'],['Thinking','#D85A30','rgba(216,90,48,0.2)'],['Output','#BA7517','rgba(186,117,23,0.2)']].map(([n,c,f])=>`<div class="radar-mini"><div class="radar-mini-title">${n}</div><svg class="radar-svg-placeholder" viewBox="0 0 60 60"><polygon points="30,5 55,22 46,50 14,50 5,22" fill="none" stroke="var(--color-border-secondary)" stroke-width="0.5"/><polygon points="30,10 48,23 41,45 19,45 12,23" fill="${f}" stroke="${c}" stroke-width="1.5"/></svg></div>`).join('')}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+          ${[['Character','assertiveness formality playfulness warmth'],['Voice','conciseness teaching initiative questions'],['Thinking','transparency creativity confidence citations'],['Output','formatting length disclaimers tone']].map(([p,l])=>`<div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px"><div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px">${p}</div>${l.split(' ').map(lv=>`<div class="lever-row" style="margin-bottom:6px"><span style="font-size:11px;color:var(--color-text-secondary)">${lv}</span><div class="lever-track"><div class="lever-fill" style="width:${Math.round(40+Math.random()*40)}%"></div></div></div>`).join('')}</div>`).join('')}
+        </div>
+        <button class="cta-primary">Copy prompt →</button>
+        <div class="annotation"><div class="annotation-label">Coaching note</div><div class="annotation-text">Full instrument panel. All 16 levers. All 4 radar charts fully active with drag. No gating, no tutorials. First-time Tier 2 users see the Act 5 graduation overlay once — "the coach is stepping back now. This is yours."</div></div>`
+    }
+  ]
+};
+
+let currentPath = 'guided';
+let currentScreen = 0;
+
+function setPath(p) {
+  currentPath = p;
+  currentScreen = 0;
+  document.querySelectorAll('.path-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+
+function render() {
+  const screens = PATHS[currentPath];
+  const s = screens[currentScreen];
+  document.getElementById('screenId').textContent = s.id;
+  document.getElementById('screenCounter').textContent = `${currentScreen + 1} / ${screens.length}`;
+  document.getElementById('screenBody').innerHTML = s.render();
+  document.getElementById('prevBtn').disabled = currentScreen === 0;
+  document.getElementById('nextBtn').disabled = currentScreen === screens.length - 1;
+  document.getElementById('nextBtn').textContent = currentScreen === screens.length - 1 ? 'end of path' : 'next →';
+  const dots = document.getElementById('progressDots');
+  dots.innerHTML = screens.map((_,i) => `<div class="dot ${i===currentScreen?'active':''}"></div>`).join('');
+}
+
+function next() { if (currentScreen < PATHS[currentPath].length - 1) { currentScreen++; render(); } }
+function prev() { if (currentScreen > 0) { currentScreen--; render(); } }
+
+render();
+</script>
