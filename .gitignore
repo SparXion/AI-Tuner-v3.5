@@ -111,3 +111,9 @@ Package.resolved
 
 # Firebase configuration (contains API keys - safe but flagged by GitHub)
 AI-Tuner-iOS/AITuner4/AITuner4/Resources/GoogleService-Info.plist
+
+# Apple credentials & signing
+*.p8
+*.mobileprovision
+*.cer
+*.certSigningRequest
