@@ -3,142 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Tuner v5.0 - Architect Mode</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            min-height: 100vh;
-        }
-
-        .tier-badge {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 13px;
-            font-weight: 600;
-            z-index: 1000;
-            cursor: pointer;
-            font-family: inherit;
-            border: none;
-        }
-
-        .architect-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 100px 40px 40px;
-        }
-
-        .architect-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .architect-header h1 {
-            font-size: 36px;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .architect-header p {
-            font-size: 18px;
-        }
-
-        .architect-layout {
-            display: grid;
-            grid-template-columns: 1fr minmax(440px, 36vw);
-            gap: 40px;
-            margin-top: 40px;
-            align-items: start;
-        }
-
-        @media (max-width: 1100px) {
-            .architect-layout {
-                grid-template-columns: 1fr;
-            }
-            .radar-panel {
-                max-width: 640px;
-                margin-left: auto;
-                margin-right: auto;
-                width: 100%;
-            }
-        }
-
-        .controls-panel,
-        .radar-panel {
-            border-radius: 16px;
-            padding: 32px;
-        }
-
-        .panel-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 24px;
-        }
-
-        .prompt-section {
-            margin-top: 40px;
-        }
-
-        #prompt-content {
-            min-height: 2em;
-        }
-
-        .prompt-display {
-            border-radius: 12px;
-            padding: 24px;
-        }
-
-        .prompt-text {
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-        }
-
-        .copy-btn {
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 16px;
-            transition: transform 0.2s ease;
-            font-family: inherit;
-        }
-
-        .copy-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .architect-prompt-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 16px;
-            align-items: center;
-        }
-
-        .architect-prompt-actions .copy-btn {
-            margin-top: 0;
-        }
-
-        #all-slider-controls {
-            max-height: calc(100vh - 260px);
-            overflow-y: auto;
-        }
-
-    </style>
+    <title>AI Tuner v5.0 — Architect Mode</title>
     <link rel="stylesheet" href="css/visual-language.css">
 </head>
 <body class="architect-page aituner-dark">
+    <div id="aituner-chrome-root"></div>
     <div id="act5-graduation-overlay" class="act5-graduation-overlay" role="dialog" aria-modal="true" aria-labelledby="act5-graduation-title">
         <div class="act5-graduation-dialog">
             <h2 id="act5-graduation-title">You've unlocked Architect mode.</h2>
@@ -154,9 +23,15 @@
         </div>
     </div>
 
-    <button type="button" class="tier-badge" id="tier-badge" aria-label="My profile">My Profile</button>
-
     <div class="architect-container">
+        <div class="screen-nav screen-nav-top">
+            <button type="button" class="nav-btn" onclick="window.location.href='app.html#/aituner/v/home'">← Back</button>
+        </div>
+        <header class="aituner-brand-block" aria-label="AI Tuner">
+            <h1 class="aituner-brand">AI Tuner v5.0</h1>
+            <p class="aituner-demystifier">The AI Demystifier™</p>
+            <p class="aituner-tagline">Understand, build, and decode AI behavior</p>
+        </header>
         <div class="architect-header">
             <h1>Architect Mode</h1>
             <p>Full control over all 16 levers across 4 behavior dimensions</p>
@@ -216,25 +91,26 @@
     <script src="src/onboarding/onboarding-state.js"></script>
     <script src="src/profile/profile-panel.js"></script>
     <script src="src/ui/save-config-dialog.js"></script>
+    <script src="src/ui/origin-story.js"></script>
+    <script src="src/ui/app-chrome.js"></script>
 
     <script>
         document.body.classList.add('architect-page');
-        (function syncAitunerTheme() {
-            function applyTheme() {
-                var stored = '';
-                try { stored = localStorage.getItem('aituner-theme'); } catch (e) {}
-                document.body.classList.remove('aituner-dark', 'aituner-light');
-                if (stored === 'light') {
-                    document.body.classList.add('aituner-light');
-                } else {
-                    document.body.classList.add('aituner-dark');
-                }
-            }
-            applyTheme();
-        })();
 
         // Initialize
         const engine = new AITunerV5();
+        if (window.AITunerAppChrome) {
+            AITunerAppChrome.mount({
+                showHomeLink: true,
+                showProfileButton: true,
+                homeHref: 'index.html',
+                homeLabel: '← About AI Tuner',
+                engine: engine
+            });
+        }
+        window.addEventListener('aituner-theme-changed', function () {
+            engine.generatePrompt();
+        });
         const onboardingState = new OnboardingState(engine);
         const userProfile = new UserProfile(engine);
         const profilePanel = new ProfilePanel(engine, onboardingState, userProfile, {

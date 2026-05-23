@@ -3,28 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Tuner v5.0</title>
+    <title>AI Tuner v5.0 — The AI Demystifier™</title>
     <link rel="stylesheet" href="css/visual-language.css">
 </head>
 <body class="aituner-dark">
+    <div id="aituner-chrome-root"></div>
     <div id="session-restore-banner" class="session-restore-banner" style="display: none;" role="region" aria-label="Session restore">
         <p id="session-restore-msg"></p>
         <button type="button" class="session-continue" id="session-continue-btn">Continue</button>
         <button type="button" class="session-fresh" id="session-fresh-btn">Start fresh</button>
     </div>
     
-    <button type="button" class="tier-badge" id="tier-badge" aria-haspopup="dialog" aria-label="My profile">My Profile</button>
-    
     <!-- Home View -->
     <div id="home-view" class="view-container">
         <div class="container">
             <div class="hero">
-                <h1>AI Tuner v5.0</h1>
-                <p>Understand, build, and decode AI behavior</p>
+                <header class="aituner-brand-block" aria-label="AI Tuner">
+                    <h1 class="aituner-brand">AI Tuner v5.0</h1>
+                    <p class="aituner-demystifier">The AI Demystifier™</p>
+                    <p class="aituner-tagline">Understand, build, and decode AI behavior</p>
+                </header>
             </div>
             
             <div class="home-model-entry">
-                <h2>I already use…</h2>
+                <h2>Explore models I already use...</h2>
                 <div class="home-model-chips" id="home-model-chips" aria-label="Open model room"></div>
             </div>
             
@@ -127,23 +129,11 @@
     <script src="src/setup/memory-guide.js"></script>
     <script src="src/rooms/setup-ui.js"></script>
     <script src="src/rooms/room-ui.js"></script>
+    <script src="src/ui/origin-story.js"></script>
+    <script src="src/ui/app-chrome.js"></script>
     
     <!-- Initialize app -->
     <script>
-        (function syncAitunerTheme() {
-            function applyTheme() {
-                var stored = '';
-                try { stored = localStorage.getItem('aituner-theme'); } catch (e) {}
-                document.body.classList.remove('aituner-dark', 'aituner-light');
-                if (stored === 'light') {
-                    document.body.classList.add('aituner-light');
-                } else {
-                    document.body.classList.add('aituner-dark');
-                }
-            }
-            applyTheme();
-        })();
-
         window.addEventListener('storage', function (e) {
             if (e.key === 'aituner_user' && e.newValue === null) {
                 window.location.reload();
@@ -189,6 +179,19 @@
 
         // Initialize engine
         const engine = new AITunerV5();
+        var appChromeApi = null;
+        if (window.AITunerAppChrome) {
+            appChromeApi = AITunerAppChrome.mount({
+                showHomeLink: true,
+                showProfileButton: true,
+                homeHref: 'index.html',
+                homeLabel: '← About AI Tuner',
+                engine: engine
+            });
+        }
+        window.addEventListener('aituner-theme-changed', function () {
+            engine.generatePrompt();
+        });
         const onboardingState = new OnboardingState(engine);
         const userProfile = new UserProfile(engine);
         const sessionRestore = new SessionRestore(engine);
@@ -516,10 +519,13 @@
             router.navigateTo('home');
         });
         
-        document.getElementById('tier-badge').addEventListener('click', function (e) {
-            e.stopPropagation();
-            profilePanel.open();
-        });
+        const tierBadgeEl = document.getElementById('tier-badge');
+        if (tierBadgeEl) {
+            tierBadgeEl.addEventListener('click', function (e) {
+                e.stopPropagation();
+                profilePanel.open();
+            });
+        }
         
         updateTierBadge();
         showSessionBannerIfNeeded();

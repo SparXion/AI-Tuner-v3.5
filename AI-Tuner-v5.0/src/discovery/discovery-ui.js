@@ -37,7 +37,7 @@ class DiscoveryMode {
                 description:
                     "Shows each model's native behavior — run with Truth-Seeker active for maximum contrast",
                 intent: 'truth-seeker-demo',
-                recommended_persona: 'truth-seeker'
+                recommended_persona: 'truthSeeker'
             }
         ];
     }

@@ -140,6 +140,54 @@
         }
     }
 
+    function radarScaleReady(chart) {
+        const scale = chart && chart.scales && chart.scales.r;
+        return !!(scale && Number.isFinite(scale.drawingArea) && scale.drawingArea > 0);
+    }
+
+    function findRadarElementAtEvent(chart, canvas, event, leverCount) {
+        const elements = chart.getElementsAtEventForMode(event, 'nearest', { intersect: false }, true);
+        if (elements.length && elements[0].datasetIndex === 0) {
+            return elements[0];
+        }
+        const scale = chart.scales && chart.scales.r;
+        if (!scale || !leverCount) {
+            return null;
+        }
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const dx = x - scale.xCenter;
+        const dy = y - scale.yCenter;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance > scale.drawingArea + 16 || distance < 2) {
+            return null;
+        }
+        let angle = Math.atan2(dy, dx);
+        const start = -Math.PI / 2;
+        let a = angle - start;
+        while (a < 0) {
+            a += Math.PI * 2;
+        }
+        while (a >= Math.PI * 2) {
+            a -= Math.PI * 2;
+        }
+        const step = (Math.PI * 2) / leverCount;
+        const index = Math.round(a / step) % leverCount;
+        return { datasetIndex: 0, index };
+    }
+
+    function tryAttachRadarInteractions(canvas, chart, leverKeys, engine) {
+        if (!canvas || !chart || !Array.isArray(leverKeys) || !engine) {
+            return false;
+        }
+        if (!radarScaleReady(chart)) {
+            return false;
+        }
+        attachRadarInteractions(canvas, chart, leverKeys, engine);
+        return !!(canvas._radarHandlers);
+    }
+
     function attachRadarInteractions(canvas, chart, leverKeys, engine) {
         if (!canvas || !chart || !Array.isArray(leverKeys) || !engine) {
             return;
@@ -181,6 +229,9 @@
         };
 
         const setTooltip = (event) => {
+            if (chart._radarSuppressTooltip) {
+                return;
+            }
             if (!chart.tooltip || typeof chart.tooltip.setActiveElements !== 'function') {
                 return;
             }
@@ -248,11 +299,10 @@
                 if (!chart) {
                     return;
                 }
-                const elements = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
-                if (!elements.length) {
+                const element = findRadarElementAtEvent(chart, canvas, event, leverKeys.length);
+                if (!element) {
                     return;
                 }
-                const element = elements[0];
                 if (element.datasetIndex !== 0) {
                     return;
                 }
@@ -360,7 +410,7 @@
         return null;
     }
 
-    function buildChartOptions({ textColor, gridColor, leverKeys, pillarKey, tier, highlightIndex, pointLabelSize }) {
+    function buildChartOptions({ textColor, gridColor, leverKeys, pillarKey, tier, highlightIndex, pointLabelSize, suppressTooltip }) {
         const tier1 = getTier1Levers();
         const muted = isDarkMode() ? 'rgba(180,180,185,0.5)' : 'rgba(85,85,92,0.45)';
         const plSize = pointLabelSize != null ? pointLabelSize : 11;
@@ -369,6 +419,11 @@
             responsive: true,
             maintainAspectRatio: true,
             aspectRatio: 1,
+            animation: false,
+            transitions: {
+                active: { animation: { duration: 0 } },
+                resize: { animation: { duration: 0 } }
+            },
             scales: {
                 r: {
                     beginAtZero: true,
@@ -403,6 +458,7 @@
             plugins: {
                 legend: { display: false },
                 tooltip: {
+                    enabled: suppressTooltip !== true,
                     callbacks: {
                         label: (ctx) => {
                             const key = leverKeys[ctx.dataIndex];
@@ -415,6 +471,36 @@
                 }
             }
         };
+    }
+
+    function syncChartDataset(chart, leverKeys, engine) {
+        const ds = chart.data.datasets[0];
+        if (!ds) {
+            return;
+        }
+        const values = leverKeys.map((k) => leverValue(engine, k));
+        if (!Array.isArray(ds.data) || ds.data.length !== values.length) {
+            ds.data = values.slice();
+            return;
+        }
+        for (let i = 0; i < values.length; i++) {
+            ds.data[i] = values[i];
+        }
+    }
+
+    function relayoutChart(chart) {
+        if (!chart) {
+            return;
+        }
+        try {
+            if (typeof chart.resize === 'function') {
+                chart.resize();
+            }
+        } catch (e) {
+            /* ignore */
+        }
+        // Radar point positions go stale with update('none') after bulk data changes.
+        chart.update();
     }
 
     function updateChartsForState(st) {
@@ -433,12 +519,8 @@
             if (!chart || !cfg) {
                 return;
             }
-            const data = cfg.leverKeys.map((k) => leverValue(engine, k));
-            const ds = chart.data.datasets[0];
-            if (ds) {
-                ds.data = data;
-            }
-            chart.update('none');
+            syncChartDataset(chart, cfg.leverKeys, engine);
+            relayoutChart(chart);
         });
     }
 
@@ -560,10 +642,14 @@
 
             const grid = document.createElement('div');
             const layoutStack = options && options.layout === 'stack';
-            grid.className = 'aituner-v5-radar-grid' + (layoutStack ? ' aituner-v5-radar-grid--stack' : '');
+            const layoutRoom = options && options.layout === 'room';
+            grid.className =
+                'aituner-v5-radar-grid' +
+                (layoutStack ? ' aituner-v5-radar-grid--stack' : '') +
+                (layoutRoom ? ' aituner-v5-radar-grid--room' : '');
             grid.style.display = 'grid';
             grid.style.alignItems = 'stretch';
-            grid.style.gap = embedded ? '8px' : layoutStack ? '20px' : '16px';
+            grid.style.gap = embedded ? '8px' : layoutStack || layoutRoom ? '20px' : '16px';
 
             const tier = resolveTier(engine, options && options.tier);
             const interactive =
@@ -579,6 +665,10 @@
                 grid.style.gridTemplateColumns = '1fr';
                 grid.style.maxWidth = layoutStack ? '100%' : '320px';
                 grid.style.margin = layoutStack ? '0' : '0 auto';
+            } else if (layoutRoom) {
+                grid.style.gridTemplateColumns = 'repeat(2, minmax(240px, 1fr))';
+                grid.style.maxWidth = '100%';
+                grid.style.margin = '0';
             } else if (layoutStack) {
                 grid.style.gridTemplateColumns = '1fr';
                 grid.style.maxWidth = '100%';
@@ -601,9 +691,9 @@
 
                 const title = document.createElement('div');
                 title.textContent = cfg.label || pillarKey;
-                title.style.fontSize = layoutStack && !embedded ? '14px' : '13px';
+                title.style.fontSize = (layoutStack || layoutRoom) && !embedded ? '14px' : '13px';
                 title.style.fontWeight = '600';
-                title.style.marginBottom = layoutStack && !embedded ? '10px' : '8px';
+                title.style.marginBottom = (layoutStack || layoutRoom) && !embedded ? '10px' : '8px';
                 title.style.color = locked ? (isDarkMode() ? '#9ca3af' : '#6b7280') : textColor;
                 if (locked) {
                     title.textContent += ' (locked)';
@@ -613,7 +703,8 @@
                 canvas.id = `aituner-v5-radar-${pillarKey}${idSuffix}`;
                 canvas.setAttribute('aria-label', `${cfg.label} radar`);
                 canvas.style.width = '100%';
-                const defaultMaxH = layoutStack && !embedded ? 300 : 220;
+                const defaultMaxH =
+                    layoutStack && !embedded ? 300 : layoutRoom && !embedded ? 360 : 220;
                 const maxH = options && options.maxCanvasHeightPx != null ? options.maxCanvasHeightPx : defaultMaxH;
                 canvas.style.maxHeight = typeof maxH === 'number' ? `${maxH}px` : String(maxH);
 
@@ -644,6 +735,9 @@
                         ? leverKeys.map((_, i) => (i === highlightIndex ? pointBg : dimPoint))
                         : leverKeys.map(() => pointBg);
 
+                const dragEnabled =
+                    interactive && pillarDragEnabled(pillarKey, tier) && highlightIndex === null;
+
                 const chart = new Chart(canvas, {
                     type: 'radar',
                     data: {
@@ -659,7 +753,8 @@
                                 pointBorderColor: borderColor,
                                 pointHoverBackgroundColor: pointBg,
                                 pointRadius: 4,
-                                pointHoverRadius: 6
+                                pointHoverRadius: 6,
+                                pointHitRadius: 16
                             }
                         ]
                     },
@@ -670,18 +765,28 @@
                         pillarKey,
                         tier,
                         highlightIndex: highlightIndex !== null ? highlightIndex : undefined,
-                        pointLabelSize: layoutStack && !embedded ? 12 : undefined
+                        pointLabelSize: (layoutStack || layoutRoom) && !embedded ? 12 : undefined,
+                        suppressTooltip: dragEnabled
                     })
                 });
+                chart._radarSuppressTooltip = dragEnabled;
 
                 chartsByPillar[pillarKey] = chart;
 
-                if (interactive && pillarDragEnabled(pillarKey, tier) && highlightIndex === null) {
-                    attachRadarInteractions(canvas, chart, leverKeys, engine);
-                } else {
-                    cleanupRadarInteractions(canvas);
-                    canvas.style.cursor = 'default';
-                }
+                canvas._radarDragEnabled = dragEnabled;
+                canvas._radarLeverKeys = leverKeys;
+
+                const scheduleAttach = () => {
+                    if (!dragEnabled) {
+                        cleanupRadarInteractions(canvas);
+                        canvas.style.cursor = 'default';
+                        return;
+                    }
+                    if (!tryAttachRadarInteractions(canvas, chart, leverKeys, engine)) {
+                        requestAnimationFrame(scheduleAttach);
+                    }
+                };
+                scheduleAttach();
             });
 
             container.appendChild(grid);
@@ -727,6 +832,18 @@
 
             const refreshLocal = () => updateChartsForState(localState);
 
+            requestAnimationFrame(() => {
+                Object.keys(localState.chartsByPillar).forEach((pk) => {
+                    const c = localState.chartsByPillar[pk];
+                    relayoutChart(c);
+                    const canvas = c && c.canvas;
+                    if (canvas && canvas._radarDragEnabled && canvas._radarLeverKeys) {
+                        tryAttachRadarInteractions(canvas, c, canvas._radarLeverKeys, engine);
+                    }
+                });
+                updateChartsForState(localState);
+            });
+
             if (embedded) {
                 return {
                     destroy: () => {
@@ -742,9 +859,14 @@
             }
 
             return {
-                destroy: destroyMount,
-                refresh: updateChartsFromEngine,
-                getChartsByPillar: () => (mountState ? mountState.chartsByPillar : {})
+                destroy: () => {
+                    if (mountState === localState) {
+                        mountState = null;
+                    }
+                    destroyMountState(localState);
+                },
+                refresh: refreshLocal,
+                getChartsByPillar: () => localState.chartsByPillar || {}
             };
         })
             .catch((err) => {
