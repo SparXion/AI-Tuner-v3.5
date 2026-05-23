@@ -35,6 +35,73 @@
         }
     }
 
+    /** Where to paste Instructions / system behavior in each host UI. */
+    function instructionsPasteCue(modelId) {
+        var id = String(modelId || '').toLowerCase();
+        switch (id) {
+            case 'claude':
+                return { pathPlain: 'Project → Instructions' };
+            case 'grok':
+                return { pathPlain: 'Project → Instructions (or custom system prompt field)' };
+            case 'chatgpt':
+                return { pathPlain: 'Custom GPT → Configure → Instructions' };
+            case 'gemini':
+                return { pathPlain: 'Gem → Instructions' };
+            default:
+                return {
+                    pathPlain:
+                        'Find Instructions, System prompt, or Custom instructions in your project or workspace settings.'
+                };
+        }
+    }
+
+    /** Host project workspace name + whether it has native project sections. */
+    function setupHostLanes(modelId) {
+        var id = String(modelId || '').toLowerCase();
+        switch (id) {
+            case 'claude':
+                return {
+                    workspace: 'Claude Projects',
+                    hasNativeProject: true,
+                    knowledgeHost: 'Project → Files',
+                    instructionsHost: 'Project → Instructions',
+                    memoryHost: 'Project → Memory'
+                };
+            case 'grok':
+                return {
+                    workspace: 'Grok Projects',
+                    hasNativeProject: true,
+                    knowledgeHost: 'Project → Sources',
+                    instructionsHost: 'Project → Instructions',
+                    memoryHost: 'Settings → Memory'
+                };
+            case 'chatgpt':
+                return {
+                    workspace: 'Custom GPTs',
+                    hasNativeProject: true,
+                    knowledgeHost: 'Knowledge → Upload files',
+                    instructionsHost: 'Configure → Instructions',
+                    memoryHost: 'Settings → Personalization → Memory'
+                };
+            case 'gemini':
+                return {
+                    workspace: 'Gems',
+                    hasNativeProject: true,
+                    knowledgeHost: 'Gem → Files',
+                    instructionsHost: 'Gem → Instructions',
+                    memoryHost: 'Google account / product settings'
+                };
+            default:
+                return {
+                    workspace: 'your AI workspace',
+                    hasNativeProject: false,
+                    knowledgeHost: 'Files, Knowledge, or Sources',
+                    instructionsHost: 'Instructions or System prompt',
+                    memoryHost: 'Memory or personalization settings'
+                };
+        }
+    }
+
     function ProjectSetupUI(container, engine, deps) {
         this.container = container;
         this.engine = engine;
@@ -90,6 +157,13 @@
 
     ProjectSetupUI.prototype.tplStep0 = function () {
         var name = escapeHtml(modelDisplayForId(this.modelId));
+        var lanes = setupHostLanes(this.modelId);
+        var framing =
+            lanes.hasNativeProject
+                ? 'This walkthrough mirrors how ' +
+                  lanes.workspace +
+                  ' is organized in the app. Open your project there and fill three separate sections — in this order — so setup stays clean and you do not repeat yourself in every chat.'
+                : 'Many AI apps split project setup into three sections: files for facts, a field for standing behavior, and memory that grows over time. Where your app offers those areas, use this sequence — it is the efficient way to get a project ready.';
         return (
             '<div class="room-screen room-setup-wizard">' +
             '<p class="narrative-label">Project setup</p>' +
@@ -101,12 +175,37 @@
                 'You\'re setting up three things. Each stays in its lane — don\'t mix Knowledge into Instructions.'
             ) +
             '</p>' +
-            '<div class="room-setup-zone-row">' +
-            '<div class="room-setup-zone room-setup-zone-k"><strong>Knowledge</strong><span>Files & facts</span></div>' +
-            '<div class="room-setup-zone room-setup-zone-i"><strong>Instructions</strong><span>Standing behavior</span></div>' +
-            '<div class="room-setup-zone room-setup-zone-m"><strong>Memory</strong><span>Emergent over time</span></div>' +
+            '<p class="room-setup-framing">' +
+            escapeHtml(framing) +
+            '</p>' +
+            '<div class="room-setup-lane-callout" role="note">' +
+            '<p class="room-setup-lane-callout-title">Keep each lane separate</p>' +
+            '<p class="room-setup-lane-callout-body">' +
+            escapeHtml(
+                'Upload documents and facts as Knowledge. Paste tuned behavior into Instructions. Use Memory for what the AI learns across chats — not for files or standing rules. Putting a project brief into Instructions makes behavior muddy and hard to update.'
+            ) +
+            '</p>' +
             '</div>' +
-            '<button type="button" class="primary-btn" data-setup-next="1">Let\'s start →</button>' +
+            '<div class="room-setup-zone-row">' +
+            '<div class="room-setup-zone room-setup-zone-k"><strong>Knowledge</strong><span>Files &amp; facts</span><span class="room-setup-zone-host">' +
+            escapeHtml(lanes.knowledgeHost) +
+            '</span></div>' +
+            '<div class="room-setup-zone room-setup-zone-i"><strong>Instructions</strong><span>Standing behavior</span><span class="room-setup-zone-host">' +
+            escapeHtml(lanes.instructionsHost) +
+            '</span></div>' +
+            '<div class="room-setup-zone room-setup-zone-m"><strong>Memory</strong><span>Emergent over time</span><span class="room-setup-zone-host">' +
+            escapeHtml(lanes.memoryHost) +
+            '</span></div>' +
+            '</div>' +
+            '<p class="room-setup-steps-intro">Three steps in this guide — one per lane:</p>' +
+            '<ol class="room-setup-steps-overview">' +
+            '<li><strong>Knowledge</strong> — what to upload and where in ' +
+            name +
+            '</li>' +
+            '<li><strong>Instructions</strong> — copy your tuned behavior prompt (from Tune)</li>' +
+            '<li><strong>Memory</strong> — prompts to steer what it remembers later</li>' +
+            '</ol>' +
+            '<button type="button" class="primary-btn" data-setup-next="1">Start with Knowledge →</button>' +
             '</div>'
         );
     };
@@ -117,12 +216,17 @@
         var pathEsc = escapeHtml(cue.pathPlain);
         return (
             '<div class="room-screen room-setup-wizard">' +
-            '<p class="room-setup-meta">Step 1 · Knowledge · Zone 1 (static)</p>' +
-            '<h2 class="room-setup-title">What to put in your files</h2>' +
+            '<p class="room-setup-meta">Step 1 of 3 · Knowledge lane</p>' +
+            '<h2 class="room-setup-title">Upload project files</h2>' +
             '<p class="room-setup-lead">' +
             escapeHtml(
-                'Your AI works best when it knows who you are and what you\'re working on. Upload these as files in your project\'s knowledge section — the AI will treat them as standing context for every conversation.'
+                'In ' +
+                    modelDisplayForId(this.modelId) +
+                    ', open your project and use the Knowledge / Files area — not Instructions. Upload documents that describe you, your project, and your context. The AI reads them once and carries that forward in every chat inside the project.'
             ) +
+            '</p>' +
+            '<p class="room-setup-lane-reminder">' +
+            escapeHtml('Do not paste these into Instructions — that field is for behavior rules (Step 2).') +
             '</p>' +
             '<ul class="room-setup-brief-checklist">' +
             '<li><span class="room-setup-check-title">A document about you</span> — ' +
@@ -164,6 +268,9 @@
 
     ProjectSetupUI.prototype.tplStep2 = function () {
         var configs = this.listSavedConfigs();
+        var modelName = escapeHtml(modelDisplayForId(this.modelId));
+        var insCue = instructionsPasteCue(this.modelId);
+        var insPath = escapeHtml(insCue.pathPlain);
         var btns = configs
             .map(function (c) {
                 return (
@@ -177,13 +284,28 @@
             .join('');
         return (
             '<div class="room-screen room-setup-wizard">' +
-            '<p class="room-setup-meta">Step 2 · Instructions · Zone 1 (behavior)</p>' +
-            '<h2>Instructions content</h2>' +
-            '<p class="room-setup-hint">' +
+            '<p class="room-setup-meta">Step 2 of 3 · Instructions lane</p>' +
+            '<h2 class="room-setup-title">Paste standing behavior</h2>' +
+            '<p class="room-setup-lead">' +
             escapeHtml(
-                'Built from Tune using the clustering/synthesis engine. Adjust levers in Tune first if needed.'
+                'This is how you want ' +
+                    modelDisplayForId(this.modelId) +
+                    ' to behave in every conversation — tone, depth, initiative, formatting. Built from your Tune settings. Project facts and documents belong in Knowledge (Step 1), not here.'
             ) +
             '</p>' +
+            '<p class="room-setup-hint">' +
+            escapeHtml(
+                'Adjust levers in Tune first if the preview is not right, then copy and paste into your project Instructions field.'
+            ) +
+            '</p>' +
+            '<div class="room-setup-upload-block">' +
+            '<p class="room-setup-field-label">Where to paste in ' +
+            modelName +
+            '</p>' +
+            '<p class="room-setup-upload-path" aria-live="polite">' +
+            insPath +
+            '</p>' +
+            '</div>' +
             (configs.length
                 ? '<div class="room-setup-saved-inline"><span class="room-setup-micro">Load saved configs:</span> ' +
                   btns +
@@ -222,8 +344,13 @@
                 : '';
         return (
             '<div class="room-screen room-setup-wizard">' +
-            '<p class="room-setup-meta">Step 3 · Memory · Zone 2</p>' +
-            '<h2>Memory prompts</h2>' +
+            '<p class="room-setup-meta">Step 3 of 3 · Memory lane</p>' +
+            '<h2 class="room-setup-title">Steer what it learns over time</h2>' +
+            '<p class="room-setup-lead">' +
+            escapeHtml(
+                'Memory is the third lane — separate from files (Knowledge) and behavior rules (Instructions). Use these prompts in chat when you want the AI to remember, update, or forget something about you or the project.'
+            ) +
+            '</p>' +
             '<p class="room-setup-lead-soft">' +
             escapeHtml(g.intro) +
             '</p>' +
@@ -242,14 +369,34 @@
     };
 
     ProjectSetupUI.prototype.tplStep4 = function () {
+        var name = escapeHtml(modelDisplayForId(this.modelId));
+        var lanes = setupHostLanes(this.modelId);
+        var knowPath = escapeHtml(knowledgeUploadCue(this.modelId).pathPlain);
+        var insPath = escapeHtml(instructionsPasteCue(this.modelId).pathPlain);
+        var memPath = escapeHtml(lanes.memoryHost);
         return (
             '<div class="room-screen room-setup-wizard">' +
-            '<p class="narrative-label">You\'re set up</p>' +
-            '<h2>Three layers</h2>' +
+            '<p class="narrative-label">Project ready</p>' +
+            '<h2 class="room-setup-title">Your ' +
+            name +
+            ' workspace — three lanes filled</h2>' +
+            '<p class="room-setup-lead">' +
+            escapeHtml(
+                'You now have what you need to configure a project in ' +
+                    modelDisplayForId(this.modelId) +
+                    '. Each item goes in its own section in the app — keep them separate when you paste or upload.'
+            ) +
+            '</p>' +
             '<ul class="room-setup-summary-list">' +
-            '<li><strong>Knowledge:</strong> upload files in your project\'s knowledge area (see Step 1)</li>' +
-            '<li><strong>Instructions:</strong> copy from Step 2</li>' +
-            '<li><strong>Memory:</strong> use prompt commands from Step 3</li>' +
+            '<li><strong>Knowledge:</strong> upload files at ' +
+            knowPath +
+            '</li>' +
+            '<li><strong>Instructions:</strong> paste behavior prompt at ' +
+            insPath +
+            '</li>' +
+            '<li><strong>Memory:</strong> use chat prompts from Step 3; review at ' +
+            memPath +
+            '</li>' +
             '</ul>' +
             '<div class="room-setup-actions">' +
             '<button type="button" class="secondary-btn" data-setup-next="0">Restart guide</button>' +

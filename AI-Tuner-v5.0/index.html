@@ -3,94 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AITuner v5.1 — The AI Demystifier™</title>
-    <meta name="description" content="[Placeholder: one-line marketing description for search and sharing.]">
+    <title>AI Tuner v5.0 — The AI Demystifier™</title>
+    <meta name="description" content="AI Tuner removes the mystery from every chatbot. See how the AI is wired — and change it with precision controls.">
     <link rel="stylesheet" href="css/visual-language.css">
 </head>
 <body class="aituner-dark landing-page">
-    <main class="landing-wrap">
-        <header class="landing-header-block">
-            <h1 class="landing-brand">AITuner v5.1</h1>
-            <p class="landing-demystifier">The AI Demystifier™</p>
-            <p class="landing-tagline">Understand, build, and decode AI behavior.</p>
-        </header>
+    <div id="aituner-chrome-root"></div>
+    <main class="landing-main">
+        <div class="landing-center">
+            <header class="aituner-brand-block">
+                <h1 class="aituner-brand">AI Tuner v5.0</h1>
+                <p class="aituner-demystifier">The AI Demystifier™</p>
+                <p class="aituner-tagline">Understand, build, and decode AI behavior</p>
+            </header>
 
-        <section class="landing-steps" aria-labelledby="landing-flow-title">
-            <h2 id="landing-flow-title" class="landing-sr-only">Select, tune, and copy</h2>
+            <section class="landing-quick-start" aria-labelledby="landing-flow-title">
+                <h2 id="landing-flow-title" class="landing-sr-only">Select, tune, and copy</h2>
 
-            <div class="landing-step">
-                <svg class="landing-step-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <rect x="8" y="8" width="32" height="32" rx="2" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="20" cy="20" r="4" stroke="currentColor" stroke-width="2"/>
-                    <path d="M26 26l14 14" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
-                </svg>
-                <div class="landing-step-label">Step</div>
-                <div class="landing-step-name">Select</div>
+                <div class="landing-quick-start-step">
+                    <div class="landing-quick-start-icon" aria-hidden="true">
+                        <i data-lucide="sparkles"></i>
+                    </div>
+                    <div class="landing-quick-start-content">
+                        <h3>Select</h3>
+                        <p>Choose model</p>
+                    </div>
+                </div>
+
+                <div class="landing-quick-start-arrow" aria-hidden="true">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+
+                <div class="landing-quick-start-step">
+                    <div class="landing-quick-start-icon" aria-hidden="true">
+                        <i data-lucide="sliders-horizontal"></i>
+                    </div>
+                    <div class="landing-quick-start-content">
+                        <h3>Tune</h3>
+                        <p>Adjust sliders</p>
+                    </div>
+                </div>
+
+                <div class="landing-quick-start-arrow" aria-hidden="true">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+
+                <div class="landing-quick-start-step">
+                    <div class="landing-quick-start-icon" aria-hidden="true">
+                        <i data-lucide="clipboard-copy"></i>
+                    </div>
+                    <div class="landing-quick-start-content">
+                        <h3>Copy</h3>
+                        <p>Copy prompt</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="landing-cta-row">
+                <a class="primary-btn landing-cta" href="app.html">Open AI Tuner</a>
             </div>
-
-            <span class="landing-flow-arrow" aria-hidden="true">→</span>
-
-            <div class="landing-step">
-                <svg class="landing-step-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <rect x="11" y="12" width="26" height="6" rx="1" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="19" cy="15" r="3" fill="currentColor"/>
-                    <rect x="11" y="21" width="26" height="6" rx="1" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="29" cy="24" r="3" fill="currentColor"/>
-                    <rect x="11" y="30" width="26" height="6" rx="1" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="23" cy="33" r="3" fill="currentColor"/>
-                </svg>
-                <div class="landing-step-label">Step</div>
-                <div class="landing-step-name">Tune</div>
-            </div>
-
-            <span class="landing-flow-arrow" aria-hidden="true">→</span>
-
-            <div class="landing-step">
-                <svg class="landing-step-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <rect x="14" y="14" width="18" height="22" rx="2" stroke="currentColor" stroke-width="2"/>
-                    <path d="M19 21h13M19 27h13M22 33h10" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
-                    <path d="M10 34V10h18" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
-                </svg>
-                <div class="landing-step-label">Step</div>
-                <div class="landing-step-name">Copy</div>
-            </div>
-        </section>
-
-        <div class="landing-cta-row">
-            <a class="primary-btn landing-cta" href="app.html">Open AITuner</a>
         </div>
 
-        <details class="landing-expand">
-            <summary>
-                What is AITuner?
-                <span class="landing-expand-chevron" aria-hidden="true">▶</span>
-            </summary>
-            <div class="landing-expand-body">
-                <p>
-                    [Placeholder: three to four sentences explaining what AITuner is,
-                    how it differs from chatting in a bot as-is,
-                    and who it is for.]
-                </p>
-                <p class="landing-subheading">Key capabilities</p>
-                <ul>
-                    <li>[Capability placeholder 1 — e.g., core workflow or outcome.]</li>
-                    <li>[Capability placeholder 2 — e.g., behavior levers or transparency.]</li>
-                    <li>[Capability placeholder 3 — e.g., models or comparison.]</li>
-                    <li>[Capability placeholder 4 — link to prompt / decode if applicable.]</li>
-                    <li>[Capability placeholder 5 — optional differentiator.]</li>
-                </ul>
-                <p class="landing-subheading">How it started</p>
-                <p>
-                    [Placeholder: origin story — e.g., a viral prompt on Instagram led to the question
-                    &ldquo;what behavioral levers is this pulling?&rdquo; AITuner was built to make that
-                    question answerable in a concrete, inspectable way.]
-                </p>
-            </div>
-        </details>
+        <div class="landing-wide">
+            <details class="landing-app-info">
+                <summary class="landing-app-info-toggle">
+                    <span class="landing-app-info-toggle-text">What is AI Tuner?</span>
+                    <span class="landing-app-info-toggle-icon" aria-hidden="true">▼</span>
+                </summary>
+                <div class="landing-app-info-body">
+                    <div class="landing-app-info-inner">
+                        <h3>About AI Tuner — The AI Demystifier™</h3>
+                        <section id="landing-origin-story" class="landing-origin-story" aria-label="Why this exists"></section>
 
-        <footer class="landing-footer">
-            <p>AITuner v5.1 © 2026  |  aitunerapp.com</p>
+                        <p>AI Tuner removes the mystery from every chatbot.</p>
+                        <p>No more guessing why an AI answers the way it does. No more fighting hidden defaults.</p>
+                        <p>Open a model room, see exactly how that AI is wired — and change it with a drag or a tap.</p>
+
+                        <h4>How It Works</h4>
+                        <ol class="landing-app-info-steps">
+                            <li><strong>Pick any AI</strong><br>Grok • ChatGPT • Claude • Gemini • Perplexity • Mistral • Llama • Cursor — each gets its own room.</li>
+                            <li><strong>See inside its mind</strong><br>Live radar charts show personality across Character, Voice, Thinking, and Output — empathy, bluntness, creativity, length, and more.</li>
+                            <li><strong>Tune it your way</strong>
+                                <ul class="landing-app-info-substeps">
+                                    <li><strong>New users:</strong> Pick a starting mode (Truth-Seeker, Writing Partner, Research Mode…) and the shape shifts instantly.</li>
+                                    <li><strong>Power users:</strong> Drag any point on the radar web, fine-tune all 16 levers, or borrow another model's behavioral profile.</li>
+                                    <li><strong>Everyone:</strong> Watch the chart move and the system prompt update live — then copy it into the chatbot you already use.</li>
+                                </ul>
+                            </li>
+                        </ol>
+
+                        <h4>Key Features</h4>
+                        <ul class="landing-app-info-features">
+                            <li><strong>Takes the black box out of AI</strong> — every behavior is visible and movable</li>
+                            <li><strong>Model rooms</strong> with Tune, Decode, and project Setup (Knowledge, Instructions, Memory)</li>
+                            <li><strong>Draggable radar charts + 16 precision levers</strong></li>
+                            <li><strong>Live prompt generator</strong> — copy into any chatbot (no API keys needed)</li>
+                            <li><strong>Guided onboarding or skip to full controls</strong></li>
+                            <li><strong>Save and reload your configurations</strong></li>
+                            <li><strong>Decode any prompt</strong> to see which levers it is pulling</li>
+                        </ul>
+
+                        <p>Whether you're four years old or fifty years in tech,</p>
+                        <p><strong>AI Tuner makes every chatbot feel like it was built just for you.</strong></p>
+
+                        <p><em><strong>Try it now – no signup, no mystery.</strong></em></p>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <footer class="landing-footer landing-wide">
+            <p>AI Tuner v5.0 © 2026  |  aitunerapp.com</p>
         </footer>
     </main>
+    <script src="src/ui/origin-story.js"></script>
+    <script src="src/ui/app-chrome.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        if (window.AITunerAppChrome) {
+            AITunerAppChrome.mount({ showHomeLink: false });
+        }
+        var landingOrigin = document.getElementById('landing-origin-story');
+        if (landingOrigin && window.AITunerOriginStory) {
+            landingOrigin.innerHTML = window.AITunerOriginStory.renderInnerHtml({
+                titleTag: 'h4',
+                titleId: 'landing-origin-story-title'
+            });
+        }
+        lucide.createIcons();
+    </script>
 </body>
 </html>

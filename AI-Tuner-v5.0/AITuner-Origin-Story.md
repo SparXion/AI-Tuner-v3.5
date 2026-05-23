@@ -8,7 +8,42 @@ press materials, academic paper, and any future marketing copy.
 ---
 
 ## John's Version
-*(Verbatim — this is the source of truth)*
+*(Verbatim — canonical copy as of May 2026. Rendered in app via `src/ui/origin-story.js`.)*
+
+October 2025.
+
+I had been using AI for about a year and a half. Grok, Claude, Cursor, Gemini. Learning through trial and a LOT of error. I'd even picked up the trick of saying "answer only" to get a simple answer.
+
+One day I was scrolling Instagram and came across a post by u/Devashish_Jain on Reddit, shared by @airesearches, about something called "Absolute Mode."
+
+> System Instruction: Absolute Mode • Eliminate: emojis, filler, hype, soft asks, conversational transitions, call-to-action appendices • Assume: user retains high perception despite blunt tone • Prioritize: blunt, directive phrasing; aim at cognitive rebuilding, not tone-matching • Disable: engagement/sentiment-boosting behaviors • Suppress: metrics like satisfaction scores, emotional softening, continuation bias • Never mirror: user's diction, mood or affect • Speak only: to underlying cognitive tier • No: questions, offers, suggestions, transitions, motivational content • Terminate reply immediately after delivering info – no closures • Goal: restore independent, high-fidelity thinking • Outcome: model obsolescence via user self-sufficiency.
+
+Very interesting. So I decided to test it with Grok.
+
+> I want to see what happens when I give you a prompt I just found. I have a suspicion I know what will happen.
+> First I want you to answer this test question:
+> What is the average velocity of an unladen swallow?
+
+Before Absolute Mode, Grok gave me a charming, fun answer with a Monty Python reference and an invitation to keep chatting.
+
+After Absolute Mode:
+
+> European Swallow (Hirundo rustica) cruising speed: 11 meters per second, approximately 24 miles per hour.
+
+That was it.
+
+Then I asked Grok: "What did the prompt just do?"
+
+Grok told me "The prompt activated Absolute Mode, enforcing a communication protocol that prioritizes raw information delivery. It stripped away conversational elements…etc."
+
+I spent the rest of the evening on the Grok app on my phone learning about the different elements AI developers use to create the human touch over a pitcher of beer…
+
+That's how AITuner was born.
+
+---
+
+## Previous Version (archived)
+*(Superseded May 2026 — kept for reference.)*
 
 I've been using AI for about a year and a half at this point
 and had learned through trial and error how to navigate in

@@ -7,11 +7,20 @@
 
     const PILLAR_KEYS = ['CHARACTER', 'VOICE', 'THINKING', 'OUTPUT'];
 
+    /** Bottom bar replaced by top tabs; order is fixed for every model room. */
+    const ROOM_SECTION_TABS = [
+        { id: 'entry', labelKey: 'room' },
+        { id: 'tour', label: 'About' },
+        { id: 'tune', label: 'Tune' },
+        { id: 'decode', label: 'Decode' },
+        { id: 'setup', label: 'Setup' }
+    ];
+
     /** Persona-backed quick tiles (priority before lever-only presets). */
     const ROOM_PERSONA_QUICK_TILES = [
-        { personaId: 'direct', label: 'Direct', blurb: 'Just the answer. Nothing more.' },
-        { personaId: 'collaborator', label: 'Collaborator', blurb: 'Thinks alongside you' },
-        { personaId: 'strategist', label: 'Strategist', blurb: 'Challenges the frame, not just the question' }
+        { personaId: 'truthSeeker', label: 'Truth-Seeker', blurb: 'Direct, candid, evidence-based' },
+        { personaId: 'creativePartner', label: 'Creative Partner', blurb: 'Brainstorms and co-creates with you' },
+        { personaId: 'planner', label: 'Planner', blurb: 'Clarifies goals, then phased step-by-step plans' }
     ];
 
     const ROOM_MODE_PRESETS = {
@@ -98,6 +107,27 @@
         return order;
     }
 
+    function getModelDefaultTargets(modelId) {
+        const model = window.MODELS_V5 && window.MODELS_V5[modelId];
+        if (model && model.defaults) {
+            return { ...model.defaults };
+        }
+        return null;
+    }
+
+    function applyModelDefaultsToEngine(engine, modelId) {
+        if (typeof engine.selectModel === 'function') {
+            engine.selectModel(modelId);
+            return { ...engine.leverValues };
+        }
+        const targets = getModelDefaultTargets(modelId);
+        if (targets) {
+            Object.keys(targets).forEach((k) => quietlySetLever(engine, k, targets[k]));
+            engine.generatePrompt();
+        }
+        return targets || { ...engine.leverValues };
+    }
+
     /**
      * Sequential axis reveal: zeros → target values (defaults or current session).
      */
@@ -153,6 +183,8 @@
             this.styleImportOpen = false;
             this._prevOnLeverChange = undefined;
             this._leverHookInstalled = false;
+            this._prevOnPromptChange = undefined;
+            this._promptHookInstalled = false;
         }
 
         teardown() {
@@ -180,6 +212,93 @@
                 this.engine.onLeverChange = this._prevOnLeverChange;
                 this._leverHookInstalled = false;
                 this._prevOnLeverChange = undefined;
+            }
+            this.uninstallRoomPromptHook();
+        }
+
+        uninstallRoomPromptHook() {
+            if (this._promptHookInstalled) {
+                this.engine.onPromptChange = this._prevOnPromptChange;
+                this._promptHookInstalled = false;
+                this._prevOnPromptChange = undefined;
+            }
+        }
+
+        roomPromptPanelHtml() {
+            return (
+                '<section class="room-prompt-panel" aria-label="Generated prompt">' +
+                '<div class="room-prompt-panel-header">' +
+                '<p class="room-subhead">Generated prompt</p>' +
+                '<button type="button" class="secondary-btn room-prompt-copy-btn" id="room-radar-prompt-copy">Copy prompt</button>' +
+                '</div>' +
+                '<textarea id="room-radar-prompt-text" class="room-prompt-textarea" rows="14" spellcheck="false" ' +
+                'placeholder="Your system prompt will appear here as you tune the radars or sliders." ' +
+                'aria-label="Generated system prompt"></textarea>' +
+                '<p class="room-prompt-hint">Updates live as you tune the radars or sliders.</p>' +
+                '</section>'
+            );
+        }
+
+        installRoomPromptHook(textareaEl) {
+            this.uninstallRoomPromptHook();
+            if (!textareaEl || !this.engine) {
+                return;
+            }
+            this.ensureEngineModelSelected();
+            const self = this;
+            const syncTextarea = (prompt) => {
+                const text =
+                    prompt && typeof prompt.generated_text === 'string' ? prompt.generated_text.trim() : '';
+                textareaEl.value = text;
+            };
+            this._prevOnPromptChange = this.engine.onPromptChange;
+            this.engine.onPromptChange = function (prompt) {
+                if (typeof self._prevOnPromptChange === 'function') {
+                    self._prevOnPromptChange.call(this, prompt);
+                }
+                syncTextarea(prompt);
+            };
+            this._promptHookInstalled = true;
+            this.engine.generatePrompt();
+            syncTextarea(this.engine.currentPrompt);
+        }
+
+        refreshRoomPromptPanel() {
+            const textarea = this.mainEl && this.mainEl.querySelector('#room-radar-prompt-text');
+            if (!textarea || !this.engine) {
+                return;
+            }
+            this.ensureEngineModelSelected();
+            if (typeof this.engine.generatePrompt === 'function') {
+                this.engine.generatePrompt();
+            }
+            const text =
+                this.engine.currentPrompt && typeof this.engine.currentPrompt.generated_text === 'string'
+                    ? this.engine.currentPrompt.generated_text.trim()
+                    : '';
+            textarea.value = text;
+        }
+
+        wireRoomPromptPanel() {
+            const textarea = this.mainEl && this.mainEl.querySelector('#room-radar-prompt-text');
+            if (!textarea) {
+                return;
+            }
+            this.installRoomPromptHook(textarea);
+            const copyBtn = this.mainEl.querySelector('#room-radar-prompt-copy');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    if (typeof this.engine.copyPrompt === 'function') {
+                        this.engine.copyPrompt();
+                    } else if (textarea.value) {
+                        navigator.clipboard.writeText(textarea.value).catch(() => {});
+                    }
+                    const label = copyBtn.textContent;
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = label;
+                    }, 2000);
+                });
             }
         }
 
@@ -215,6 +334,7 @@
                 this.modelId = (this.engine.selectedModel && this.engine.selectedModel.id) || 'claude';
                 this.engine.selectModel(this.modelId);
             }
+            this.ensureEngineModelSelected();
 
             if (this.userProfile && typeof this.userProfile.recordModelExplored === 'function') {
                 this.userProfile.recordModelExplored(this.modelId);
@@ -229,6 +349,7 @@
             this.styleImportOpen = false;
             this.installLeverRefreshHook();
             this.renderChrome();
+            this.syncRoomUrlHash();
             this.renderMain();
         }
 
@@ -245,6 +366,62 @@
             return m ? m.name : this.modelId;
         }
 
+        /** Keep engine.selectedModel aligned with the room (session can outlive the reference). */
+        ensureEngineModelSelected() {
+            if (!this.engine || !this.modelId) {
+                return;
+            }
+            const needsSelect =
+                !this.engine.selectedModel || this.engine.selectedModel.id !== this.modelId;
+            if (needsSelect && typeof this.engine.selectModel === 'function') {
+                this.engine.selectModel(this.modelId);
+            }
+        }
+
+        roomEntryTitle() {
+            const room = this.getRoom();
+            return room ? room.roomTitle : `The ${this.modelDisplayName()} Room`;
+        }
+
+        /** Short tab label, e.g. "Grok Room" from "The Grok Room". */
+        roomTabLabel() {
+            let title = this.roomEntryTitle();
+            if (/^the\s+/i.test(title)) {
+                title = title.replace(/^the\s+/i, '');
+            }
+            return title;
+        }
+
+        roomTabsHtml() {
+            return ROOM_SECTION_TABS.map((def) => {
+                const label = def.labelKey === 'room' ? this.roomTabLabel() : def.label;
+                const tabId = `room-tab-${def.id}`;
+                return (
+                    `<button type="button" class="model-room-tab" role="tab" id="${tabId}" ` +
+                    `data-room-tab="${def.id}" aria-controls="model-room-main" aria-selected="false">` +
+                    `${escapeHtml(label)}</button>`
+                );
+            }).join('');
+        }
+
+        syncRoomUrlHash() {
+            if (!this.modelId || typeof window === 'undefined') {
+                return;
+            }
+            try {
+                const base = window.location.pathname + window.location.search;
+                const url =
+                    base +
+                    '#/aituner/room/' +
+                    encodeURIComponent(this.modelId) +
+                    '/' +
+                    encodeURIComponent(this.tab);
+                history.replaceState(history.state, '', url);
+            } catch (e) {
+                /* ignore */
+            }
+        }
+
         renderChrome() {
             this.root = document.getElementById('model-room-view');
             if (!this.root) {
@@ -255,17 +432,14 @@
                     <header class="model-room-top-bar">
                         <button type="button" class="model-room-home-link">&larr; Home</button>
                     </header>
-                    <div id="model-room-main" class="model-room-main"></div>
-                    <nav id="model-room-nav" class="model-room-bottom-nav" aria-label="Room navigation">
-                        <button type="button" class="room-nav-btn" data-room-tab="tour">About</button>
-                        <button type="button" class="room-nav-btn" data-room-tab="tune">Tune</button>
-                        <button type="button" class="room-nav-btn" data-room-tab="decode">Decode</button>
-                        <button type="button" class="room-nav-btn" data-room-tab="setup">Setup</button>
+                    <nav id="model-room-tabs" class="model-room-tabs" role="tablist" aria-label="Model room sections">
+                        ${this.roomTabsHtml()}
                     </nav>
+                    <div id="model-room-main" class="model-room-main" role="tabpanel" tabindex="0"></div>
                 </div>
             `;
             this.mainEl = this.root.querySelector('#model-room-main');
-            this.navEl = this.root.querySelector('#model-room-nav');
+            this.navEl = this.root.querySelector('#model-room-tabs');
             const homeLn = this.root.querySelector('.model-room-home-link');
             if (homeLn) {
                 homeLn.addEventListener('click', () => this.goHome());
@@ -280,18 +454,21 @@
         }
 
         updateNavActive() {
-            if (!this.navEl) {
+            if (!this.navEl || !this.mainEl) {
                 return;
             }
+            const activeTab = this.tab;
             this.navEl.querySelectorAll('[data-room-tab]').forEach((btn) => {
                 const t = btn.getAttribute('data-room-tab');
-                const active =
-                    (t === 'tour' && (this.tab === 'tour' || this.tab === 'entry')) ||
-                    (t === 'tune' && this.tab === 'tune') ||
-                    (t === 'decode' && this.tab === 'decode') ||
-                    (t === 'setup' && this.tab === 'setup');
-                btn.classList.toggle('room-nav-active', active);
+                const active = t === activeTab;
+                btn.classList.toggle('model-room-tab-active', active);
+                btn.setAttribute('aria-selected', active ? 'true' : 'false');
+                btn.tabIndex = active ? 0 : -1;
             });
+            const panelLabel = this.navEl.querySelector(`#room-tab-${activeTab}`);
+            if (panelLabel && panelLabel.id) {
+                this.mainEl.setAttribute('aria-labelledby', panelLabel.id);
+            }
         }
 
         switchTab(tab, navOptions) {
@@ -309,6 +486,7 @@
             } else {
                 this.tab = 'entry';
             }
+            this.syncRoomUrlHash();
             this.renderMain();
         }
 
@@ -371,6 +549,9 @@
                 this.roomSetupUI.destroy();
                 this.roomSetupUI = null;
             }
+            if (this.tab !== 'entry' && this.tab !== 'tune') {
+                this.uninstallRoomPromptHook();
+            }
         }
 
         renderEntry() {
@@ -383,6 +564,7 @@
                     <h1 class="room-entry-title">${escapeHtml(title)}</h1>
                     <p class="room-tagline">${escapeHtml(tag)}</p>
                     <div id="room-entry-radar" class="room-entry-radar-host"></div>
+                    ${this.roomPromptPanelHtml()}
                     <div class="room-entry-body narrative-body">
                         <p>This is ${escapeHtml(this.modelDisplayName())}'s default personality — the shape it naturally takes before you change anything.</p>
                         <p>Some of this you'll want to keep. Some of it you might want to adjust. That's what we're here for.</p>
@@ -391,24 +573,32 @@
                 </div>
             `;
             this.mainEl.querySelector('#room-entry-cta').addEventListener('click', () => {
-                this.tab = 'tour';
-                this.renderMain();
+                this.switchTab('tour');
             });
 
             const host = this.mainEl.querySelector('#room-entry-radar');
             if (host && typeof mountAITunerV5Radars === 'function') {
-                const targets = { ...this.engine.leverValues };
+                const targets =
+                    getModelDefaultTargets(this.modelId) ||
+                    applyModelDefaultsToEngine(this.engine, this.modelId);
                 if (window.LEVERS_V5) {
                     Object.keys(window.LEVERS_V5).forEach((k) => quietlySetLever(this.engine, k, 0));
                 }
                 this.engine.generatePrompt();
-                mountAITunerV5Radars(this.engine, host, { tier: 2 })
+                this.wireRoomPromptPanel();
+                mountAITunerV5Radars(this.engine, host, { tier: 2, layout: 'room', maxCanvasHeightPx: 360 })
                     .then((api) => {
                         this.entryRadarApi = api;
-                        const dest = targets;
-                        return animateRadarSignature(this.engine, api, dest, 400);
+                        return animateRadarSignature(this.engine, api, targets, 400).then(() => {
+                            if (typeof api.refresh === 'function') {
+                                api.refresh();
+                            }
+                            this.refreshRoomPromptPanel();
+                        });
                     })
                     .catch((err) => console.error('Room entry radar failed', err));
+            } else {
+                this.wireRoomPromptPanel();
             }
         }
 
@@ -553,6 +743,7 @@
                     <section class="room-fingerprint-section">
                         <p class="room-subhead">Fingerprint</p>
                         <div id="room-tune-radar" class="room-tune-radar-host"></div>
+                        ${this.roomPromptPanelHtml()}
                     </section>
                     <section class="room-tune-section">
                         <button type="button" class="secondary-btn room-expand-btn" id="room-fine-toggle">${fineToggleLabel}</button>
@@ -599,6 +790,9 @@
                         applyBaseThenPreset(this.engine, this.modelId, mode);
                     }
                     this.refreshTuneRadarsAndSliders();
+                    if (typeof this.engine.generatePrompt === 'function') {
+                        this.engine.generatePrompt();
+                    }
                 });
             });
 
@@ -639,6 +833,7 @@
 
             this.mountTuneRadar();
             this.mountPillarSliders();
+            this.wireRoomPromptPanel();
         }
 
         applyStyleImport(sourceId) {
@@ -666,9 +861,10 @@
             if (this.tuneRadarApi && typeof this.tuneRadarApi.destroy === 'function') {
                 this.tuneRadarApi.destroy();
             }
-            mountAITunerV5Radars(this.engine, host, { tier: 2 })
+            mountAITunerV5Radars(this.engine, host, { tier: 2, layout: 'room', maxCanvasHeightPx: 360 })
                 .then((api) => {
                     this.tuneRadarApi = api;
+                    this.refreshRoomPromptPanel();
                 })
                 .catch((err) => console.error('Room tune radar failed', err));
         }

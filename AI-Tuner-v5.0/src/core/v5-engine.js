@@ -34,9 +34,45 @@ class AITunerV5 {
         this.onPromptChange = null;
         this.onLeverChange = null;
         this.onTierChange = null;
+
+        /** v4 emergency emoji shutoff (localStorage aiTunerEmojiShutoff) */
+        this.emojiShutoff = false;
         
         // Initialize
         this.initialize();
+        this.loadEmojiShutoffPreference();
+    }
+
+    loadEmojiShutoffPreference() {
+        try {
+            this.emojiShutoff = localStorage.getItem('aiTunerEmojiShutoff') === 'true';
+        } catch (e) {
+            this.emojiShutoff = false;
+        }
+    }
+
+    setEmojiShutoff(enabled) {
+        this.emojiShutoff = !!enabled;
+        try {
+            localStorage.setItem('aiTunerEmojiShutoff', this.emojiShutoff ? 'true' : 'false');
+        } catch (e) {
+            /* ignore */
+        }
+        this.generatePrompt();
+    }
+
+    appendEmojiShutoffBlock(text) {
+        if (!this.emojiShutoff || !text) {
+            return text;
+        }
+        return (
+            text +
+            '\n\nCritical Instructions:\n' +
+            '• Eliminate emojis completely\n' +
+            '• Eliminate filler words (like, um, well, etc.)\n' +
+            '• Eliminate hype language and marketing speak\n' +
+            '• Be direct and factual only'
+        );
     }
     
     /**
@@ -335,6 +371,16 @@ class AITunerV5 {
      * Rule 8: Always live, never cached
      */
     generatePrompt() {
+        if (
+            !this.selectedModel &&
+            this.session &&
+            this.session.model_id &&
+            window.MODELS_V5 &&
+            window.MODELS_V5[this.session.model_id]
+        ) {
+            this.selectedModel = window.MODELS_V5[this.session.model_id];
+        }
+
         if (!this.selectedModel) {
             this.currentPrompt = null;
             if (this.onPromptChange) {
@@ -363,16 +409,15 @@ class AITunerV5 {
             };
         }
 
-        const wc =
-            typeof pack.wordCount === 'number'
-                ? pack.wordCount
-                : pack.generated_text.trim().split(/\s+/).filter(Boolean).length;
+        const generatedText = this.appendEmojiShutoffBlock(pack.generated_text);
+
+        const wc = generatedText.trim().split(/\s+/).filter(Boolean).length;
 
         this.currentPrompt = {
             id: this.generateUUID(),
             config_id: null,
             model_id: this.selectedModel.id,
-            generated_text: pack.generated_text,
+            generated_text: generatedText,
             sourceMap: pack.sourceMap || [],
             neutralLevers: pack.neutralLevers || [],
             hierarchy: pack.hierarchy || '',

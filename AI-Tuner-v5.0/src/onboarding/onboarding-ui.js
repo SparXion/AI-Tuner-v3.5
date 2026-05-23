@@ -2,7 +2,7 @@
  * AITuner v5.0 - Onboarding UI
  *
  * Narrative flow (script-aligned screen indices):
- * 0 Welcome, 1 Origin, 2 Promise, 3 Frustration cards, 4 Fix, 5 Reveal,
+ * 0 Welcome, 1 Origin (chrome modal only — skipped in track), 2 Promise, 3 Frustration cards, 4 Fix, 5 Reveal,
  * 6 Model selection, 7 Tuner (tier 0/1), 8 Preview & save
  */
 
@@ -153,6 +153,16 @@ class OnboardingUI {
         return d.innerHTML;
     }
 
+    /** In-card back control (matches frustration screen nav-btn; placed at top so it stays in view). */
+    screenNavBackHtml(onclick) {
+        const action = onclick || 'onboardingUI.prevScreen()';
+        return (
+            '<div class="screen-nav screen-nav-top">' +
+            `<button type="button" class="nav-btn" onclick="${action}">← Back</button>` +
+            '</div>'
+        );
+    }
+
     mountPromptPreviewHost(hostEl) {
         if (!hostEl || !window.PromptPreviewUi || typeof window.PromptPreviewUi.wireEngine !== 'function') {
             return;
@@ -178,9 +188,6 @@ class OnboardingUI {
         switch (screenNumber) {
             case 0:
                 this.showWelcomeScreen();
-                break;
-            case 1:
-                this.showOriginScreen();
                 break;
             case 2:
                 this.showPromiseScreen();
@@ -208,10 +215,22 @@ class OnboardingUI {
         }
     }
 
+    originScreenIndex() {
+        return (window.AITunerOriginStory && window.AITunerOriginStory.ORIGIN_SCREEN_INDEX) || 1;
+    }
+
+    skipOriginScreen(screenNumber, direction) {
+        if (screenNumber === this.originScreenIndex()) {
+            return screenNumber + direction;
+        }
+        return screenNumber;
+    }
+
     showWelcomeScreen() {
         const html = `
             <div class="onboarding-screen welcome-screen narrative-welcome">
                 <div class="screen-content narrative-content">
+                    ${this.screenNavBackHtml('onboardingUI.exitToHome()')}
                     <h1>AI is more flexible than anyone told you.</h1>
                     <p class="subtitle narrative-sub">AITuner shows you what's under the hood — and helps you take the wheel.</p>
                     <div class="welcome-actions">
@@ -224,30 +243,12 @@ class OnboardingUI {
         this.renderScreen(html, false);
     }
 
-    showOriginScreen() {
-        const html = `
-            <div class="onboarding-screen origin-screen">
-                <div class="screen-content narrative-content narrative-origin">
-                    <p class="narrative-label">Why this exists</p>
-                    <h1>It started with a prompt on Instagram.</h1>
-                    <div class="narrative-body">
-                        <p>I've been using AI for about a year and a half at this point and had learned through trial and error how to navigate in the AI model space. I even learned the term 'answer only.'</p>
-                        <p>I was flipping through Instagram and came across this post about 'Absolute Mode.' After reading, I immediately copied it into Grok and Claude and was amazed at the result. Clean answer. No fluff. No personality. Just the answer.</p>
-                        <p>Chasing my curiosity, I wondered what elements he was changing with that prompt. What levers was he pulling? So I put it into Grok and asked Grok to deconstruct it for me. 'What levers is he pulling with this prompt?' That's when I first learned the term persona. Each model has a persona. This curiosity unlocked the idea that you can tune your AI model's persona.</p>
-                        <p>That's how AITuner was born.</p>
-                    </div>
-                    <p class="narrative-signature">— John Violette, founder</p>
-                    <button type="button" class="primary-btn" onclick="onboardingUI.nextScreen()">Let's find yours →</button>
-                </div>
-            </div>
-        `;
-        this.renderScreen(html, false);
-    }
 
     showPromiseScreen() {
         const html = `
             <div class="onboarding-screen promise-screen">
                 <div class="screen-content narrative-content">
+                    ${this.screenNavBackHtml()}
                     <p class="narrative-label">Here's how this works</p>
                     <h1>We'll go at your pace.<br>One thing at a time.</h1>
                     <ul class="promise-beats">
@@ -276,13 +277,13 @@ class OnboardingUI {
         const html = `
             <div class="onboarding-screen frustration-screen">
                 <div class="screen-content narrative-content">
+                    ${this.screenNavBackHtml()}
                     <p class="narrative-label">Let's start here</p>
                     <h1>What's been bothering you about how AI talks to you?</h1>
                     <p class="subtitle narrative-sub">Pick the one that's most familiar. We'll fix it first.</p>
                     <div class="frustration-grid">${cards}</div>
                     <button type="button" class="secondary-btn frustration-explore" onclick="onboardingUI.exploreOnOwn()">None of these — let me explore on my own →</button>
-                    <div class="screen-nav">
-                        <button type="button" class="nav-btn" onclick="onboardingUI.prevScreen()">← Back</button>
+                    <div class="screen-nav screen-nav-footer">
                         <button type="button" class="primary-btn" id="frustration-continue" onclick="onboardingUI.continueFromFrustration()" ${this.selectedFrustrationId ? '' : 'disabled'}>Continue →</button>
                     </div>
                 </div>
@@ -331,6 +332,7 @@ class OnboardingUI {
         const html = `
             <div class="onboarding-screen fix-screen">
                 <div class="screen-content narrative-content">
+                    ${this.screenNavBackHtml()}
                     <p class="narrative-label">Here's your fix</p>
                     <h1>We built you a prompt.<br>Copy it. Paste it. Feel the difference.</h1>
                     <div class="prompt-preview narrative-prompt-preview" id="prompt-preview">
@@ -342,9 +344,6 @@ class OnboardingUI {
                         <button type="button" class="secondary-btn" onclick="onboardingUI.nextScreen()">What does this actually do? →</button>
                     </div>
                     <p class="fix-footnote">Works with Claude, ChatGPT, Gemini, Grok, and most others.</p>
-                    <div class="screen-nav">
-                        <button type="button" class="nav-btn" onclick="onboardingUI.prevScreen()">← Back</button>
-                    </div>
                 </div>
             </div>
         `;
@@ -387,6 +386,7 @@ class OnboardingUI {
         const html = `
             <div class="onboarding-screen reveal-screen">
                 <div class="screen-content narrative-content">
+                    ${this.screenNavBackHtml()}
                     <p class="narrative-label">What just happened</p>
                     <h1>You just pulled a lever.</h1>
                     <div class="reveal-body">${this.getRevealBodyHtml(leverKey)}</div>
@@ -394,9 +394,6 @@ class OnboardingUI {
                     <p class="reveal-caption">This is what you just changed. The other axes? You'll unlock those as we go.</p>
                     <button type="button" class="primary-btn" onclick="onboardingUI.nextScreen()">Show me what else is possible →</button>
                     <button type="button" class="secondary-btn reveal-quiet" onclick="onboardingUI.savePromptAndExit()">I'm good for now — save this prompt and come back later →</button>
-                    <div class="screen-nav">
-                        <button type="button" class="nav-btn" onclick="onboardingUI.prevScreen()">← Back</button>
-                    </div>
                 </div>
             </div>
         `;
@@ -447,12 +444,10 @@ class OnboardingUI {
         const html = `
             <div class="onboarding-screen model-screen">
                 <div class="screen-content">
+                    ${this.screenNavBackHtml('onboardingUI.backFromModelScreen()')}
                     <h1>Which AI are you tuning for?</h1>
                     <p class="subtitle">Each model has a distinct voice. Here's what that sounds like.</p>
                     <div class="model-grid">${modelCards}</div>
-                    <div class="screen-nav">
-                        <button type="button" class="nav-btn" onclick="onboardingUI.backFromModelScreen()">← Back</button>
-                    </div>
                 </div>
             </div>
         `;
@@ -479,6 +474,7 @@ class OnboardingUI {
                 ? `
             <div class="onboarding-screen prompt-screen tier-0">
                 <div class="screen-content">
+                    ${this.screenNavBackHtml()}
                     <h1>Shape your AI's personality</h1>
                     <div class="prompt-preview" id="prompt-preview">
                         <div class="prompt-preview-body-host"></div>
@@ -487,8 +483,7 @@ class OnboardingUI {
                     <div class="tier-hint">
                         <div class="radar-placeholder"><p>Copy your prompt above to unlock visual tuning.</p></div>
                     </div>
-                    <div class="screen-nav">
-                        <button type="button" class="nav-btn" onclick="onboardingUI.prevScreen()">← Back</button>
+                    <div class="screen-nav screen-nav-footer">
                         <button type="button" class="nav-btn" onclick="onboardingUI.unlockTier1()">Unlock visual tuning</button>
                     </div>
                 </div>
@@ -497,6 +492,7 @@ class OnboardingUI {
                 : `
             <div class="onboarding-screen prompt-screen tier-1">
                 <div class="screen-content">
+                    ${this.screenNavBackHtml()}
                     <h1>Shape your AI's personality</h1>
                     <div class="tuner-layout">
                         <div class="controls-panel">
@@ -514,8 +510,7 @@ class OnboardingUI {
                             <button type="button" class="copy-btn" onclick="onboardingUI.copyPrompt()">Copy prompt</button>
                         </div>
                     </div>
-                    <div class="screen-nav">
-                        <button type="button" class="nav-btn" onclick="onboardingUI.prevScreen()">← Back</button>
+                    <div class="screen-nav screen-nav-footer">
                         <button type="button" class="nav-btn" onclick="onboardingUI.nextScreen()">Continue →</button>
                     </div>
                 </div>
@@ -543,6 +538,7 @@ class OnboardingUI {
         const html = `
             <div class="onboarding-screen preview-screen">
                 <div class="screen-content">
+                    ${this.screenNavBackHtml()}
                     <h1>Ready to go</h1>
                     <div class="prompt-preview" id="final-prompt-preview">
                         <div class="prompt-preview-body-host"></div>
@@ -571,6 +567,12 @@ class OnboardingUI {
         if (personaContainer) {
             const personaSelector = new PersonaSelector(this.engine, 'persona-selector');
             personaSelector.render();
+        }
+    }
+
+    exitToHome() {
+        if (typeof window.router !== 'undefined' && window.router.showHome) {
+            window.router.showHome();
         }
     }
 
@@ -677,13 +679,15 @@ class OnboardingUI {
 
     nextScreen() {
         if (this.currentScreen < 8) {
-            this.showScreen(this.currentScreen + 1);
+            var next = this.skipOriginScreen(this.currentScreen + 1, 1);
+            this.showScreen(next);
         }
     }
 
     prevScreen() {
         if (this.currentScreen > 0) {
-            this.showScreen(this.currentScreen - 1);
+            var prev = this.skipOriginScreen(this.currentScreen - 1, -1);
+            this.showScreen(prev);
         }
     }
 

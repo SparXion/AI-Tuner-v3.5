@@ -1,7 +1,9 @@
 {
   "name": "aituner-v5",
   "version": "5.0.0",
+  "private": true,
   "description": "AI Tuner v5.0 - AI Literacy Platform",
+  "license": "MIT",
   "scripts": {
     "interview": "node calibration/interview-tool.js",
     "observe": "node calibration/observe-tool.js",
@@ -14,9 +16,5 @@
     "prompt-engineering",
     "llm",
     "tuning"
-  ],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {}
+  ]
 }
