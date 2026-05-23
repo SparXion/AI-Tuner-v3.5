@@ -1,23 +1,20 @@
-# Netlify Configuration for AI Tuner v3.0
-[build]
-  # No build step needed - static HTML site
-  publish = "."
+# Netlify — AI Tuner (aitunerapp.com)
+# v5.0 is the live product; publish from AI-Tuner-v5.0/ (matches local dev).
 
-# Redirect rules
+[build]
+  publish = "AI-Tuner-v5.0"
+
+# Legacy URLs from when the site was deployed from repo root
+[[redirects]]
+  from = "/AI-Tuner-v5.0/*"
+  to = "/:splat"
+  status = 301
+
 [[redirects]]
   from = "/"
   to = "/index.html"
   status = 200
 
-# Legacy v2.0 redirects to archived location
-[[redirects]]
-  from = "/v2.0"
-  to = "/v2.0/index.html"
-  status = 200
-
-# v3.0 is now the default (served via root index.html)
-
-# Headers for CORS if needed
 [[headers]]
   for = "/*"
   [headers.values]
@@ -25,3 +22,12 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
 
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/src/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
