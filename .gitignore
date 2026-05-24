@@ -103,8 +103,7 @@ build/
 # Swift Package Manager
 .build/
 .swiftpm/
-Package.resolved
-*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+# Package.resolved is committed for AITuner4 (required when Xcode Cloud disables automatic SPM resolution)
 
 # XcodeGen
 *.xcodeproj/xcuserdata/
