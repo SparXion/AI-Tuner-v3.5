@@ -111,7 +111,7 @@ build/
 # Firebase configuration (contains API keys - safe but flagged by GitHub)
 AI-Tuner-iOS/AITuner4/AITuner4/Resources/GoogleService-Info.plist
 
-# Apple credentials & signing
+# Apple credentials & signing (use Development/ or a secure vault locally)
 *.p8
 *.mobileprovision
 *.cer
@@ -120,7 +120,9 @@ AI-Tuner-iOS/AITuner4/AITuner4/Resources/GoogleService-Info.plist
 # Nest repo backup (do not commit)
 AI-Tuner-v5.0/.git-backup/
 
-# Large chat exports (may contain third-party tokens; not for remote)
-AI-Tuner-v5.0/AI Tuner Origin - OG Cursor Chats/
+# Local-only: specs, exports, calibration, secrets, old docs (not for GitHub)
+Development/
 
-AI-Tuner-v5.0/archive/AI-Tuner-iOS/
+# Cursor chat exports (may contain API keys pasted in chats)
+docs/2026-0521-Cursor-GlobalStorage-Chat-Export/
+**/AI Tuner Origin - OG Cursor Chats/
