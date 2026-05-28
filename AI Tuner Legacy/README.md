@@ -8,5 +8,6 @@ Archived static web apps. Each version folder is self-contained (open `index.htm
 | `v3.0/` | Single-radar v3 web app |
 | `v3.5/` | Four-tuner v3.5 web app |
 | `v4.0/` | v4 root site (formerly at repo root) |
+| `cursor-extension/` | AI Tuner for Cursor (VS Code/Cursor extension source, v2.0.0) |
 
 Not deployed to aitunerapp.com — production is `AI-Tuner-v5.0/`.

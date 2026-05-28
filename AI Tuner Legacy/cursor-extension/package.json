@@ -1,0 +1,218 @@
+{
+  "name": "cursor-ai-tuner",
+  "displayName": "AI Tuner for Cursor",
+  "description": "Enterprise-grade AI personality configuration with comprehensive error handling, performance monitoring, and robust validation",
+  "version": "2.0.0",
+  "publisher": "sparxion",
+  "author": {
+    "name": "SparXion",
+    "email": "contact@sparxion.com"
+  },
+  "homepage": "https://github.com/SparXion/cursor-ai-tuner",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SparXion/cursor-ai-tuner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SparXion/cursor-ai-tuner/issues"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Productivity"
+  ],
+  "keywords": [
+    "ai",
+    "cursor",
+    "personality",
+    "tuning",
+    "prompt",
+    "engineering",
+    "configuration",
+    "productivity",
+    "automation"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "aiTunerPanel",
+          "name": "AI Tuner",
+          "when": "true"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "aiTuner.openPanel",
+        "title": "Open AI Tuner Panel",
+        "category": "AI Tuner",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "aiTuner.applyPreset",
+        "title": "Apply Preset",
+        "category": "AI Tuner",
+        "icon": "$(play)"
+      },
+      {
+        "command": "aiTuner.resetToDefault",
+        "title": "Reset to Default",
+        "category": "AI Tuner",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "aiTuner.copyToGlobal",
+        "title": "Copy Project Settings to Global",
+        "category": "AI Tuner",
+        "icon": "$(arrow-up)"
+      },
+      {
+        "command": "aiTuner.copyFromGlobal",
+        "title": "Copy Global Settings to Project",
+        "category": "AI Tuner",
+        "icon": "$(arrow-down)"
+      },
+      {
+        "command": "aiTuner.showLogs",
+        "title": "Show Logs",
+        "category": "AI Tuner",
+        "icon": "$(output)"
+      },
+      {
+        "command": "aiTuner.toggleElite",
+        "title": "Toggle Elite Mode (Dev)",
+        "category": "AI Tuner",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "aiTuner.resetBlends",
+        "title": "Reset Blend Counter",
+        "category": "AI Tuner",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "aiTuner.openPanel",
+          "when": "view == aiTunerPanel",
+          "group": "navigation"
+        },
+        {
+          "command": "aiTuner.showLogs",
+          "when": "view == aiTunerPanel",
+          "group": "navigation"
+        }
+      ],
+      "statusBar": [
+        {
+          "command": "aiTuner.openPanel",
+          "when": "true",
+          "group": "aiTuner"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "AI Tuner",
+      "properties": {
+        "aiTuner.currentPersonality": {
+          "type": "string",
+          "default": "neutral",
+          "description": "Current AI personality setting",
+          "enum": ["neutral", "directive", "collaborative", "methodical", "concise", "imaginative", "technical"]
+        },
+        "aiTuner.customPresets": {
+          "type": "object",
+          "default": {},
+          "description": "Custom AI personality presets"
+        },
+        "aiTuner.enableLogging": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable comprehensive logging for debugging"
+        },
+        "aiTuner.enablePerformanceMonitoring": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable performance monitoring and metrics"
+        },
+        "aiTuner.logLevel": {
+          "type": "string",
+          "default": "info",
+          "description": "Logging level",
+          "enum": ["error", "warn", "info", "debug"]
+        },
+        "aiTuner.devElite": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable Elite features in development mode (testing only)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext .ts --max-warnings 0",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "type-check": "tsc --noEmit",
+    "test": "npm run compile && node ./out/test/runTest.js",
+    "test:coverage": "npm run test -- --coverage",
+    "package": "vsce package",
+    "package:preview": "vsce package --pre-release",
+    "clean": "rimraf out dist *.vsix",
+    "build": "npm run clean && npm run lint && npm run type-check && npm run compile",
+    "build:production": "npm run build && npm run package",
+    "dev": "npm run watch",
+    "security:audit": "npm audit --audit-level moderate",
+    "security:fix": "npm audit fix",
+    "format": "prettier --write \"src/**/*.{ts,js,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json}\"",
+    "validate": "npm run lint && npm run type-check && npm run format:check && npm run security:audit"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "eslint-plugin-security": "^1.7.1",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-jsdoc": "^46.0.0",
+    "typescript": "^5.0.0",
+    "vsce": "^2.15.0",
+    "rimraf": "^5.0.0",
+    "prettier": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0"
+  },
+  "dependencies": {},
+  "extensionDependencies": [],
+  "extensionPack": [],
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "badges": [
+    {
+      "url": "https://img.shields.io/badge/license-Apache%202.0-blue.svg",
+      "href": "https://opensource.org/licenses/Apache-2.0",
+      "description": "Apache 2.0 License"
+    },
+    {
+      "url": "https://img.shields.io/badge/version-2.0.0-green.svg",
+      "href": "https://github.com/SparXion/cursor-ai-tuner/releases",
+      "description": "Latest Version"
+    }
+  ]
+}
