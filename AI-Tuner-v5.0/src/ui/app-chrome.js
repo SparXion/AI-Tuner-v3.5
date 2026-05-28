@@ -7,6 +7,53 @@
     var STORAGE_THEME = 'aituner-theme';
     var STORAGE_EMOJI = 'aiTunerEmojiShutoff';
 
+    function setChromeHeightVar(root) {
+        try {
+            var chrome = root && root.querySelector ? root.querySelector('.aituner-chrome') : null;
+            if (!chrome) {
+                return;
+            }
+            var h = Math.ceil(chrome.getBoundingClientRect().height || chrome.offsetHeight || 0);
+            if (h > 0) {
+                document.documentElement.style.setProperty('--aituner-chrome-height', h + 'px');
+            }
+        } catch (e) {
+            /* ignore */
+        }
+    }
+
+    function watchChromeHeight(root) {
+        setChromeHeightVar(root);
+
+        var onResize = function () {
+            global.requestAnimationFrame(function () {
+                setChromeHeightVar(root);
+            });
+        };
+
+        try {
+            global.addEventListener('resize', onResize);
+            global.addEventListener('orientationchange', onResize);
+        } catch (e) {
+            /* ignore */
+        }
+
+        if (typeof global.ResizeObserver === 'function') {
+            try {
+                var chrome = root && root.querySelector ? root.querySelector('.aituner-chrome') : null;
+                if (!chrome) {
+                    return;
+                }
+                var ro = new global.ResizeObserver(function () {
+                    setChromeHeightVar(root);
+                });
+                ro.observe(chrome);
+            } catch (e) {
+                /* ignore */
+            }
+        }
+    }
+
     function readEmojiEnabled() {
         try {
             return localStorage.getItem(STORAGE_EMOJI) === 'true';
@@ -121,6 +168,8 @@
                 : '') +
             '</div>' +
             '</div>';
+
+        watchChromeHeight(root);
 
         var themeBtn = document.getElementById('aituner-theme-toggle');
         var emojiBtn = document.getElementById('aituner-emoji-toggle');
