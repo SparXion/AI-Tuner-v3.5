@@ -120,17 +120,14 @@ AI-Tuner-iOS/AITuner4/AITuner4/Resources/GoogleService-Info.plist
 # Nest repo backup (do not commit)
 AI-Tuner-v5.0/.git-backup/
 
-# Local-only: specs, exports, calibration, secrets, old docs (not for GitHub)
+# Local-only: specs, exports, calibration process, secrets (not for GitHub)
 Development/
 
-# Methodology & calibrated profiles (private repo: AI-Tuner-Methodology)
-AI-Tuner-v5.0/src/data/v5-models.calibrated.js
+# Methodology & extraction tooling (private repo: AI-Tuner-Methodology)
 **/COMPLETE-PERSONA-SECRET-MENU*.md
 **/CORE-CHAT-PERSONAS-v6.0.md
 scripts/extract-*.py
 scripts/build-aituner*.py
-AI-Tuner-v5.0/src/data/v5-models.calibrated.js
-AI-Tuner-v5.0/src/onboarding/model-samples.calibrated.js
 
 # Cursor chat exports (may contain API keys pasted in chats)
 docs/2026-0521-Cursor-GlobalStorage-Chat-Export/

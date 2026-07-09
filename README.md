@@ -30,8 +30,12 @@ Open `AI-Tuner-iOS/AITuner4/AITuner4.xcodeproj` in Xcode. Copy `GoogleService-In
 
 Open HTML from `AI Tuner Legacy/v2.0`, `v3.0`, `v3.5`, or `v4.0` with a static server.
 
-## Development material
+## Public vs private
 
-Non-runtime work lives in `Development/` at the repo root. That folder is gitignored so secrets and chat exports never reach GitHub. Keep it on disk or move it elsewhere for backup.
+| Public (this repo) | Private (`Development/`, `AI-Tuner-Methodology`) |
+|--------------------|-----------------------------------------------------|
+| Calibrated model profiles (`v5-models.js`) | Discovery prompts, bias framework, extraction skills |
+| Onboarding sample responses | Calibration transcripts and reasoning |
+| App UI, lever schema, engine | Grok/Claude chat archives, rubric evolution |
 
-**Calibrated model profiles** (lever defaults, sample responses) are maintained in the private repo `SparXion/AI-Tuner-Methodology`. The public repo ships neutral placeholder defaults only. For local development with calibrated values, copy from the private repo into the gitignored `*.calibrated.js` files.
+The **results** are the product — how Grok differs from Claude, pre-populated. The **process** that produces those numbers stays off GitHub.

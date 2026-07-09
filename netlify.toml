@@ -1,5 +1,6 @@
 # Netlify — AI Tuner (aitunerapp.com)
 # v5.0 is the live product; publish from AI-Tuner-v5.0/ (matches local dev).
+# Calibrated model profiles ship in-repo (public product data).
 
 [build]
   publish = "AI-Tuner-v5.0"

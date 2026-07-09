@@ -2,6 +2,12 @@
     "folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../AI-Tuner-Portal"
+		},
+		{
+			"path": "../AI-Tuner-Portal-v2.0"
 		}
 	]
 }
