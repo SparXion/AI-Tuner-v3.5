@@ -33,3 +33,5 @@ Open HTML from `AI Tuner Legacy/v2.0`, `v3.0`, `v3.5`, or `v4.0` with a static s
 ## Development material
 
 Non-runtime work lives in `Development/` at the repo root. That folder is gitignored so secrets and chat exports never reach GitHub. Keep it on disk or move it elsewhere for backup.
+
+**Calibrated model profiles** (lever defaults, sample responses) are maintained in the private repo `SparXion/AI-Tuner-Methodology`. The public repo ships neutral placeholder defaults only. For local development with calibrated values, copy from the private repo into the gitignored `*.calibrated.js` files.
