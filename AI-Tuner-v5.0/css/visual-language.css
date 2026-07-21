@@ -3160,6 +3160,41 @@ body.aituner-light .aituner-chrome .tier-badge:hover {
     flex: 1;
 }
 
+.aituner-chrome-leading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+.aituner-chrome-sparxion {
+    display: inline-flex;
+    align-items: center;
+    color: var(--at-text, #ffffff);
+    text-decoration: none !important;
+    opacity: 0.92;
+    transition: opacity 160ms ease;
+}
+
+.aituner-chrome-sparxion:hover {
+    opacity: 1;
+}
+
+.aituner-chrome-sparxion-mark {
+    display: block;
+    height: 18px;
+    width: auto;
+}
+
+body.aituner-dark .aituner-chrome-sparxion {
+    color: #f4f0fa;
+}
+
+body.aituner-light .aituner-chrome-sparxion {
+    color: #360c5e;
+}
+
 .aituner-chrome-actions {
     display: flex;
     flex-wrap: wrap;
