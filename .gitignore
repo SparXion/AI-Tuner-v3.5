@@ -132,3 +132,6 @@ scripts/build-aituner*.py
 # Cursor chat exports (may contain API keys pasted in chats)
 docs/2026-0521-Cursor-GlobalStorage-Chat-Export/
 **/AI Tuner Origin - OG Cursor Chats/
+
+# Local Netlify folder
+.netlify
