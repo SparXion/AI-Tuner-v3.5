@@ -1168,10 +1168,42 @@
                 const chartEntries = [];
                 const chartsByPillar = {};
 
+                const onModelOpen =
+                    options && typeof options.onModelOpen === 'function'
+                        ? options.onModelOpen
+                        : null;
+
                 list.forEach((model) => {
-                    const head = document.createElement('div');
-                    head.className = 'aituner-v5-compare-model-head';
-                    head.textContent = model.name || model.id || 'Model';
+                    const modelId = model.id || '';
+                    const modelLabel = model.name || model.id || 'Model';
+                    let head;
+                    if (onModelOpen && modelId) {
+                        head = document.createElement('button');
+                        head.type = 'button';
+                        head.className =
+                            'aituner-v5-compare-model-head aituner-v5-compare-model-head--link';
+                        head.setAttribute('data-model-id', modelId);
+                        head.setAttribute(
+                            'aria-label',
+                            'Open ' + modelLabel + ' model room'
+                        );
+                        head.innerHTML =
+                            '<span class="aituner-v5-compare-model-name"></span>' +
+                            '<span class="aituner-v5-compare-model-open" aria-hidden="true">' +
+                            '<svg class="aituner-v5-compare-go-icon" viewBox="0 0 24 24" width="18" height="18" focusable="false">' +
+                            '<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75"/>' +
+                            '<path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M9 15L15 9M10 9h5v5"/>' +
+                            '</svg></span>';
+                        head.querySelector('.aituner-v5-compare-model-name').textContent =
+                            modelLabel;
+                        head.addEventListener('click', function () {
+                            onModelOpen(modelId, model);
+                        });
+                    } else {
+                        head = document.createElement('div');
+                        head.className = 'aituner-v5-compare-model-head';
+                        head.textContent = modelLabel;
+                    }
                     board.appendChild(head);
                 });
 
@@ -1215,6 +1247,26 @@
                         );
                         canvas.style.width = '100%';
                         canvas.style.maxHeight = typeof maxH === 'number' ? `${maxH}px` : String(maxH);
+
+                        if (onModelOpen && model.id) {
+                            card.classList.add('aituner-v5-compare-cell--link');
+                            card.setAttribute('role', 'link');
+                            card.setAttribute('tabindex', '0');
+                            card.setAttribute(
+                                'aria-label',
+                                'Open ' + (model.name || model.id) + ' model room'
+                            );
+                            const openModel = function () {
+                                onModelOpen(model.id, model);
+                            };
+                            card.addEventListener('click', openModel);
+                            card.addEventListener('keydown', function (e) {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    openModel();
+                                }
+                            });
+                        }
 
                         card.appendChild(canvas);
                         board.appendChild(card);
@@ -1276,7 +1328,7 @@
 
                     canvas._radarDragEnabled = false;
                     canvas._radarLeverKeys = leverKeys;
-                    canvas.style.cursor = 'default';
+                    canvas.style.cursor = onModelOpen ? 'pointer' : 'default';
                     applyRadarChartPadding(chart, hidePointLabels);
 
                     chartsByPillar[chartKey] = chart;

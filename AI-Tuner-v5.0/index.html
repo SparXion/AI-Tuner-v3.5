@@ -118,7 +118,7 @@
 
             <div class="home-model-entry">
                 <h2>Explore models I already use...</h2>
-                <p class="home-model-hint">Select up to four — fingerprints appear below.</p>
+                <p class="home-model-hint">Select up to four — fingerprints appear below. Click a radar or model name to open its room.</p>
                 <div class="home-model-chips" id="home-model-chips" aria-label="Select models to compare fingerprints"></div>
                 <div id="home-compare-board" class="home-compare-board-host" hidden aria-live="polite"></div>
             </div>
@@ -691,7 +691,12 @@
                 const n = boardModels.length;
                 mountAITunerV5CompareBoard(boardModels, boardHost, {
                     embedded: true,
-                    maxCanvasHeightPx: n >= 4 ? 180 : n === 3 ? 200 : 240
+                    maxCanvasHeightPx: n >= 4 ? 180 : n === 3 ? 200 : 240,
+                    onModelOpen: function (modelId) {
+                        if (!modelId || typeof window.openModelRoom !== 'function') return;
+                        sessionStorage.removeItem('aituner_room_resume_onboarding');
+                        window.openModelRoom({ modelId: modelId, initialTab: 'tune' });
+                    }
                 })
                     .then(function (api) {
                         homeCompareApi = api;

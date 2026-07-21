@@ -354,7 +354,12 @@ class DiscoveryUI {
 
         mountAITunerV5CompareBoard(boardModels, boardHost, {
             embedded: true,
-            maxCanvasHeightPx: n >= 4 ? 180 : n === 3 ? 200 : 220
+            maxCanvasHeightPx: n >= 4 ? 180 : n === 3 ? 200 : 220,
+            onModelOpen: function (modelId) {
+                if (!modelId || typeof window.openModelRoom !== 'function') return;
+                sessionStorage.removeItem('aituner_room_resume_onboarding');
+                window.openModelRoom({ modelId: modelId, initialTab: 'tune' });
+            }
         })
             .then((api) => {
                 this.comparisonRadarApis = api ? [api] : [];

@@ -101,8 +101,11 @@ class AITunerV5 {
             // Initialize lever values to neutral (5) for all 16 levers
             this.initializeLevers();
             
-            // Try to restore last session
+            // Try to restore last session (or start a fresh one)
             this.restoreSession();
+            if (!this.session) {
+                this.createNewSession();
+            }
             
             console.log('AITunerV5: Initialized', {
                 userId: this.user.id,
@@ -239,23 +242,25 @@ class AITunerV5 {
             console.error('AITunerV5: Model not found', modelId);
             return;
         }
-        
-        this.selectedModel = window.MODELS_V5[modelId];
-        
-        // Update session
-        if (this.session) {
-            this.session.model_id = modelId;
-        } else {
+
+        // Create session first if needed. createNewSession() clears selectedModel /
+        // levers to neutral — so assign the model only after that, then load defaults.
+        if (!this.session) {
             this.createNewSession();
-            this.session.model_id = modelId;
         }
-        
+
+        this.selectedModel = window.MODELS_V5[modelId];
+        this.session.model_id = modelId;
+
         // Load model defaults (Rule 3: model defaults < persona < manual)
         this.loadModelDefaults();
-        
+
+        // Keep session lever snapshot aligned with the newly loaded defaults
+        this.session.lever_values = { ...this.leverValues };
+
         // Update profile preferred_model if this is most-used
         this.updatePreferredModel(modelId);
-        
+
         // Regenerate prompt
         this.generatePrompt();
     }
