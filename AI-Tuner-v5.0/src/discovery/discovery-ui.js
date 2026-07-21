@@ -187,7 +187,7 @@ class DiscoveryUI {
 
         this.container.innerHTML = `
             <div class="discovery-shell">
-                <p class="discovery-lead">Same question, different personalities — pick a preset question and up to four models (from the onboarding narrative).</p>
+                <p class="discovery-lead">Pick a question and up to four models. Compare default fingerprints side by side — Character + Voice on top, Thinking + Output below — then read how each answers.</p>
                 <h2 class="discovery-h2">Choose a question</h2>
                 <div class="discovery-q-grid">${qCards}</div>
                 <div id="discovery-persona-nudge" class="discovery-persona-nudge" style="display:none" role="status" aria-live="polite"></div>
@@ -262,11 +262,17 @@ class DiscoveryUI {
         const q = this.mode.selectedQuestion;
         const qText = q ? q.text : '';
         const qid = q ? q.id : 'custom';
-
         const n = ids.length;
-        const gridClass = 'discovery-compare-grid discovery-compare-grid--' + n;
 
-        const cards = ids
+        const tuneButtons = ids
+            .map((mid) => {
+                const m = window.MODELS_V5 && window.MODELS_V5[mid];
+                const label = m ? m.name : mid;
+                return `<button type="button" class="primary-btn discovery-tune-btn" data-tune-model="${this.escape(mid)}">Tune ${this.escape(label)} →</button>`;
+            })
+            .join('');
+
+        const sampleCards = ids
             .map((mid) => {
                 const m = window.MODELS_V5 && window.MODELS_V5[mid];
                 const label = m ? m.name : mid;
@@ -277,8 +283,6 @@ class DiscoveryUI {
                     <h3 class="discovery-compare-name">${this.escape(label)}</h3>
                     <p class="discovery-compare-q"><span class="discovery-compare-q-label">Question:</span> ${this.escape(qText)}</p>
                     <div class="discovery-compare-sample">${sampleHtml}</div>
-                    <div class="discovery-mini-radar-host" id="discovery-mini-radar-${mid}" aria-label="${this.escape(label)} default fingerprint"></div>
-                    <button type="button" class="primary-btn discovery-tune-btn" data-tune-model="${this.escape(mid)}">Tune this model →</button>
                 </article>`;
             })
             .join('');
@@ -291,10 +295,15 @@ class DiscoveryUI {
             })
             .join('');
 
+        const sampleGridClass = 'discovery-compare-grid discovery-compare-grid--' + n;
+
         ph.innerHTML = `
             <div class="discovery-compare-wrap">
-                <p class="discovery-compare-lead"><strong>Side-by-side</strong> — same question, different default fingerprints.</p>
-                <div class="${gridClass}">${cards}</div>
+                <p class="discovery-compare-lead"><strong>Fingerprint board</strong> — Character + Voice on top, Thinking + Output below. Models left to right (up to four).</p>
+                <div id="discovery-compare-board" class="discovery-compare-board-host" aria-label="Model fingerprint comparison"></div>
+                <div class="discovery-compare-tune-row">${tuneButtons}</div>
+                <h2 class="discovery-h2 discovery-compare-samples-h">Same question, different voices</h2>
+                <div class="${sampleGridClass}">${sampleCards}</div>
                 <section class="discovery-notice-section">
                     <h3 class="discovery-notice-title">What did you notice?</h3>
                     <p class="discovery-notice-sub">Tap a model to open its room (explore intent).</p>
@@ -326,38 +335,31 @@ class DiscoveryUI {
             });
         });
 
-        if (typeof mountAITunerV5Radars !== 'function') {
+        const boardHost = ph.querySelector('#discovery-compare-board');
+        if (!boardHost || typeof mountAITunerV5CompareBoard !== 'function') {
+            if (typeof mountAITunerV5Radars === 'function') {
+                console.warn('Compare board API missing; fingerprint layout unavailable');
+            }
             return;
         }
 
-        const promises = ids.map((mid) => {
+        const boardModels = ids.map((mid) => {
             const m = window.MODELS_V5 && window.MODELS_V5[mid];
-            const host = ph.querySelector('#discovery-mini-radar-' + mid);
-            if (!m || !host) {
-                return Promise.resolve(null);
-            }
-            const stub = {
-                leverValues: Object.assign({}, m.defaults),
-                user: { tier: 2 },
-                selectedModel: m,
-                adjustLever: function () {},
-                onLeverChange: null,
-                onPromptChange: null,
-                onTierChange: null
+            return {
+                id: mid,
+                name: m ? m.name : mid,
+                leverValues: m && m.defaults ? Object.assign({}, m.defaults) : {}
             };
-            return mountAITunerV5Radars(stub, host, {
-                tier: 2,
-                interactive: false,
-                embedded: true,
-                maxCanvasHeightPx: 130
-            });
         });
 
-        Promise.all(promises)
-            .then((apis) => {
-                this.comparisonRadarApis = apis.filter(Boolean);
+        mountAITunerV5CompareBoard(boardModels, boardHost, {
+            embedded: true,
+            maxCanvasHeightPx: n >= 4 ? 180 : n === 3 ? 200 : 220
+        })
+            .then((api) => {
+                this.comparisonRadarApis = api ? [api] : [];
             })
-            .catch((err) => console.error('Discovery mini radars failed', err));
+            .catch((err) => console.error('Discovery compare board failed', err));
     }
 
     escape(s) {

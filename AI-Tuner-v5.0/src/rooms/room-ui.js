@@ -586,7 +586,7 @@
                 }
                 this.engine.generatePrompt();
                 this.wireRoomPromptPanel();
-                mountAITunerV5Radars(this.engine, host, { tier: 2, layout: 'room', maxCanvasHeightPx: 360 })
+                mountAITunerV5Radars(this.engine, host, { tier: 2, layout: 'room', maxCanvasHeightPx: 400 })
                     .then((api) => {
                         this.entryRadarApi = api;
                         return animateRadarSignature(this.engine, api, targets, 400).then(() => {
@@ -610,8 +610,6 @@
             const weaknesses = room ? room.observedWeaknesses : [];
             const bestFor = room ? room.bestFor : [];
             const notGreat = room ? room.notGreatFor : [];
-            const selfSrc = room && room.meta ? room.meta.selfDescriptionSource : '';
-            const obsSrc = room && room.meta ? room.meta.observedSource : '';
             const nativeBehaviorRaw =
                 room && room.nativeBehavior != null && room.nativeBehavior !== ''
                     ? String(room.nativeBehavior)
@@ -645,7 +643,6 @@
                         <h2>In ${escapeHtml(name)}'s own words</h2>
                         <p class="room-prose">${escapeHtml(selfText)}</p>
                         <p class="room-source-tag">What ${escapeHtml(name)} says about itself</p>
-                        <p class="room-source-meta">${escapeHtml(selfSrc)}</p>
                         ${nativeBehaviorBlock}
                     </section>
                     <section class="room-tour-section">
@@ -655,7 +652,6 @@
                         <p class="room-subhead">Worth knowing</p>
                         <ul class="room-bullet-list">${weakHtml}</ul>
                         <p class="room-source-tag">Based on our behavioral testing</p>
-                        <p class="room-source-meta">${escapeHtml(obsSrc)}</p>
                     </section>
                     <section class="room-tour-section room-two-col-section">
                         <h2>Best for / Not the first choice for</h2>
@@ -861,7 +857,7 @@
             if (this.tuneRadarApi && typeof this.tuneRadarApi.destroy === 'function') {
                 this.tuneRadarApi.destroy();
             }
-            mountAITunerV5Radars(this.engine, host, { tier: 2, layout: 'room', maxCanvasHeightPx: 360 })
+            mountAITunerV5Radars(this.engine, host, { tier: 2, layout: 'room', maxCanvasHeightPx: 400 })
                 .then((api) => {
                     this.tuneRadarApi = api;
                     this.refreshRoomPromptPanel();

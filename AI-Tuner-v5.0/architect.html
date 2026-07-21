@@ -25,7 +25,7 @@
 
     <div class="architect-container">
         <div class="screen-nav screen-nav-top">
-            <button type="button" class="nav-btn" onclick="window.location.href='app.html#/aituner/v/home'">← Back</button>
+            <button type="button" class="nav-btn" onclick="window.location.href='index.html#/aituner/v/home'">← Back</button>
         </div>
         <header class="aituner-brand-block" aria-label="AI Tuner">
             <h1 class="aituner-brand">AI Tuner v5.0</h1>
@@ -104,7 +104,7 @@
                 showHomeLink: true,
                 showProfileButton: true,
                 homeHref: 'index.html',
-                homeLabel: '← About AI Tuner',
+                homeLabel: '← Home',
                 engine: engine
             });
         }
@@ -115,10 +115,10 @@
         const userProfile = new UserProfile(engine);
         const profilePanel = new ProfilePanel(engine, onboardingState, userProfile, {
             onOpenSavedConfig: function () {
-                window.location.href = 'app.html';
+                window.location.href = 'index.html';
             },
             onNavigateToDiscovery: function () {
-                window.location.href = 'app.html#/aituner/v/discovery';
+                window.location.href = 'index.html#/aituner/v/discovery';
             }
         });
         const _architectCopyPrompt = engine.copyPrompt.bind(engine);
@@ -143,12 +143,12 @@
         // Set up prompt display
         const promptDisplay = new PromptDisplay(engine, 'prompt-content');
 
-        // Four pillar radars — Architect always uses Tier 2 (all pillars active, drag on)
+        // Combined radars (Character+Voice, Thinking+Output) — Architect always uses Tier 2
         if (typeof mountAITunerV5Radars === 'function') {
             mountAITunerV5Radars(engine, 'radar-container', {
                 tier: 2,
                 layout: 'stack',
-                maxCanvasHeightPx: 320
+                maxCanvasHeightPx: 360
             }).catch((err) => {
                 console.error('Architect: radar mount failed', err);
             });

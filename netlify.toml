@@ -16,6 +16,12 @@
   to = "/index.html"
   status = 200
 
+# Old app.html bookmarks → unified home
+[[redirects]]
+  from = "/app.html"
+  to = "/index.html"
+  status = 301
+
 [[headers]]
   for = "/*"
   [headers.values]

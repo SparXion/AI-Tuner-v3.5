@@ -19,7 +19,7 @@ Production apps for [aitunerapp.com](https://aitunerapp.com) and the iOS App Sto
 ```bash
 cd AI-Tuner-v5.0
 python3 -m http.server 8080
-# open http://localhost:8080/app.html
+# open http://localhost:8080/
 ```
 
 **iOS**

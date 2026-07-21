@@ -7,18 +7,27 @@
     <meta name="description" content="AI Tuner removes the mystery from every chatbot. See how the AI is wired — and change it with precision controls.">
     <link rel="stylesheet" href="css/visual-language.css">
 </head>
-<body class="aituner-dark landing-page">
+<body class="aituner-dark">
     <div id="aituner-chrome-root"></div>
-    <main class="landing-main">
-        <div class="landing-center">
-            <header class="aituner-brand-block">
-                <h1 class="aituner-brand">AI Tuner v5.0</h1>
-                <p class="aituner-demystifier">The AI Demystifier™</p>
-                <p class="aituner-tagline">Understand, build, and decode AI behavior</p>
-            </header>
+    <div id="session-restore-banner" class="session-restore-banner" style="display: none;" role="region" aria-label="Session restore">
+        <p id="session-restore-msg"></p>
+        <button type="button" class="session-continue" id="session-continue-btn">Continue</button>
+        <button type="button" class="session-fresh" id="session-fresh-btn">Start fresh</button>
+    </div>
+    
+    <!-- Home View -->
+    <div id="home-view" class="view-container">
+        <div class="container">
+            <div class="hero">
+                <header class="aituner-brand-block" aria-label="AI Tuner">
+                    <h1 class="aituner-brand">AI Tuner v5.0</h1>
+                    <p class="aituner-demystifier">The AI Demystifier™</p>
+                    <p class="aituner-tagline">Understand, build, and decode AI behavior</p>
+                </header>
+            </div>
 
-            <section class="landing-quick-start" aria-labelledby="landing-flow-title">
-                <h2 id="landing-flow-title" class="landing-sr-only">Select, tune, and copy</h2>
+            <section class="landing-quick-start home-quick-start" aria-labelledby="home-flow-title">
+                <h2 id="home-flow-title" class="landing-sr-only">Select, tune, and copy</h2>
 
                 <div class="landing-quick-start-step">
                     <div class="landing-quick-start-icon" aria-hidden="true">
@@ -59,13 +68,7 @@
                 </div>
             </section>
 
-            <div class="landing-cta-row">
-                <a class="primary-btn landing-cta" href="app.html">Open AI Tuner</a>
-            </div>
-        </div>
-
-        <div class="landing-wide">
-            <details class="landing-app-info">
+            <details class="landing-app-info home-app-info" id="home-app-info">
                 <summary class="landing-app-info-toggle">
                     <span class="landing-app-info-toggle-text">What is AI Tuner?</span>
                     <span class="landing-app-info-toggle-icon" aria-hidden="true">▼</span>
@@ -73,64 +76,756 @@
                 <div class="landing-app-info-body">
                     <div class="landing-app-info-inner">
                         <h3>About AI Tuner — The AI Demystifier™</h3>
-                        <section id="landing-origin-story" class="landing-origin-story" aria-label="Why this exists"></section>
 
-                        <p>AI Tuner removes the mystery from every chatbot.</p>
-                        <p>No more guessing why an AI answers the way it does. No more fighting hidden defaults.</p>
-                        <p>Open a model room, see exactly how that AI is wired — and change it with a drag or a tap.</p>
+                        <h4>What AI chatbots are</h4>
+                        <p>An AI chatbot is more than the chat box you type into. Underneath is a model with a hidden layer of instructions — defaults that shape how it talks, how long it goes on, how careful or blunt it is, how often it asks questions, and how much initiative it takes.</p>
+                        <p>That layer is usually invisible. You feel it as “Claude feels careful” or “Grok feels sharp,” but you rarely see the knobs — and you can’t easily change them.</p>
 
-                        <h4>How It Works</h4>
-                        <ol class="landing-app-info-steps">
-                            <li><strong>Pick any AI</strong><br>Grok • ChatGPT • Claude • Gemini • Perplexity • Mistral • Llama • Cursor — each gets its own room.</li>
-                            <li><strong>See inside its mind</strong><br>Live radar charts show personality across Character, Voice, Thinking, and Output — empathy, bluntness, creativity, length, and more.</li>
-                            <li><strong>Tune it your way</strong>
-                                <ul class="landing-app-info-substeps">
-                                    <li><strong>New users:</strong> Pick a starting mode (Truth-Seeker, Writing Partner, Research Mode…) and the shape shifts instantly.</li>
-                                    <li><strong>Power users:</strong> Drag any point on the radar web, fine-tune all 16 levers, or borrow another model's behavioral profile.</li>
-                                    <li><strong>Everyone:</strong> Watch the chart move and the system prompt update live — then copy it into the chatbot you already use.</li>
-                                </ul>
-                            </li>
-                        </ol>
+                        <h4>The problem</h4>
+                        <p>Every chatbot behaves differently. Without a map of that behavior, you’re stuck guessing: rewrite the prompt, hope for the best, and wonder why the next model does something else entirely.</p>
 
-                        <h4>Key Features</h4>
+                        <h4>What AI Tuner helps you with</h4>
+                        <p>AI Tuner makes that hidden layer visible, comparable, and portable.</p>
                         <ul class="landing-app-info-features">
-                            <li><strong>Takes the black box out of AI</strong> — every behavior is visible and movable</li>
-                            <li><strong>Model rooms</strong> with Tune, Decode, and project Setup (Knowledge, Instructions, Memory)</li>
-                            <li><strong>Draggable radar charts + 16 precision levers</strong></li>
-                            <li><strong>Live prompt generator</strong> — copy into any chatbot (no API keys needed)</li>
-                            <li><strong>Guided onboarding or skip to full controls</strong></li>
-                            <li><strong>Save and reload your configurations</strong></li>
-                            <li><strong>Decode any prompt</strong> to see which levers it is pulling</li>
+                            <li><strong>See it</strong> — fingerprints and levers show Character, Voice, Thinking, and Output as a shape you can read</li>
+                            <li><strong>Compare it</strong> — put models side by side and spot how their defaults differ</li>
+                            <li><strong>Change it</strong> — drag the radar or move the levers until the behavior matches what you need</li>
+                            <li><strong>Take it with you</strong> — copy a live system prompt into the chatbot you already use (no API keys required)</li>
                         </ul>
 
-                        <p>Whether you're four years old or fifty years in tech,</p>
-                        <p><strong>AI Tuner makes every chatbot feel like it was built just for you.</strong></p>
+                        <h4>How it works</h4>
+                        <ol class="landing-app-info-steps">
+                            <li><strong>Select</strong><br>Pick a model — Grok, ChatGPT, Claude, Gemini, Perplexity, Mistral, Llama, or Cursor — each has its own room and default fingerprint.</li>
+                            <li><strong>Tune</strong><br>Adjust the shape with radars and 16 levers, or start from a mode like Truth-Seeker or Writing Partner.</li>
+                            <li><strong>Copy</strong><br>Watch the system prompt update live, then paste it into the app you already chat with.</li>
+                        </ol>
 
-                        <p><em><strong>Try it now – no signup, no mystery.</strong></em></p>
+                        <h4>Key features</h4>
+                        <ul class="landing-app-info-features">
+                            <li><strong>Model rooms</strong> — Tune, Decode, and project Setup (Knowledge, Instructions, Memory)</li>
+                            <li><strong>Draggable radar charts + 16 precision levers</strong></li>
+                            <li><strong>Side-by-side fingerprints</strong> on the home page</li>
+                            <li><strong>Prompt Decoder</strong> — paste any system prompt and see which levers it’s pulling</li>
+                            <li><strong>Guided onboarding or skip to full controls</strong></li>
+                            <li><strong>Save and reload configurations</strong></li>
+                        </ul>
+
+                        <p><strong>AI Tuner makes every chatbot feel like it was built just for you.</strong></p>
+                        <p class="home-app-info-origin-note">Want the story of how this started? Open <strong>Origin Story</strong> in the top bar.</p>
                     </div>
                 </div>
             </details>
-        </div>
 
-        <footer class="landing-footer landing-wide">
-            <p>AI Tuner v5.0 © 2026  |  aitunerapp.com</p>
-        </footer>
-    </main>
+            <div class="home-model-entry">
+                <h2>Explore models I already use...</h2>
+                <p class="home-model-hint">Select up to four — fingerprints appear below.</p>
+                <div class="home-model-chips" id="home-model-chips" aria-label="Select models to compare fingerprints"></div>
+                <div id="home-compare-board" class="home-compare-board-host" hidden aria-live="polite"></div>
+            </div>
+            
+            <div class="entry-points" id="entry-points">
+                <div class="entry-card" data-entry="guided">
+                    <p class="narrative-label">New?</p>
+                    <h2>Start here</h2>
+                </div>
+                
+                <div class="entry-card" data-entry="discovery">
+                    <p class="narrative-label">Explore</p>
+                    <h2>Compare AI Models Side by Side</h2>
+                </div>
+                
+                <div class="entry-card" data-entry="decoder">
+                    <p class="narrative-label">Decode</p>
+                    <h2>Paste any prompt, see what it means</h2>
+                </div>
+                
+                <div class="entry-card" data-entry="full">
+                    <p class="narrative-label">Expert</p>
+                    <h2>Skip to full controls</h2>
+                </div>
+
+                <div class="entry-card entry-card-setup" id="entry-card-project-setup" data-entry="project-setup">
+                    <h2>Set up a project</h2>
+                    <p>Configure your full working environment — knowledge, behavior, and memory — before you start.</p>
+                    <div id="home-setup-picker" class="home-setup-picker" aria-hidden="true">
+                        <p class="home-setup-picker-label">Pick a model first — Setup is tailored to each platform.</p>
+                        <p id="home-setup-preferred-note" class="home-setup-preferred-note" hidden></p>
+                        <div class="home-model-chips" id="home-setup-model-chips" aria-label="Choose model for project setup"></div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="landing-footer home-footer">
+                <p>AI Tuner v5.0 © 2026  |  aitunerapp.com</p>
+            </footer>
+        </div>
+    </div>
+    
+    <!-- Onboarding View -->
+    <div id="onboarding-view" class="view-container" style="display: none;">
+        <div id="onboarding-container"></div>
+    </div>
+    
+    <!-- Discovery View -->
+    <div id="discovery-view" class="view-container" style="display: none;">
+        <div class="container">
+            <button type="button" class="view-back-btn" onclick="router.showHome()">← Back to Home</button>
+            <p class="narrative-label">Show me how they're different</p>
+            <h1>Compare models side by side</h1>
+            <p class="decoder-view-sub">Pick up to four models — fingerprints in two rows (Character + Voice, then Thinking + Output), then sample answers.</p>
+            <div id="discovery-ui-root"></div>
+        </div>
+    </div>
+    
+    <!-- Decoder View -->
+    <div id="decoder-view" class="view-container" style="display: none;">
+        <div class="container">
+            <button type="button" class="view-back-btn" onclick="router.showHome()">← Back to Home</button>
+            <header class="decoder-view-header">
+                <p class="narrative-label">Decode a prompt</p>
+                <h1>Found a prompt somewhere?<br>Let's see what it's doing.</h1>
+                <p class="decoder-view-sub">Paste any system prompt — from Reddit, Instagram, anywhere. We'll show you which levers it's pulling and why it works.</p>
+            </header>
+            <div id="decoder-ui-root"></div>
+        </div>
+    </div>
+    
+    <!-- Model room (Stop 5) -->
+    <div id="model-room-view" class="view-container model-room-view" style="display: none;" aria-label="Model room"></div>
+    
+    <!-- Load data files -->
+    <script src="src/data/v5-levers.js"></script>
+    <script src="src/data/v5-models.js"></script>
+    <script src="src/data/v5-personas.js"></script>
+    <script src="src/data/v5-model-rooms.js"></script>
+    
+    <!-- Load core engine -->
+    <script src="src/core/prompt-synthesis-v9.js"></script>
+    <script src="src/core/prompt-preview-ui.js"></script>
+    <script src="src/core/v5-engine.js"></script>
+    <script src="src/core/radar.js"></script>
+    <script src="src/core/slider-controls.js"></script>
+    <script src="src/core/prompt-display.js"></script>
+    <script src="src/core/persona-selector.js"></script>
+    
+    <script src="src/decoder/lever-mapper.js"></script>
+    <script src="src/decoder/prompt-decoder.js"></script>
+    <script src="src/decoder/decoder-ui.js"></script>
+    <script src="src/discovery/discovery-ui.js"></script>
+    <script src="src/profile/user-profile.js"></script>
+    <script src="src/profile/session-restore.js"></script>
+    <script src="src/profile/profile-panel.js"></script>
+    
+    <!-- Load onboarding -->
+    <script src="src/onboarding/onboarding-state.js"></script>
+    <script src="src/onboarding/model-samples.js"></script>
+    <script src="src/onboarding/onboarding-ui.js"></script>
+    <script src="src/ui/save-config-dialog.js"></script>
+    <script src="src/setup/knowledge-template.js"></script>
+    <script src="src/setup/instructions-formatter.js"></script>
+    <script src="src/setup/memory-guide.js"></script>
+    <script src="src/rooms/setup-ui.js"></script>
+    <script src="src/rooms/room-ui.js"></script>
     <script src="src/ui/origin-story.js"></script>
     <script src="src/ui/app-chrome.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- Initialize app -->
     <script>
-        if (window.AITunerAppChrome) {
-            AITunerAppChrome.mount({ showHomeLink: false });
+        window.addEventListener('storage', function (e) {
+            if (e.key === 'aituner_user' && e.newValue === null) {
+                window.location.reload();
+            }
+        });
+
+        /**
+         * AITuner v5.0 - Router (inlined to reduce script tags)
+         */
+        class Router {
+            constructor() {
+                this.currentView = 'home';
+                this.views = {};
+            }
+            registerView(name, containerId, showFn) {
+                this.views[name] = {
+                    containerId,
+                    showFn,
+                    container: document.getElementById(containerId)
+                };
+            }
+            navigateTo(viewName) {
+                Object.values(this.views).forEach((view) => {
+                    if (view.container) {
+                        view.container.style.display = 'none';
+                    }
+                });
+                const targetView = this.views[viewName];
+                if (targetView) {
+                    if (targetView.container) {
+                        targetView.container.style.display = 'block';
+                    }
+                    if (targetView.showFn) {
+                        targetView.showFn();
+                    }
+                    this.currentView = viewName;
+                }
+            }
+            showHome() {
+                this.navigateTo('home');
+            }
         }
-        var landingOrigin = document.getElementById('landing-origin-story');
-        if (landingOrigin && window.AITunerOriginStory) {
-            landingOrigin.innerHTML = window.AITunerOriginStory.renderInnerHtml({
-                titleTag: 'h4',
-                titleId: 'landing-origin-story-title'
+
+        // Initialize engine
+        const engine = new AITunerV5();
+        var appChromeApi = null;
+        if (window.AITunerAppChrome) {
+            appChromeApi = AITunerAppChrome.mount({
+                showHomeLink: false,
+                showProfileButton: true,
+                engine: engine
             });
         }
-        lucide.createIcons();
+
+        if (typeof lucide !== 'undefined' && lucide.createIcons) {
+            lucide.createIcons();
+        }
+        window.addEventListener('aituner-theme-changed', function () {
+            engine.generatePrompt();
+        });
+        const onboardingState = new OnboardingState(engine);
+        const userProfile = new UserProfile(engine);
+        const sessionRestore = new SessionRestore(engine);
+        const profilePanel = new ProfilePanel(engine, onboardingState, userProfile, {
+            onOpenSavedConfig: function (configId) {
+                if (typeof window.openModelRoom === 'function') {
+                    window.openModelRoom({ configId: configId, initialTab: 'tune' });
+                }
+            },
+            onNavigateToDiscovery: function () {
+                if (window.router) {
+                    window.router.navigateTo('discovery');
+                }
+            }
+        });
+        window.modelRoomUI = new ModelRoomUI(engine, userProfile);
+        
+        if (typeof initModelRoomRegistry === 'function') {
+            initModelRoomRegistry().catch(function () {});
+        }
+        
+        const _engineCopyPrompt = engine.copyPrompt.bind(engine);
+        engine.copyPrompt = function () {
+            userProfile.recordPromptBuilt();
+            return _engineCopyPrompt();
+        };
+        
+        // Initialize router
+        const router = new Router();
+        window.router = router; // Make globally accessible
+        
+        const _routerNavigate = router.navigateTo.bind(router);
+
+        // Register views before any history API use (popstate can fire early on some browsers)
+        router.registerView('home', 'home-view', () => {
+            // Home view is already visible
+        });
+
+        router.registerView('onboarding', 'onboarding-view', () => {
+            const container = document.getElementById('onboarding-container');
+            if (container) {
+                if (!window.onboardingUI) {
+                    window.onboardingUI = new OnboardingUI(engine, onboardingState);
+                }
+                window.onboardingUI.initialize('onboarding-container');
+            }
+        });
+
+        router.registerView('discovery', 'discovery-view', () => {
+            if (!window.discoveryUI) {
+                window.discoveryUI = new DiscoveryUI(engine);
+            }
+            window.discoveryUI.mount('discovery-ui-root');
+        });
+
+        router.registerView('decoder', 'decoder-view', () => {
+            if (!window.decoderUI) {
+                window.decoderUI = new DecoderUI(engine, userProfile);
+            }
+            window.decoderUI.mount('decoder-ui-root');
+        });
+
+        router.registerView('model-room', 'model-room-view', () => {
+            const opts = window._pendingRoomOpts || {};
+            window._pendingRoomOpts = {};
+            if (window.modelRoomUI) {
+                window.modelRoomUI.open(opts);
+            }
+        });
+
+        /** History: state + visible URL hash so the browser back/forward stack is real */
+        var AITUNER_HISTORY = 'aituner_v5';
+
+        function buildHistoryState(viewName) {
+            var state = { _: AITUNER_HISTORY, v: viewName };
+            if (viewName === 'model-room') {
+                var pending = window._pendingRoomOpts || {};
+                if (pending.modelId || pending.configId) {
+                    state.room = {
+                        modelId: pending.modelId,
+                        initialTab: pending.initialTab,
+                        configId: pending.configId
+                    };
+                }
+            }
+            return state;
+        }
+
+        function roomForUrl(viewName) {
+            if (viewName !== 'model-room') {
+                return null;
+            }
+            var pending = window._pendingRoomOpts || {};
+            if (pending.modelId || pending.configId) {
+                return {
+                    modelId: pending.modelId,
+                    initialTab: pending.initialTab,
+                    configId: pending.configId
+                };
+            }
+            return null;
+        }
+
+        function buildHistoryUrl(viewName, room) {
+            var base = window.location.pathname + window.location.search;
+            if (viewName === 'model-room' && room && room.modelId) {
+                var tab = room.initialTab || 'entry';
+                return base + '#/aituner/room/' + encodeURIComponent(room.modelId) + '/' + encodeURIComponent(tab);
+            }
+            return base + '#/aituner/v/' + encodeURIComponent(viewName);
+        }
+
+        function parseRouteFromLocation() {
+            var raw = (window.location.hash || '').replace(/^#/, '');
+            if (!raw || raw.indexOf('aituner/') !== 0) {
+                return null;
+            }
+            var parts = raw.split('/').filter(function (p) {
+                return p.length > 0;
+            });
+            if (parts.length < 2 || parts[0] !== 'aituner') {
+                return null;
+            }
+            if (parts[1] === 'v' && parts[2]) {
+                var v = decodeURIComponent(parts[2]);
+                if (
+                    v === 'home' ||
+                    v === 'onboarding' ||
+                    v === 'discovery' ||
+                    v === 'decoder' ||
+                    v === 'model-room'
+                ) {
+                    return { v: v };
+                }
+            }
+            if (parts[1] === 'room' && parts[2]) {
+                return {
+                    v: 'model-room',
+                    room: {
+                        modelId: decodeURIComponent(parts[2]),
+                        initialTab: parts[3] ? decodeURIComponent(parts[3]) : 'entry'
+                    }
+                };
+            }
+            return null;
+        }
+
+        function isAppHistoryState(st) {
+            return st && st._ === AITUNER_HISTORY && typeof st.v === 'string';
+        }
+
+        function applyRouteFromPopstate(evState) {
+            var st = evState;
+            if (!isAppHistoryState(st)) {
+                var fromHash = parseRouteFromLocation();
+                if (fromHash) {
+                    if (fromHash.v === 'model-room' && fromHash.room) {
+                        window._pendingRoomOpts = {
+                            modelId: fromHash.room.modelId,
+                            initialTab: fromHash.room.initialTab
+                        };
+                    } else {
+                        window._pendingRoomOpts = {};
+                    }
+                    router.navigateTo(fromHash.v, { fromPopstate: true });
+                    return;
+                }
+                window._pendingRoomOpts = {};
+                router.navigateTo('home', { fromPopstate: true });
+                return;
+            }
+            if (st.v === 'model-room' && st.room) {
+                window._pendingRoomOpts = {
+                    modelId: st.room.modelId,
+                    initialTab: st.room.initialTab,
+                    configId: st.room.configId
+                };
+            } else {
+                window._pendingRoomOpts = {};
+            }
+            router.navigateTo(st.v, { fromPopstate: true });
+        }
+
+        router.navigateTo = function (viewName, options) {
+            options = options || {};
+            var fromPopstate = options.fromPopstate === true;
+            if (!fromPopstate) {
+                var shouldPush =
+                    viewName !== router.currentView ||
+                    viewName === 'model-room';
+                if (shouldPush) {
+                    try {
+                        var st = buildHistoryState(viewName);
+                        var urlRoom = roomForUrl(viewName);
+                        var url = buildHistoryUrl(viewName, urlRoom || (st.room ? st.room : null));
+                        if (options.replace) {
+                            history.replaceState(st, '', url);
+                        } else {
+                            history.pushState(st, '', url);
+                        }
+                    } catch (histErr) {
+                        console.warn('AITuner: history update failed', histErr);
+                    }
+                }
+            }
+            if (router.currentView === 'decoder' && window.decoderUI) {
+                window.decoderUI.teardown();
+            }
+            if (router.currentView === 'model-room' && window.modelRoomUI) {
+                window.modelRoomUI.teardown();
+            }
+            _routerNavigate(viewName);
+            updateTierBadge();
+        };
+
+        window.addEventListener('popstate', function (ev) {
+            applyRouteFromPopstate(ev.state);
+        });
+
+        (function aitunerSeedHistory() {
+            var parsed = parseRouteFromLocation();
+            try {
+                if (parsed && parsed.v === 'home') {
+                    history.replaceState(
+                        { _: AITUNER_HISTORY, v: 'home' },
+                        '',
+                        buildHistoryUrl('home', null)
+                    );
+                    return;
+                }
+                if (parsed) {
+                    if (parsed.v === 'model-room' && parsed.room) {
+                        window._pendingRoomOpts = {
+                            modelId: parsed.room.modelId,
+                            initialTab: parsed.room.initialTab
+                        };
+                    } else {
+                        window._pendingRoomOpts = {};
+                    }
+                    router.navigateTo(parsed.v, { replace: true });
+                } else {
+                    history.replaceState(
+                        { _: AITUNER_HISTORY, v: 'home' },
+                        '',
+                        buildHistoryUrl('home', null)
+                    );
+                }
+            } catch (e) {
+                /* ignore */
+            }
+        })();
+        
+        // Update tier badge
+        function updateTierBadge() {
+            const badge = document.getElementById('tier-badge');
+            if (badge) {
+                const tierInfo = onboardingState.getTierBadge();
+                badge.textContent = tierInfo.name;
+                badge.setAttribute('data-tier', tierInfo.tier);
+            }
+        }
+        
+        function routeSessionContinue() {
+            if (engine.user.skip_onboarding) {
+                window.location.href = 'architect.html';
+                return;
+            }
+            if (engine.session && engine.session.model_id) {
+                if (!engine.session.entry_point) {
+                    engine.setEntryPoint('guided');
+                }
+                router.navigateTo('onboarding');
+                setTimeout(function () {
+                    if (window.onboardingUI) {
+                        if (engine.user.tier >= 2) {
+                            window.onboardingUI.showScreen(8);
+                        } else {
+                            window.onboardingUI.showScreen(7);
+                        }
+                    }
+                }, 0);
+                return;
+            }
+            router.navigateTo('home');
+        }
+        
+        function hideSessionBanner() {
+            const bar = document.getElementById('session-restore-banner');
+            if (bar) {
+                bar.style.display = 'none';
+            }
+        }
+        
+        function showSessionBannerIfNeeded() {
+            if (!sessionRestore.canRestore()) {
+                return;
+            }
+            const prompt = sessionRestore.getRestorePrompt();
+            if (!prompt) {
+                return;
+            }
+            const bar = document.getElementById('session-restore-banner');
+            const msg = document.getElementById('session-restore-msg');
+            if (bar && msg) {
+                msg.textContent = prompt.message;
+                bar.style.display = 'flex';
+            }
+        }
+        
+        document.getElementById('session-continue-btn').addEventListener('click', function () {
+            hideSessionBanner();
+            routeSessionContinue();
+        });
+        
+        document.getElementById('session-fresh-btn').addEventListener('click', function () {
+            try {
+                localStorage.removeItem('aituner_session');
+            } catch (e) {
+                /* ignore */
+            }
+            engine.createNewSession('guided');
+            engine.initializeLevers();
+            engine.generatePrompt();
+            hideSessionBanner();
+            router.navigateTo('home');
+        });
+        
+        const tierBadgeEl = document.getElementById('tier-badge');
+        if (tierBadgeEl) {
+            tierBadgeEl.addEventListener('click', function (e) {
+                e.stopPropagation();
+                profilePanel.open();
+            });
+        }
+        
+        updateTierBadge();
+        showSessionBannerIfNeeded();
+        
+        function escHtmlUnsafe(s) {
+            const d = document.createElement('div');
+            d.textContent = s == null ? '' : String(s);
+            return d.innerHTML;
+        }
+
+        (function initHomeModelChips() {
+            const wrap = document.getElementById('home-model-chips');
+            const boardHost = document.getElementById('home-compare-board');
+            if (!wrap || !window.MODELS_V5) return;
+
+            /** @type {string[]} */
+            let selectedIds = [];
+            /** @type {{ destroy: function }|null} */
+            let homeCompareApi = null;
+
+            function destroyHomeCompare() {
+                if (homeCompareApi && typeof homeCompareApi.destroy === 'function') {
+                    homeCompareApi.destroy();
+                }
+                homeCompareApi = null;
+                if (boardHost) {
+                    boardHost.innerHTML = '';
+                    boardHost.hidden = true;
+                }
+            }
+
+            function syncChipSelectedState() {
+                wrap.querySelectorAll('.home-model-chip').forEach(function (btn) {
+                    const id = btn.getAttribute('data-model-id');
+                    const on = selectedIds.indexOf(id) !== -1;
+                    btn.classList.toggle('is-selected', on);
+                    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+                });
+            }
+
+            function refreshHomeCompareBoard() {
+                destroyHomeCompare();
+                if (!selectedIds.length || !boardHost) {
+                    return;
+                }
+                if (typeof mountAITunerV5CompareBoard !== 'function') {
+                    boardHost.hidden = false;
+                    boardHost.innerHTML =
+                        '<p class="home-compare-fallback">Fingerprint charts could not load.</p>';
+                    return;
+                }
+
+                const boardModels = selectedIds.map(function (mid) {
+                    const m = window.MODELS_V5[mid];
+                    return {
+                        id: mid,
+                        name: m ? m.name : mid,
+                        leverValues: m && m.defaults ? Object.assign({}, m.defaults) : {}
+                    };
+                });
+
+                boardHost.hidden = false;
+                const n = boardModels.length;
+                mountAITunerV5CompareBoard(boardModels, boardHost, {
+                    embedded: true,
+                    maxCanvasHeightPx: n >= 4 ? 180 : n === 3 ? 200 : 240
+                })
+                    .then(function (api) {
+                        homeCompareApi = api;
+                    })
+                    .catch(function (err) {
+                        console.error('Home compare board failed', err);
+                    });
+            }
+
+            wrap.innerHTML = Object.values(window.MODELS_V5)
+                .map(function (m) {
+                    return (
+                        '<button type="button" class="home-model-chip" data-model-id="' +
+                        escHtmlUnsafe(m.id) +
+                        '" aria-pressed="false">' +
+                        escHtmlUnsafe(m.name) +
+                        '</button>'
+                    );
+                })
+                .join('');
+
+            wrap.querySelectorAll('.home-model-chip').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const mid = btn.getAttribute('data-model-id');
+                    if (!mid) return;
+                    const idx = selectedIds.indexOf(mid);
+                    if (idx !== -1) {
+                        selectedIds.splice(idx, 1);
+                    } else if (selectedIds.length < 4) {
+                        selectedIds.push(mid);
+                    } else {
+                        // Cap at 4: replace oldest selection
+                        selectedIds.shift();
+                        selectedIds.push(mid);
+                    }
+                    syncChipSelectedState();
+                    refreshHomeCompareBoard();
+                });
+            });
+        })();
+
+        (function initHomeSetupProjectCard() {
+            const picker = document.getElementById('home-setup-picker');
+            const wrap = document.getElementById('home-setup-model-chips');
+            const setupCard = document.getElementById('entry-card-project-setup');
+            const prefNote = document.getElementById('home-setup-preferred-note');
+            if (!wrap || !setupCard || !window.MODELS_V5) {
+                return;
+            }
+
+            const preferredId =
+                userProfile &&
+                userProfile.profile &&
+                userProfile.profile.preferred_model &&
+                window.MODELS_V5[userProfile.profile.preferred_model]
+                    ? userProfile.profile.preferred_model
+                    : null;
+
+            wrap.innerHTML = Object.values(window.MODELS_V5)
+                .map(function (m) {
+                    var isPref = preferredId && m.id === preferredId;
+                    var cls =
+                        'home-model-chip home-setup-model-chip' +
+                        (isPref ? ' home-model-chip-preferred' : '');
+                    return (
+                        '<button type="button" class="' +
+                        cls +
+                        '" data-model-id="' +
+                        escHtmlUnsafe(m.id) +
+                        '">' +
+                        escHtmlUnsafe(m.name) +
+                        '</button>'
+                    );
+                })
+                .join('');
+
+            if (preferredId && prefNote) {
+                var pm = window.MODELS_V5[preferredId];
+                prefNote.hidden = false;
+                prefNote.textContent =
+                    'Your preferred model is ' + pm.name + ' — it’s highlighted below. Tap any chip to open Setup.';
+            }
+
+            if (preferredId && picker) {
+                picker.classList.add('is-open');
+                picker.setAttribute('aria-hidden', 'false');
+            }
+
+            wrap.querySelectorAll('.home-setup-model-chip').forEach(function (btn) {
+                btn.addEventListener('click', function (ev) {
+                    ev.stopPropagation();
+                    sessionStorage.removeItem('aituner_room_resume_onboarding');
+                    var mid = btn.getAttribute('data-model-id');
+                    if (typeof window.openModelRoom === 'function') {
+                        window.openModelRoom({ modelId: mid, initialTab: 'setup' });
+                    }
+                });
+            });
+
+            setupCard.addEventListener('click', function (ev) {
+                if (ev.target.closest && ev.target.closest('.home-setup-model-chip')) {
+                    return;
+                }
+                if (!picker) {
+                    return;
+                }
+                var open = !picker.classList.contains('is-open');
+                picker.classList.toggle('is-open', open);
+                picker.setAttribute('aria-hidden', open ? 'false' : 'true');
+            });
+        })();
+
+        document.querySelectorAll('#entry-points .entry-card:not([data-entry="project-setup"])').forEach((card) => {
+            card.addEventListener('click', () => {
+                const entryPoint = card.getAttribute('data-entry');
+
+                switch (entryPoint) {
+                    case 'guided':
+                        router.navigateTo('onboarding');
+                        break;
+                    case 'discovery':
+                        router.navigateTo('discovery');
+                        break;
+                    case 'decoder':
+                        router.navigateTo('decoder');
+                        break;
+                    case 'full':
+                        onboardingState.skipToFullControls();
+                        engine.setEntryPoint('manual');
+                        window.location.href = 'architect.html';
+                        break;
+                }
+            });
+        });
     </script>
 </body>
 </html>

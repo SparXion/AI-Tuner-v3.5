@@ -2,17 +2,31 @@
  * AITuner v5.0 — pillar radars (Chart.js)
  *
  * Reads PILLAR_CONFIG + LEVERS_V5 from v5-levers.js; values from AITunerV5.leverValues.
- * Tier 1: CHARACTER + VOICE radars live + emphasis on TIER1_LEVER axes; THINKING + OUTPUT grayed/locked.
- * Tier ≥2: all four pillars active and draggable (slider ↔ radar stay in sync).
+ * Two combined radars: Character+Voice and Thinking+Output (8 axes each).
+ * Tier 1: Character+Voice live + emphasis on TIER1_LEVER axes; Thinking+Output grayed/locked.
+ * Tier ≥2: both radars active and draggable (slider ↔ radar stay in sync).
  */
 
 (function () {
     'use strict';
 
     const CHART_JS_URL = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
-    const PILLAR_ORDER = ['CHARACTER', 'VOICE', 'THINKING', 'OUTPUT'];
 
-    /** Monochrome pillar radars — same stroke/fill for all pillars; locked tiers use subdued grey */
+    /** Combined radar groups shown on all pages (replaces four single-pillar charts). */
+    const RADAR_GROUPS = [
+        {
+            id: 'CHARACTER_VOICE',
+            label: 'Character + Voice',
+            pillarKeys: ['CHARACTER', 'VOICE']
+        },
+        {
+            id: 'THINKING_OUTPUT',
+            label: 'Thinking + Output',
+            pillarKeys: ['THINKING', 'OUTPUT']
+        }
+    ];
+
+    /** Monochrome pillar radars — same stroke/fill for all groups; locked tiers use subdued grey */
     const RADAR_ACTIVE_STROKE = 'rgba(243, 244, 246, 0.95)';
     const RADAR_ACTIVE_FILL = 'rgba(255, 255, 255, 0.09)';
     const RADAR_LOCKED_STROKE = 'rgba(110, 110, 115, 0.55)';
@@ -103,11 +117,53 @@
         return pillarKey === 'THINKING' || pillarKey === 'OUTPUT';
     }
 
+    function groupLocked(group, tier) {
+        if (!group || !group.pillarKeys) {
+            return false;
+        }
+        return group.pillarKeys.every((pk) => pillarLocked(pk, tier));
+    }
+
     function pillarDragEnabled(pillarKey, tier) {
         if (tier < 2) {
             return false;
         }
         return true;
+    }
+
+    function groupDragEnabled(group, tier) {
+        if (tier < 2 || !group || !group.pillarKeys) {
+            return false;
+        }
+        return group.pillarKeys.every((pk) => pillarDragEnabled(pk, tier));
+    }
+
+    function leverKeysForGroup(group, pc) {
+        if (!group || !pc) {
+            return [];
+        }
+        const keys = [];
+        group.pillarKeys.forEach((pk) => {
+            const cfg = pc[pk];
+            if (cfg && Array.isArray(cfg.leverKeys)) {
+                cfg.leverKeys.forEach((k) => keys.push(k));
+            }
+        });
+        return keys;
+    }
+
+    function radarGroupForLever(leverKey, pc) {
+        if (!leverKey || !pc) {
+            return null;
+        }
+        for (let i = 0; i < RADAR_GROUPS.length; i++) {
+            const group = RADAR_GROUPS[i];
+            const keys = leverKeysForGroup(group, pc);
+            if (keys.indexOf(leverKey) !== -1) {
+                return group;
+            }
+        }
+        return null;
     }
 
     function isDarkMode() {
@@ -164,7 +220,14 @@
             return null;
         }
         let angle = Math.atan2(dy, dx);
-        const start = -Math.PI / 2;
+        const startAngleDeg =
+            (chart.options &&
+                chart.options.scales &&
+                chart.options.scales.r &&
+                Number(chart.options.scales.r.startAngle)) ||
+            0;
+        /* Chart.js: 0° = top; positive startAngle rotates clockwise. */
+        const start = -Math.PI / 2 + (startAngleDeg * Math.PI) / 180;
         let a = angle - start;
         while (a < 0) {
             a += Math.PI * 2;
@@ -175,6 +238,119 @@
         const step = (Math.PI * 2) / leverCount;
         const index = Math.round(a / step) % leverCount;
         return { datasetIndex: 0, index };
+    }
+
+    /**
+     * Half-sector rotation so the polygon sits flat-top / flat-bottom
+     * (vertex-up → edge-up). For 8 axes: 22.5°.
+     */
+    function flatTopStartAngleDeg(leverCount) {
+        const n = Number(leverCount);
+        if (!Number.isFinite(n) || n < 3) {
+            return 22.5;
+        }
+        return 180 / n;
+    }
+
+    function ensureFlatTopTicksPlugin() {
+        if (typeof Chart === 'undefined' || Chart._aitunerFlatTopTicksPlugin) {
+            return;
+        }
+        Chart.register({
+            id: 'aitunerFlatTopRadarTicks',
+            afterDatasetsDraw(chart) {
+                const cfg =
+                    chart.options &&
+                    chart.options.plugins &&
+                    chart.options.plugins.aitunerFlatTopRadarTicks;
+                if (!cfg || cfg.display === false) {
+                    return;
+                }
+                const scale = chart.scales && chart.scales.r;
+                if (!scale || !Array.isArray(scale.ticks)) {
+                    return;
+                }
+                const ctx = chart.ctx;
+                const color = cfg.color || '#f3f4f6';
+                const backdrop = cfg.backdropColor;
+                const fontSize = cfg.fontSize != null ? cfg.fontSize : 9;
+                const axisCount =
+                    (chart.data && chart.data.labels && chart.data.labels.length) || 8;
+
+                ctx.save();
+                ctx.font = `${fontSize}px sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = color;
+
+                const yForTickValue = (value) => {
+                    /* Prefer Chart.js geometry so labels sit on the flat grid edge. */
+                    if (typeof scale.getPointPositionForValue === 'function' && axisCount >= 2) {
+                        const a = scale.getPointPositionForValue(0, value);
+                        const b = scale.getPointPositionForValue(axisCount - 1, value);
+                        if (a && b && Number.isFinite(a.y) && Number.isFinite(b.y)) {
+                            return (a.y + b.y) / 2;
+                        }
+                    }
+                    const vertexDist = scale.getDistanceFromCenterForValue(value);
+                    if (!Number.isFinite(vertexDist) || vertexDist <= 0) {
+                        return null;
+                    }
+                    return scale.yCenter - vertexDist * Math.cos(Math.PI / Math.max(3, axisCount));
+                };
+
+                const maxValue = scale.max;
+
+                scale.ticks.forEach((tick) => {
+                    const value = tick && tick.value;
+                    if (!Number.isFinite(value) || value <= 0) {
+                        return;
+                    }
+                    /* Skip outermost "10" — it collides with the flat edge / axis labels. */
+                    if (value >= maxValue) {
+                        return;
+                    }
+                    const y = yForTickValue(value);
+                    if (!Number.isFinite(y)) {
+                        return;
+                    }
+                    const x = scale.xCenter;
+                    const label = String(Math.round(value));
+                    if (backdrop) {
+                        const metrics = ctx.measureText(label);
+                        const padX = 3;
+                        const padY = 2;
+                        const w = metrics.width + padX * 2;
+                        const h = fontSize + padY * 2;
+                        ctx.fillStyle = backdrop;
+                        ctx.fillRect(x - w / 2, y - h / 2, w, h);
+                        ctx.fillStyle = color;
+                    }
+                    ctx.fillText(label, x, y);
+                });
+                ctx.restore();
+            }
+        });
+        Chart._aitunerFlatTopTicksPlugin = true;
+    }
+
+    function applyRadarChartPadding(chart, hidePointLabels) {
+        if (!chart || !chart.options) {
+            return;
+        }
+        const top = hidePointLabels === true ? 18 : 26;
+        chart.options.layout = {
+            autoPadding: hidePointLabels !== true,
+            padding: { top: top, bottom: 12, left: 12, right: 12 }
+        };
+        try {
+            if (typeof chart.resize === 'function') {
+                chart.resize();
+            }
+            chart.update('none');
+        } catch (e) {
+            /* ignore */
+        }
     }
 
     function tryAttachRadarInteractions(canvas, chart, leverKeys, engine) {
@@ -397,29 +573,26 @@
         canvas.style.cursor = 'grab';
     }
 
-    function pillarKeyForLever(leverKey, pc) {
-        if (!pc || !leverKey) {
-            return null;
-        }
-        for (let i = 0; i < PILLAR_ORDER.length; i++) {
-            const pk = PILLAR_ORDER[i];
-            if (pc[pk] && pc[pk].leverKeys && pc[pk].leverKeys.indexOf(leverKey) !== -1) {
-                return pk;
-            }
-        }
-        return null;
-    }
-
-    function buildChartOptions({ textColor, gridColor, leverKeys, pillarKey, tier, highlightIndex, pointLabelSize, suppressTooltip }) {
+    function buildChartOptions({ textColor, gridColor, leverKeys, groupId, tier, highlightIndex, pointLabelSize, suppressTooltip, hidePointLabels }) {
         const tier1 = getTier1Levers();
         const muted = isDarkMode() ? 'rgba(180,180,185,0.5)' : 'rgba(85,85,92,0.45)';
-        const plSize = pointLabelSize != null ? pointLabelSize : 11;
+        const plSize = pointLabelSize != null ? pointLabelSize : 10;
+        const backdrop = isDarkMode() ? '#1a1a1a' : '#f0f0f0';
+        const n = Array.isArray(leverKeys) ? leverKeys.length : 8;
 
         return {
             responsive: true,
             maintainAspectRatio: true,
             aspectRatio: 1,
             animation: false,
+            /* Room above the outer flat edge so "10" isn't clipped. */
+            layout: {
+                autoPadding: hidePointLabels !== true,
+                padding:
+                    hidePointLabels === true
+                        ? { top: 22, bottom: 10, left: 10, right: 10 }
+                        : { top: 14, bottom: 8, left: 8, right: 8 }
+            },
             transitions: {
                 active: { animation: { duration: 0 } },
                 resize: { animation: { duration: 0 } }
@@ -429,24 +602,29 @@
                     beginAtZero: true,
                     max: 10,
                     min: 0,
+                    /* Half-sector offset → flat edge on top/bottom (8 axes → 22.5°). */
+                    startAngle: flatTopStartAngleDeg(n),
                     ticks: {
                         stepSize: 2,
+                        /* Built-in tick labels follow the first spoke; we draw them vertically via plugin. */
+                        display: false,
                         color: textColor,
-                        backdropColor: isDarkMode() ? '#1a1a1a' : '#f0f0f0',
-                        font: { size: 10 }
+                        backdropColor: backdrop,
+                        font: { size: 9 }
                     },
                     grid: {
                         color: gridColor,
                         lineWidth: 1
                     },
                     pointLabels: {
+                        display: hidePointLabels !== true,
                         font: { size: plSize, weight: '500' },
-                        padding: 8,
+                        padding: 6,
                         color: (ctx) => {
                             if (highlightIndex !== null && highlightIndex !== undefined && highlightIndex >= 0) {
                                 return ctx.index === highlightIndex ? textColor : muted;
                             }
-                            if (tier === 1 && (pillarKey === 'CHARACTER' || pillarKey === 'VOICE')) {
+                            if (tier === 1 && groupId === 'CHARACTER_VOICE') {
                                 const key = leverKeys[ctx.index];
                                 return tier1.includes(key) ? textColor : muted;
                             }
@@ -468,6 +646,12 @@
                             return `${name}: ${val}/10`;
                         }
                     }
+                },
+                aitunerFlatTopRadarTicks: {
+                    display: true,
+                    color: textColor,
+                    backdropColor: backdrop,
+                    fontSize: 9
                 }
             }
         };
@@ -507,19 +691,32 @@
         if (!st) {
             return;
         }
-        const { engine, chartsByPillar } = st;
-        const pc = getPillarConfig();
-        if (!pc) {
+
+        if (Array.isArray(st.chartEntries) && st.chartEntries.length) {
+            st.chartEntries.forEach((entry) => {
+                if (!entry || !entry.chart || !entry.engine || !entry.leverKeys) {
+                    return;
+                }
+                syncChartDataset(entry.chart, entry.leverKeys, entry.engine);
+                relayoutChart(entry.chart);
+            });
             return;
         }
 
-        Object.keys(chartsByPillar).forEach((pillarKey) => {
-            const chart = chartsByPillar[pillarKey];
-            const cfg = pc[pillarKey];
-            if (!chart || !cfg) {
+        const { engine, chartsByPillar } = st;
+
+        Object.keys(chartsByPillar || {}).forEach((groupId) => {
+            const chart = chartsByPillar[groupId];
+            if (!chart) {
                 return;
             }
-            syncChartDataset(chart, cfg.leverKeys, engine);
+            const leverKeys =
+                (chart.canvas && chart.canvas._radarLeverKeys) ||
+                (st.leverKeysByGroup && st.leverKeysByGroup[groupId]);
+            if (!leverKeys || !leverKeys.length) {
+                return;
+            }
+            syncChartDataset(chart, leverKeys, engine);
             relayoutChart(chart);
         });
     }
@@ -546,9 +743,9 @@
         if (!st) {
             return;
         }
-        const { chartsByPillar, engine, prevOnLeverChange, onResize } = st;
+        const { chartsByPillar, engine, prevOnLeverChange, onResize, chartEntries } = st;
 
-        if (engine) {
+        if (engine && prevOnLeverChange !== undefined) {
             engine.onLeverChange = prevOnLeverChange;
         }
 
@@ -556,18 +753,35 @@
             window.removeEventListener('resize', onResize);
         }
 
-        Object.keys(chartsByPillar).forEach((pk) => {
+        const charts = [];
+        if (Array.isArray(chartEntries)) {
+            chartEntries.forEach((entry) => {
+                if (entry && entry.chart) {
+                    charts.push(entry.chart);
+                }
+            });
+        }
+        Object.keys(chartsByPillar || {}).forEach((pk) => {
             const chart = chartsByPillar[pk];
-            const canvas = chart && chart.canvas;
+            if (chart) {
+                charts.push(chart);
+            }
+        });
+
+        const seen = new Set();
+        charts.forEach((chart) => {
+            if (!chart || seen.has(chart)) {
+                return;
+            }
+            seen.add(chart);
+            const canvas = chart.canvas;
             if (canvas) {
                 cleanupRadarInteractions(canvas);
             }
-            if (chart) {
-                try {
-                    chart.destroy();
-                } catch (e) {
-                    console.warn('AITunerV5 radar: destroy', e);
-                }
+            try {
+                chart.destroy();
+            } catch (e) {
+                console.warn('AITunerV5 radar: destroy', e);
             }
         });
     }
@@ -593,10 +807,11 @@
     }
 
     /**
-     * Mount four pillar radars into #containerId (or HTMLElement).
+     * Mount combined pillar radars into #containerId (or HTMLElement).
+     * Two charts: Character+Voice and Thinking+Output (8 axes each).
      * @param {AITunerV5} engine
      * @param {string|HTMLElement} containerIdOrEl
-     * @param {{ tier?: number, highlightLeverKey?: string, interactive?: boolean, embedded?: boolean, maxCanvasHeightPx?: number, layout?: 'grid' | 'stack' }} [options] — layout: 'stack' = one pillar per row (full width); default 2×2 grid for 4 pillars
+     * @param {{ tier?: number, highlightLeverKey?: string, interactive?: boolean, embedded?: boolean, maxCanvasHeightPx?: number, layout?: 'grid' | 'stack' | 'room' }} [options] — layout: 'stack' = one radar per row; default side-by-side for 2 combined radars
      * @returns {Promise<{ destroy: function, refresh: function }>}
      */
     function mountAITunerV5Radars(engine, containerIdOrEl, options) {
@@ -636,6 +851,7 @@
                 if (typeof Chart === 'undefined') {
                     throw new Error('Chart.js unavailable');
                 }
+                ensureFlatTopTicksPlugin();
             })
             .then(() => {
             container.innerHTML = '';
@@ -659,14 +875,14 @@
             const textColor = isDarkMode() ? '#f3f4f6' : '#1f2937';
             const gridColor = isDarkMode() ? 'rgba(255, 255, 255, 0.28)' : 'rgba(0, 0, 0, 0.18)';
             const highlightLeverKey = options && options.highlightLeverKey;
-            const highlightPillar = highlightLeverKey ? pillarKeyForLever(highlightLeverKey, pc) : null;
-            const pillarsToShow = highlightPillar ? [highlightPillar] : PILLAR_ORDER;
-            if (pillarsToShow.length === 1) {
+            const highlightGroup = highlightLeverKey ? radarGroupForLever(highlightLeverKey, pc) : null;
+            const groupsToShow = highlightGroup ? [highlightGroup] : RADAR_GROUPS.slice();
+            if (groupsToShow.length === 1) {
                 grid.style.gridTemplateColumns = '1fr';
-                grid.style.maxWidth = layoutStack ? '100%' : '320px';
+                grid.style.maxWidth = layoutStack ? '100%' : '420px';
                 grid.style.margin = layoutStack ? '0' : '0 auto';
             } else if (layoutRoom) {
-                grid.style.gridTemplateColumns = 'repeat(2, minmax(240px, 1fr))';
+                grid.style.gridTemplateColumns = 'repeat(2, minmax(280px, 1fr))';
                 grid.style.maxWidth = '100%';
                 grid.style.margin = '0';
             } else if (layoutStack) {
@@ -674,14 +890,16 @@
                 grid.style.maxWidth = '100%';
                 grid.style.margin = '0';
             } else {
-                grid.style.gridTemplateColumns = 'repeat(2, minmax(140px, 1fr))';
+                grid.style.gridTemplateColumns = 'repeat(2, minmax(160px, 1fr))';
             }
 
             const chartsByPillar = {};
+            const leverKeysByGroup = {};
 
-            pillarsToShow.forEach((pillarKey) => {
-                const cfg = pc[pillarKey];
-                const locked = pillarLocked(pillarKey, tier);
+            groupsToShow.forEach((group) => {
+                const groupId = group.id;
+                const leverKeys = leverKeysForGroup(group, pc);
+                const locked = groupLocked(group, tier);
                 const card = document.createElement('div');
                 card.className = 'aituner-v5-radar-card';
                 card.style.border = `2px solid ${isDarkMode() ? '#ffffff' : '#000000'}`;
@@ -690,7 +908,7 @@
                 card.style.background = isDarkMode() ? '#1a1a1a' : '#eaeaea';
 
                 const title = document.createElement('div');
-                title.textContent = cfg.label || pillarKey;
+                title.textContent = group.label || groupId;
                 title.style.fontSize = (layoutStack || layoutRoom) && !embedded ? '14px' : '13px';
                 title.style.fontWeight = '600';
                 title.style.marginBottom = (layoutStack || layoutRoom) && !embedded ? '10px' : '8px';
@@ -700,11 +918,11 @@
                 }
 
                 const canvas = document.createElement('canvas');
-                canvas.id = `aituner-v5-radar-${pillarKey}${idSuffix}`;
-                canvas.setAttribute('aria-label', `${cfg.label} radar`);
+                canvas.id = `aituner-v5-radar-${groupId}${idSuffix}`;
+                canvas.setAttribute('aria-label', `${group.label} radar`);
                 canvas.style.width = '100%';
                 const defaultMaxH =
-                    layoutStack && !embedded ? 300 : layoutRoom && !embedded ? 360 : 220;
+                    layoutStack && !embedded ? 340 : layoutRoom && !embedded ? 400 : 240;
                 const maxH = options && options.maxCanvasHeightPx != null ? options.maxCanvasHeightPx : defaultMaxH;
                 canvas.style.maxHeight = typeof maxH === 'number' ? `${maxH}px` : String(maxH);
 
@@ -712,7 +930,6 @@
                 card.appendChild(canvas);
                 grid.appendChild(card);
 
-                const leverKeys = cfg.leverKeys;
                 const labels = leverKeys.map((k) => (levers[k] && levers[k].name) || k);
                 const data = leverKeys.map((k) => leverValue(engine, k));
 
@@ -736,7 +953,7 @@
                         : leverKeys.map(() => pointBg);
 
                 const dragEnabled =
-                    interactive && pillarDragEnabled(pillarKey, tier) && highlightIndex === null;
+                    interactive && groupDragEnabled(group, tier) && highlightIndex === null;
 
                 const chart = new Chart(canvas, {
                     type: 'radar',
@@ -744,7 +961,7 @@
                         labels,
                         datasets: [
                             {
-                                label: cfg.label || pillarKey,
+                                label: group.label || groupId,
                                 data,
                                 backgroundColor: fillColor,
                                 borderColor,
@@ -762,16 +979,18 @@
                         textColor,
                         gridColor,
                         leverKeys,
-                        pillarKey,
+                        groupId,
                         tier,
                         highlightIndex: highlightIndex !== null ? highlightIndex : undefined,
-                        pointLabelSize: (layoutStack || layoutRoom) && !embedded ? 12 : undefined,
+                        pointLabelSize: (layoutStack || layoutRoom) && !embedded ? 11 : undefined,
                         suppressTooltip: dragEnabled
                     })
                 });
                 chart._radarSuppressTooltip = dragEnabled;
+                applyRadarChartPadding(chart, false);
 
-                chartsByPillar[pillarKey] = chart;
+                chartsByPillar[groupId] = chart;
+                leverKeysByGroup[groupId] = leverKeys;
 
                 canvas._radarDragEnabled = dragEnabled;
                 canvas._radarLeverKeys = leverKeys;
@@ -816,6 +1035,7 @@
             const localState = {
                 engine,
                 chartsByPillar,
+                leverKeysByGroup,
                 container,
                 tier,
                 prevOnLeverChange,
@@ -883,9 +1103,261 @@
             });
     }
 
+    /**
+     * Multi-model fingerprint board for Compare Models.
+     * Layout: model headers across the top; Character+Voice row; Thinking+Output row.
+     * Up to 4 models → up to 8 radars (2 rows × N columns).
+     *
+     * @param {Array<{ id: string, name?: string, leverValues: Record<string, number> }>} models
+     * @param {string|HTMLElement} containerIdOrEl
+     * @param {{ maxCanvasHeightPx?: number, embedded?: boolean }} [options]
+     * @returns {Promise<{ destroy: function, refresh: function }>}
+     */
+    function mountAITunerV5CompareBoard(models, containerIdOrEl, options) {
+        const list = Array.isArray(models) ? models.filter(Boolean).slice(0, 4) : [];
+        if (!list.length) {
+            return Promise.reject(new Error('mountAITunerV5CompareBoard: models required (1–4)'));
+        }
+
+        const container =
+            typeof containerIdOrEl === 'string'
+                ? document.getElementById(containerIdOrEl)
+                : containerIdOrEl;
+
+        if (!container) {
+            return Promise.reject(new Error('mountAITunerV5CompareBoard: container not found'));
+        }
+
+        const pc = getPillarConfig();
+        const levers = getLeversV5();
+        if (!pc || !levers) {
+            return Promise.reject(new Error('mountAITunerV5CompareBoard: PILLAR_CONFIG / LEVERS_V5 missing'));
+        }
+
+        const embedded = !options || options.embedded !== false;
+        if (!embedded) {
+            destroyPrimaryAndEmbedded();
+        }
+
+        const idSuffix =
+            typeof Math !== 'undefined' && Math.random
+                ? '-' + Math.random().toString(36).slice(2, 10)
+                : '';
+
+        const maxH =
+            options && options.maxCanvasHeightPx != null ? options.maxCanvasHeightPx : 200;
+
+        return loadChartJs()
+            .then(() => {
+                if (typeof Chart === 'undefined') {
+                    throw new Error('Chart.js unavailable');
+                }
+                ensureFlatTopTicksPlugin();
+            })
+            .then(() => {
+                container.innerHTML = '';
+
+                const board = document.createElement('div');
+                board.className = 'aituner-v5-compare-board';
+                board.style.setProperty('--compare-cols', String(list.length));
+                board.setAttribute('data-cols', String(list.length));
+
+                const textColor = isDarkMode() ? '#f3f4f6' : '#1f2937';
+                const gridColor = isDarkMode() ? 'rgba(255, 255, 255, 0.28)' : 'rgba(0, 0, 0, 0.18)';
+                const tier = 2;
+                const chartEntries = [];
+                const chartsByPillar = {};
+
+                list.forEach((model) => {
+                    const head = document.createElement('div');
+                    head.className = 'aituner-v5-compare-model-head';
+                    head.textContent = model.name || model.id || 'Model';
+                    board.appendChild(head);
+                });
+
+                const makeStubEngine = (model) => ({
+                    leverValues: Object.assign({}, model.leverValues || {}),
+                    user: { tier: 2 },
+                    selectedModel: model,
+                    adjustLever: function () {},
+                    onLeverChange: null,
+                    onPromptChange: null,
+                    onTierChange: null
+                });
+
+                const stubEngines = list.map(makeStubEngine);
+                const pendingCanvases = [];
+
+                RADAR_GROUPS.forEach((group) => {
+                    const rowLabel = document.createElement('div');
+                    rowLabel.className = 'aituner-v5-compare-row-label';
+                    rowLabel.textContent = group.label;
+                    board.appendChild(rowLabel);
+
+                    const leverKeys = leverKeysForGroup(group, pc);
+                    const labels = leverKeys.map((k) => (levers[k] && levers[k].name) || k);
+
+                    stubEngines.forEach((engine, idx) => {
+                        const model = list[idx];
+                        const card = document.createElement('div');
+                        card.className = 'aituner-v5-radar-card aituner-v5-compare-cell';
+                        card.style.border = `2px solid ${isDarkMode() ? '#ffffff' : '#000000'}`;
+                        card.style.borderRadius = '4px';
+                        card.style.padding = '14px 10px 10px';
+                        card.style.background = isDarkMode() ? '#1a1a1a' : '#eaeaea';
+
+                        const canvas = document.createElement('canvas');
+                        const chartKey = `${group.id}__${model.id || idx}`;
+                        canvas.id = `aituner-v5-radar-${chartKey}${idSuffix}`;
+                        canvas.setAttribute(
+                            'aria-label',
+                            `${model.name || model.id} ${group.label} radar`
+                        );
+                        canvas.style.width = '100%';
+                        canvas.style.maxHeight = typeof maxH === 'number' ? `${maxH}px` : String(maxH);
+
+                        card.appendChild(canvas);
+                        board.appendChild(card);
+
+                        pendingCanvases.push({
+                            canvas,
+                            chartKey,
+                            engine,
+                            leverKeys,
+                            labels,
+                            group
+                        });
+                    });
+                });
+
+                /* Attach before Chart init so responsive sizing sees real layout width. */
+                container.appendChild(board);
+
+                const hidePointLabels = list.length > 1;
+
+                pendingCanvases.forEach((item) => {
+                    const { canvas, chartKey, engine, leverKeys, labels, group } = item;
+                    const data = leverKeys.map((k) => leverValue(engine, k));
+                    const borderColor = RADAR_ACTIVE_STROKE;
+                    const fillColor = RADAR_ACTIVE_FILL;
+
+                    const chart = new Chart(canvas, {
+                        type: 'radar',
+                        data: {
+                            labels,
+                            datasets: [
+                                {
+                                    label: group.label,
+                                    data,
+                                    backgroundColor: fillColor,
+                                    borderColor,
+                                    borderWidth: 2,
+                                    pointBackgroundColor: leverKeys.map(() => borderColor),
+                                    pointBorderColor: borderColor,
+                                    pointHoverBackgroundColor: borderColor,
+                                    pointRadius: hidePointLabels ? 4 : 3,
+                                    pointHoverRadius: hidePointLabels ? 7 : 5,
+                                    pointHitRadius: hidePointLabels ? 18 : 12
+                                }
+                            ]
+                        },
+                        options: buildChartOptions({
+                            textColor,
+                            gridColor,
+                            leverKeys,
+                            groupId: group.id,
+                            tier,
+                            highlightIndex: undefined,
+                            pointLabelSize: 9,
+                            suppressTooltip: false,
+                            hidePointLabels
+                        })
+                    });
+
+                    canvas._radarDragEnabled = false;
+                    canvas._radarLeverKeys = leverKeys;
+                    canvas.style.cursor = 'default';
+                    applyRadarChartPadding(chart, hidePointLabels);
+
+                    chartsByPillar[chartKey] = chart;
+                    chartEntries.push({ chart, engine, leverKeys, key: chartKey });
+                });
+
+                let resizeTimeout;
+                const forceCompareLayout = () => {
+                    chartEntries.forEach((entry) => {
+                        const c = entry && entry.chart;
+                        if (!c) {
+                            return;
+                        }
+                        const canvas = c.canvas;
+                        if (canvas) {
+                            canvas.style.width = '100%';
+                            canvas.style.height = '';
+                        }
+                        relayoutChart(c);
+                    });
+                };
+
+                const onResize = () => {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => {
+                        forceCompareLayout();
+                    }, 200);
+                };
+                window.addEventListener('resize', onResize);
+
+                const localState = {
+                    engine: null,
+                    chartsByPillar,
+                    chartEntries,
+                    container,
+                    tier,
+                    prevOnLeverChange: undefined,
+                    onResize
+                };
+
+                embeddedRadarMounts.push(localState);
+
+                const refreshLocal = () => updateChartsForState(localState);
+                updateChartsForState(localState);
+
+                requestAnimationFrame(() => {
+                    forceCompareLayout();
+                    requestAnimationFrame(forceCompareLayout);
+                });
+
+                return {
+                    destroy: () => {
+                        const i = embeddedRadarMounts.indexOf(localState);
+                        if (i >= 0) {
+                            embeddedRadarMounts.splice(i, 1);
+                        }
+                        destroyMountState(localState);
+                        container.innerHTML = '';
+                    },
+                    refresh: refreshLocal,
+                    getChartsByPillar: () => localState.chartsByPillar || {}
+                };
+            })
+            .catch((err) => {
+                console.warn('AITunerV5 compare board: charts unavailable', err);
+                container.innerHTML =
+                    '<p class="aituner-chart-fallback" role="status">Behavior charts could not load (check your connection or blockers).</p>';
+                return {
+                    destroy: () => {
+                        container.innerHTML = '';
+                    },
+                    refresh: () => {},
+                    getChartsByPillar: () => ({})
+                };
+            });
+    }
+
     /* Global API */
     if (typeof window !== 'undefined') {
         window.mountAITunerV5Radars = mountAITunerV5Radars;
+        window.mountAITunerV5CompareBoard = mountAITunerV5CompareBoard;
 
         /**
          * @deprecated v3.5 / v6 hook — refreshes v5 mount if present
