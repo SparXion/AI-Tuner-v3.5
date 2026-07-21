@@ -132,6 +132,15 @@ body.aituner-dark {
     letter-spacing: 0.02em;
 }
 
+.aituner-ecosystem {
+    font-size: clamp(0.875rem, 2.2vw, 1rem);
+    font-weight: 400;
+    color: var(--at-text-secondary);
+    margin: 0 0 0.5rem;
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+}
+
 .hero p,
 .aituner-tagline,
 .landing-tagline,
